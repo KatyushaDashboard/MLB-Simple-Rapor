@@ -141,7 +141,7 @@ with tabs[4]:
                     st.write("📈 Pasaran Total Match Runs ➔ 🟢 *WIN* (Prediksi Under, Hasil Under)")
                 
                 # Tampilkan data performa pemain yang dicatat kemarin
-                with st. his_expander := st.expander("🔎 Lihat Rapor Statistik Player Terkait"):
+                with st.expander("🔎 Lihat Rapor Statistik Player Terkait"):
                     for p_name, p_stat in g_data['players'].items():
                         if 'tb' in p_stat: # Batter
                             st.write(f"⚾ **{p_name}**: Hits: {p_stat['hits']} | TB: {p_stat['tb']} | HR: {p_stat['hr']} | RBI: {p_stat['rbi']}")
