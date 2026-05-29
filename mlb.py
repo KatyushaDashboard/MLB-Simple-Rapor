@@ -332,25 +332,44 @@ with tabs[4]:
     # 2. Render Kartu Statistik Mewah ala Crypto/Saham Terminal
     m1, m2, m3, m4 = st.columns(4)
     
-    m1.metric(label="🎯 Win Rate Aktual", value=f"{win_rate:.1f}%", delta=f"{win_rate - 55:.1f}% dari target minimal")
+    m1.metric(label="🎯 Win Rate Aktual", value=f"{win_rate:.1f}%", delta=f"{win_rate - 55:.1f}% dari batas aman" if history['total_bets'] > 0 else "Belum ada data")
     
-    status_profit = "🟢 Profit" if profit_loss >= 0 else "🔴 Loss"
+    status_profit = "🟢 Profit" if profit_loss >= 0 else ("🔴 Loss" if profit_loss < 0 else "⚪ BEP")
     m2.metric(label=f"💸 Bersih ({status_profit})", value=f"Rp {profit_loss:,}")
     
     m3.metric(label="📊 Return on Investment (ROI)", value=f"{roi:.1f}%", delta=f"{roi:.1f}%" if roi >= 0 else f"{roi:.1f}%")
-    m4.metric(label="🎫 Total Slip Diuji", value=f"{history['total_bets']} Tiket")
+    m4.metric(label="🎫 Total Slip", value=f"{history['total_bets']} Tiket")
     
     st.divider()
     
-    # 3. Log Boxscore Pertandingan Kemarin (Tetap dipertahankan di bawahnya)
+    # 3. KEMBALINYA LOG STATISTIK INDIVIDU (Tracker Slip)
     st.subheader("📋 Kunci Jawaban & Log Boxscore H-1")
     if not yesterday_results:
         st.info("Menunggu data pertandingan H-1 disinkronkan oleh bot.")
     else:
+        st.success(f"✅ Data dari {len(yesterday_results)} pertandingan kemarin berhasil ditarik.")
         for g_id, g_data in yesterday_results.items():
-            total_runs = g_data['away_runs'] + g_data['home_runs']
-            st.markdown(f"**{g_data['matchup']}** ➔ Skor: {g_data['away_runs']} - {g_data['home_runs']} (Total: {total_runs} Runs)")
-
+            with st.container():
+                st.markdown(f"### 📋 {g_data['matchup']}")
+                total_runs = g_data['away_runs'] + g_data['home_runs']
+                st.markdown(f"**Skor Akhir:** {g_data['away_runs']} - {g_data['home_runs']} (Total: {total_runs} Runs)")
+                
+                # Expandable Audit Boxscore yang sempet ilang
+                with st.expander("🔎 Buka Log Statistik Individu (Hitter & Pitcher)"):
+                    hitters_found = False
+                    # Antisipasi kalau key 'players' nggak ada di beberapa game
+                    players_data = g_data.get('players', {}) 
+                    
+                    for p_name, p_stat in players_data.items():
+                        if 'tb' in p_stat and p_stat['tb'] > 0: 
+                            st.write(f"⚾ **{p_name}**: Hits: {p_stat['hits']} | TB: {p_stat['tb']} | HR: {p_stat['hr']} | RBI: {p_stat['rbi']}")
+                            hitters_found = True
+                        elif 'strikeouts_pitcher' in p_stat:
+                            st.write(f"🔥 **{p_name} (SP)**: K: {p_stat['strikeouts_pitcher']} | Outs: {p_stat['outs']} | Hits Allwd: {p_stat['hits_allowed']}")
+                    
+                    if not hitters_found:
+                        st.caption("Tidak ada data stat mencolok di boxscore ini.")
+                st.divider()
 # ====================================================================
 # 7. TAB 7: MATCH & TEAM MARKET TERMINAL (TERINTEGRASI CSV PITCHER)
 # ====================================================================
