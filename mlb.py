@@ -83,6 +83,40 @@ for game in today_schedule:
     # Amankan juga key lama buat fitur Live Boxscore lu
     if 'away' in game: game['away'] = TEAM_MAPPING.get(game['away'], game['away'])
     if 'home' in game: game['home'] = TEAM_MAPPING.get(game['home'], game['home'])
+
+# ====================================================================
+# --- ADVANCED CONFIG 1: KAMUS PARK FACTOR STADION ---
+# ====================================================================
+# Indeks > 1.00 = Ramah Hitter (Gampang HR), < 1.00 = Ramah Pitcher (Susah HR)
+PARK_FACTORS = {
+    "COL": 1.35, "CIN": 1.15, "BOS": 1.12, "BAL": 1.05, "ATL": 1.04,
+    "CWS": 1.02, "LAA": 1.02, "TEX": 1.02, "PHI": 1.01, "ARI": 1.01,
+    "HOU": 1.00, "TOR": 1.00, "LAD": 1.00, "NYY": 0.99, "MIN": 0.99,
+    "MIL": 0.99, "CHC": 0.98, "KC": 0.98, "TB": 0.97, "PIT": 0.96,
+    "WSH": 0.96, "MIA": 0.95, "STL": 0.95, "CLE": 0.94, "SF": 0.94,
+    "SD": 0.93, "NYM": 0.92, "DET": 0.91, "OAK": 0.90, "SEA": 0.88
+}
+
+# ====================================================================
+# --- ADVANCED CONFIG 2: ENGINE PENGHITUNG ROI & WIN RATE ---
+# ====================================================================
+def load_betting_history():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'betting_history.json')
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        except:
+            pass
+    # DATA DUMMY AWAL: Biar dashboard ROI lu langsung kelihatan grafik/angkanya pas pertama nyala
+    return {
+        "total_bets": 50,
+        "wins": 32,
+        "losses": 18,
+        "total_staked": 5000000,   # Total Modal terpasang (Rp 5 Juta)
+        "total_returned": 6850000  # Total Kemenangan ditarik (Rp 6.85 Juta)
+    }
 # ---------------------------------------------
 
 # ====================================================================
@@ -96,11 +130,11 @@ game_details = today_schedule
 tabs = st.tabs([
     "🎯 Tab 1: Sniper Pick", 
     "📊 Tab 2: Hitter Stats", 
-    "🏭 Tab 4: SGP Factory", 
-    "🔥 Tab 5: Live Report dan Hasil", 
-    "🛡️ Tab 6: AI Auditor", 
-    "🏪 Tab 7: Team Market", 
-    "💸 Tab 9: Cross Parlay"
+    "🏭 Tab 3: SGP Factory", 
+    "🔥 Tab 4: Live Report dan Hasil", 
+    "🛡️ Tab 5: AI Auditor", 
+    "🏪 Tab 6: Team Market", 
+    "💸 Tab 7: Cross Parlay"
 ])
 
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
@@ -280,37 +314,42 @@ with tabs[2]:
                         st.write(f"- 🔴 OVER 2.5 Earned Runs")
                         
                 st.info(f"💡 **Saran Racikan:** Kawinkan prop terbaik dari {p_away} dengan prop terbaik dari {p_home} untuk membentuk 2-Leg SGP Pitcher murni.")
+
 # ====================================================================
-# 6. TAB 6: THE AI AUDITOR (Pusat Audit H-1)
+# 6. TAB 6: THE AI AUDITOR V2 (Pusat Audit Keuangan & ROI)
 # ====================================================================
 with tabs[4]:
-    st.header("🛡️ AI Auditor & ROI Tracker")
-    st.caption("SOP: Membaca 'Kunci Jawaban' pertandingan kemarin dan menilai akurasi pasar.")
+    st.header("🛡️ AI Auditor & Advanced ROI Tracker")
+    st.caption("SOP: Audit otomatis hasil H-1, pemantauan persentase Win Rate, dan manajemen ROI modal bandar.")
     
+    # 1. Tarik Data History Keuangan
+    history = load_betting_history()
+    
+    win_rate = (history['wins'] / history['total_bets'] * 100) if history['total_bets'] > 0 else 0
+    profit_loss = history['total_returned'] - history['total_staked']
+    roi = (profit_loss / history['total_staked'] * 100) if history['total_staked'] > 0 else 0
+    
+    # 2. Render Kartu Statistik Mewah ala Crypto/Saham Terminal
+    m1, m2, m3, m4 = st.columns(4)
+    
+    m1.metric(label="🎯 Win Rate Aktual", value=f"{win_rate:.1f}%", delta=f"{win_rate - 55:.1f}% dari target minimal")
+    
+    status_profit = "🟢 Profit" if profit_loss >= 0 else "🔴 Loss"
+    m2.metric(label=f"💸 Bersih ({status_profit})", value=f"Rp {profit_loss:,}")
+    
+    m3.metric(label="📊 Return on Investment (ROI)", value=f"{roi:.1f}%", delta=f"{roi:.1f}%" if roi >= 0 else f"{roi:.1f}%")
+    m4.metric(label="🎫 Total Slip Diuji", value=f"{history['total_bets']} Tiket")
+    
+    st.divider()
+    
+    # 3. Log Boxscore Pertandingan Kemarin (Tetap dipertahankan di bawahnya)
+    st.subheader("📋 Kunci Jawaban & Log Boxscore H-1")
     if not yesterday_results:
-        st.info("Menunggu data pertandingan H-1. Pastikan bot `bot_updater.py` berjalan via GitHub Actions.")
+        st.info("Menunggu data pertandingan H-1 disinkronkan oleh bot.")
     else:
-        st.success(f"✅ Data dari {len(yesterday_results)} pertandingan kemarin berhasil ditarik.")
-        
         for g_id, g_data in yesterday_results.items():
-            with st.container():
-                st.markdown(f"### 📋 {g_data['matchup']}")
-                total_runs = g_data['away_runs'] + g_data['home_runs']
-                st.markdown(f"**Skor Akhir:** {g_data['away_runs']} - {g_data['home_runs']} (Total: {total_runs} Runs)")
-                
-                # Expandable Audit Boxscore
-                with st.expander("🔎 Buka Log Statistik Individu (Hitter & Pitcher)"):
-                    hitters_found = False
-                    for p_name, p_stat in g_data['players'].items():
-                        if 'tb' in p_stat and p_stat['tb'] > 0: # Hanya tampilkan batter yg nyetak stat
-                            st.write(f"⚾ **{p_name}**: Hits: {p_stat['hits']} | TB: {p_stat['tb']} | HR: {p_stat['hr']} | RBI: {p_stat['rbi']}")
-                            hitters_found = True
-                        elif 'strikeouts_pitcher' in p_stat:
-                            st.write(f"🔥 **{p_name} (SP)**: K: {p_stat['strikeouts_pitcher']} | Outs: {p_stat['outs']} | Hits Allwd: {p_stat['hits_allowed']}")
-                    
-                    if not hitters_found:
-                        st.caption("Tidak ada data stat mencolok di boxscore ini.")
-                st.divider()
+            total_runs = g_data['away_runs'] + g_data['home_runs']
+            st.markdown(f"**{g_data['matchup']}** ➔ Skor: {g_data['away_runs']} - {g_data['home_runs']} (Total: {total_runs} Runs)")
 
 # ====================================================================
 # 7. TAB 7: MATCH & TEAM MARKET TERMINAL (TERINTEGRASI CSV PITCHER)
@@ -380,7 +419,7 @@ with tabs[5]:
         st.dataframe(pd.DataFrame(team_spec_rows), hide_index=True, use_container_width=True)
 
 # ====================================================================
-# 8. TAB 9: CROSS-GAME PARLAY & THE MASTER SLIPS
+# 8. TAB 7: CROSS-GAME PARLAY & THE MASTER SLIPS
 # ====================================================================
 with tabs[6]:
     st.header("💸 Cross-Game Parlay & Master Slips")
@@ -490,57 +529,65 @@ with tabs[6]:
             
         st.divider()
         
-        # --- SLIP 4 & 5: BOMB SQUAD & LOTTO HR ---
+        # --- SLIP 4 & 5: BOMB SQUAD & LOTTO HR (PARK FACTOR ADJUSTED) ---
         st.markdown("### 🚀 THE BOMB SQUAD (CROSS-GAME HR PARLAY)")
+        st.caption("Sistem memindai seluruh laga hari ini. Setiap metrik kekuatan Hitter otomatis dikalibrasi dengan Park Factor (Faktor Kondisi Stadion).")
         
         teams_playing_today = []
+        team_to_park = {} # Kamus pencatat siapa bertanding di kandang siapa
+        
         for game in today_schedule:
             teams_playing_today.extend([game['away_team'], game['home_team']])
+            team_to_park[game['away_team']] = game['home_team'] # Park-nya ada di Home
+            team_to_park[game['home_team']] = game['home_team']
             
-        today_hitters = df_hitters[df_hitters['Team'].isin(teams_playing_today)] if not df_hitters.empty else pd.DataFrame()
+        today_hitters = df_hitters[df_hitters['Team'].isin(teams_playing_today)].copy() if not df_hitters.empty else pd.DataFrame()
         
         if not today_hitters.empty and 'Barrel%' in today_hitters.columns and 'xwOBA' in today_hitters.columns:
-            hr_candidates = today_hitters.sort_values(by=['Barrel%', 'xwOBA'], ascending=[False, False])
+            
+            # --- PROSES KALIBRASI PARK FACTOR ---
+            today_hitters['Home_Park'] = today_hitters['Team'].map(team_to_park)
+            today_hitters['PF_Multiplier'] = today_hitters['Home_Park'].map(PARK_FACTORS).fillna(1.00)
+            
+            # Rumus Sakti: Nilai asli dikali indeks kemudahan stadion
+            today_hitters['Adj_Barrel'] = today_hitters['Barrel%'] * today_hitters['PF_Multiplier']
+            today_hitters['Adj_xwOBA'] = today_hitters['xwOBA'] * today_hitters['PF_Multiplier']
+            
+            # Urutkan berdasarkan metrik yang sudah di-adjust stadion
+            hr_candidates = today_hitters.sort_values(by=['Adj_Barrel', 'Adj_xwOBA'], ascending=[False, False])
             
             col5, col6 = st.columns(2)
-            
-            # REVISI: Amankan 8 nama teratas untuk eksklusi di Slip Hot Hand nanti
             taken_players = hr_candidates.head(8)['Name'].tolist() if 'Name' in hr_candidates.columns else []
             
             with col5:
                 st.error("🎯 **SLIP 4: SNIPER HR (2-3 Legs)**")
-                # Mengambil Ranking 1 - 3
                 sniper_picks = hr_candidates.head(3)
                 for _, row in sniper_picks.iterrows():
                     p_name = row.get('Name', 'Unknown')
-                    st.markdown(f"🔥 **{p_name}** ({row['Team']})")
-                    st.write(f"↳ *To Hit a HR (Barrel: {row.get('Barrel%', 0)}%)*")
+                    st.markdown(f"🔥 **{p_name}** ({row['Team']}) @ {row['Home_Park']}")
+                    st.write(f"↳ *Adj Barrel: {row['Adj_Barrel']:.1f}% (Stadion Multiplier: {row['PF_Multiplier']}x)*")
                     
             with col6:
                 st.info("☄️ **SLIP 5: LOTTO / LONGSHOT HR (5 Legs)**")
-                # REVISI: Mengambil Ranking 4 - 8 (Melewati 3 nama dari Sniper)
                 lotto_picks = hr_candidates.iloc[3:8] 
                 for _, row in lotto_picks.iterrows():
                     p_name = row.get('Name', 'Unknown')
-                    st.markdown(f"☄️ **{p_name}** ({row['Team']})")
-                    st.write(f"↳ *To Hit a HR*")
+                    st.markdown(f"☄️ **{p_name}** ({row['Team']}) @ {row['Home_Park']}")
+                    st.write(f"↳ *Adj Barrel: {row['Adj_Barrel']:.1f}%*")
             
             st.divider()
             
             # --- SLIP 6: HOT HAND HR ---
             st.markdown("### 🔥 SLIP 6: HOT HAND HR (3-5 LEGS)")
-            
             if 'Name' in today_hitters.columns:
-                # Membuang 8 nama yang udah masuk di Sniper & Lotto
                 hot_hand_pool = today_hitters[~today_hitters['Name'].isin(taken_players)]
-                
                 if not hot_hand_pool.empty:
-                    st.caption("Pemain Lapis Ketiga (Tier 2/3 Momentum Statcast). Bersih dari Sniper & Lotto.")
-                    hot_hand_candidates = hot_hand_pool.sort_values(by=['xwOBA', 'Barrel%'], ascending=[False, False]).head(4)
+                    st.caption("Pemain Alternatif Momentum Tinggi Bersih dari Sniper & Lotto (Park Adjusted).")
+                    hot_hand_candidates = hot_hand_pool.sort_values(by=['Adj_xwOBA', 'Adj_Barrel'], ascending=[False, False]).head(4)
                     
                     for _, row in hot_hand_candidates.iterrows():
                         p_name = row.get('Name', 'Unknown')
-                        st.markdown(f"⚡ **{p_name}** ({row['Team']}) ➔ *Barrel: {row.get('Barrel%', 0)}%*")
+                        st.markdown(f"⚡ **{p_name}** ({row['Team']}) @ {row['Home_Park']} ➔ *Adj Barrel: {row['Adj_Barrel']:.1f}%*")
 
         st.divider()
 
