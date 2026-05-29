@@ -70,6 +70,7 @@ playing_teams = []
 if today_schedule:
     for game in today_schedule:
         playing_teams.extend([game['away_team'], game['home_team']])
+game_details = today_schedule
 tabs = st.tabs([
     "🎯 Tab 1: Sniper Pick", 
     "📊 Tab 2: Hitter Stats", 
@@ -82,47 +83,78 @@ tabs = st.tabs([
 
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
 with tabs[0]:
-        st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
-        if not df_pitchers.empty:
-            df_p_today = df_pitchers[df_pitchers['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
-            if 'Bullpen_ERA' not in df_p_today.columns:
-                df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
-            allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
-            st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
+    st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
+    if not df_pitchers.empty:
+        df_p_today = df_pitchers[df_pitchers['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+        
+        # PERBAIKAN 1: Mengganti fallback_bullpen_era dengan fungsi dinamis get_pitcher_era
+        if 'Bullpen_ERA' not in df_p_today.columns:
+            df_p_today['Bullpen_ERA'] = df_p_today['Team'].apply(get_pitcher_era)
+            
+        allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
+        st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
+    else:
+        st.warning("⚠️ Data Pitcher kosong. Pastikan 'master_pitcher_2026.csv' terbaca dan format nama tim (Singkatan/Full) sama dengan jadwal.")
+
 with tabs[1]:
-        st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
-        if not df_hitters.empty:
-            df_h_today = df_hitters[df_hitters['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
-            if 'Batting_Order' not in df_h_today.columns: df_h_today['Batting_Order'] = 3
-            if 'PA_L14' not in df_h_today.columns: df_h_today['PA_L14'] = 45
-            if 'xwOBA_L14' not in df_h_today.columns: df_h_today['xwOBA_L14'] = df_h_today['xwOBA']
-            
-            col1, col2 = st.columns(2)
-            with col1: search_name = st.text_input("🔍 Ketik Nama Pemain:", "", key="tab2_s")
-            with col2: sel_team = st.selectbox("Filter Tim:", ["Semua Tim"] + sorted(df_h_today['Team'].unique().tolist()), key="tab2_t")
-            
-            display_df = df_h_today[df_h_today['Name'].str.contains(search_name, case=False, na=False)] if search_name else (df_h_today[df_h_today['Team'] == sel_team] if sel_team != "Semua Tim" else df_h_today.sort_values(by='xwOBA_L14', ascending=False).head(50))
+    st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
+    if not df_hitters.empty:
+        df_h_today = df_hitters[df_hitters['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+        if 'Batting_Order' not in df_h_today.columns: df_h_today['Batting_Order'] = 3
+        if 'PA_L14' not in df_h_today.columns: df_h_today['PA_L14'] = 45
+        
+        # PERBAIKAN 2: Mengamankan pemanggilan kolom xwOBA (antisipasi kalau namanya xwOBA_vs_R)
+        if 'xwOBA_L14' not in df_h_today.columns: 
+            df_h_today['xwOBA_L14'] = df_h_today.get('xwOBA', df_h_today.get('xwOBA_vs_R', 0.300))
+        
+        col1, col2 = st.columns(2)
+        with col1: search_name = st.text_input("🔍 Ketik Nama Pemain:", "", key="tab2_s")
+        with col2: sel_team = st.selectbox("Filter Tim:", ["Semua Tim"] + sorted(df_h_today['Team'].unique().tolist()), key="tab2_t")
+        
+        # PERBAIKAN 3: Deteksi otomatis apakah kolom nama pemain itu 'Name' atau 'Player'
+        player_col = 'Name' if 'Name' in df_h_today.columns else ('Player' if 'Player' in df_h_today.columns else None)
+        
+        if player_col:
+            display_df = df_h_today[df_h_today[player_col].str.contains(search_name, case=False, na=False)] if search_name else (df_h_today[df_h_today['Team'] == sel_team] if sel_team != "Semua Tim" else df_h_today.sort_values(by='xwOBA_L14', ascending=False).head(50))
             st.dataframe(display_df, use_container_width=True, height=500)
+        else:
+            st.error("❌ Kolom nama pemain ('Name' atau 'Player') tidak ditemukan di CSV Hitter lu.")
+    else:
+        st.warning("⚠️ Data Hitter kosong.")
 
 with tabs[3]:
-        st.subheader("📡 Live Report & Final Boxscore")
+    st.subheader("📡 Live Report & Final Boxscore")
+    if not game_details:
+        st.info("Jadwal pertandingan belum tersedia untuk hari ini.")
+    else:
         for game in game_details:
-            if game['status'] in ['Scheduled', 'Pre-Game', 'Warmup']:
-                with st.expander(f"⏳ {game['away']} @ {game['home']}", expanded=False): st.info("Pertandingan belum dimulai.")
+            # PERBAIKAN 4: Menyesuaikan key dictionary dari 'away' ke 'away_team' sesuai format bot baru
+            away_t = game.get('away_team', game.get('away', 'TBD'))
+            home_t = game.get('home_team', game.get('home', 'TBD'))
+            game_status = game.get('status', 'Scheduled')
+            game_id = game.get('game_id', 0)
+            
+            if game_status in ['Scheduled', 'Pre-Game', 'Warmup']:
+                with st.expander(f"⏳ {away_t} @ {home_t}", expanded=False): st.info("Pertandingan belum dimulai.")
                 continue
-            with st.expander(f"🔥 {game['away']} @ {game['home']} - {game['status']}", expanded=False):
-                live_h, live_p = get_live_boxscore(game['game_id'], game['away'], game['home'])
-                if not live_h.empty and not live_p.empty:
-                    sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        st.markdown("### 🏏 Hitters (Pencetak Skor)")
-                        if not sukses_h.empty: st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
-                        else: st.write("Belum ada hitter yang mencetak angka.")
-                    with c2:
-                        st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
-                        st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
-                else: st.write("Sedang menyinkronkan data boxscore...")
+                
+            with st.expander(f"🔥 {away_t} @ {home_t} - {game_status}", expanded=False):
+                try:
+                    # Pastikan fungsi get_live_boxscore sudah lu copy juga ke bagian atas app.py
+                    live_h, live_p = get_live_boxscore(game_id, away_t, home_t)
+                    if not live_h.empty and not live_p.empty:
+                        sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            st.markdown("### 🏏 Hitters (Pencetak Skor)")
+                            if not sukses_h.empty: st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
+                            else: st.write("Belum ada hitter yang mencetak angka.")
+                        with c2:
+                            st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
+                            st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
+                    else: st.write("Sedang menyinkronkan data boxscore...")
+                except NameError:
+                    st.error("⚠️ Fungsi 'get_live_boxscore' belum ditemukan! Pastikan lu udah ngopi fungsi itu dari kode lama ke bagian paling atas (sebelum tabs).")
 
 # ====================================================================
 # 5. TAB 4: SAME GAME PARLAY (SGP) FACTORY (FULL LOGIC)
