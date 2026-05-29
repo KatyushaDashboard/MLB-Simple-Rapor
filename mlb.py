@@ -79,11 +79,10 @@ tabs = st.tabs([
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
 with tabs[0]:
         st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
-        # Pastikan kode ini ada di atas sebelum pemanggilan df_p_today
-        teams_playing_today = []
+        if not df_pitchers.empty:
+            teams_playing_today = []
             for game in today_schedule:
             teams_playing_today.extend([game['away_team'], game['home_team']])
-        if not df_pitchers.empty:
             df_p_today = df_pitchers[df_pitchers['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
             if 'Bullpen_ERA' not in df_p_today.columns:
                 df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
