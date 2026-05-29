@@ -492,7 +492,7 @@ with tabs[6]:
 
         # --- SLIP 6: MONEYLINE ---
         st.markdown("### 🎲 SLIP 6: VEGAS MONEYLINE TRIPLE THREAT")
-        st.caption("Kombinasi 3 Tim Fav hari ini (Cek probabilitas di Tab 7)."
+        st.caption("Kombinasi 3 Tim Fav hari ini (Cek probabilitas di Tab 7).")
         # Ambil data dari tabel pasar yang sudah dihitung di Tab 7
         if 'market_rows' in locals() and len(market_rows) >= 5:
             # Kita bikin DataFrame sementara untuk sort probabilitas
