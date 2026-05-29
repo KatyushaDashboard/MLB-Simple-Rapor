@@ -63,8 +63,57 @@ def load_json_data(filename):
 today_schedule = load_json_data('today_schedule.json')
 yesterday_results = load_json_data('yesterday_results.json')
 
+# --- 4. TARIK JADWAL & PROBABLE PITCHERS ---
+@st.cache_data(ttl=86400)
+def get_pitcher_hand(name):
+    if not name or str(name).strip() == "" or name in ['Unknown Pitcher', 'Unknown', 'TBD']: return "-"
+    try:
+        res = statsapi.lookup_player(name)
+        if not res: return "-"
+        pid = res[0]['id']
+        p_data = statsapi.get('person', {'personId': pid})
+        hand = p_data.get('people', [{}])[0].get('pitchHand', {}).get('code', '-')
+        return hand
+    except:
+        return "-"
+
+@st.cache_data(ttl=1800)
+def get_daily_schedule(target_date):
+    games = statsapi.schedule(date=target_date)
+    playing_teams, today_matchups, player_to_team, game_details = [], [], {}, []
+    
+    for game in games:
+        away_abbr = team_mapper.get(game['away_name'], game['away_name'])
+        home_abbr = team_mapper.get(game['home_name'], game['home_name'])
+        playing_teams.extend([away_abbr, home_abbr])
+        matchup_text = f"{away_abbr} @ {home_abbr} ({game.get('game_datetime', '')[11:16]} ET)"
+        today_matchups.append(matchup_text)
+        
+        away_p = game.get('away_probable_pitcher', 'Unknown Pitcher')
+        home_p = game.get('home_probable_pitcher', 'Unknown Pitcher')
+        
+        game_details.append({
+            'game_id': game['game_id'], 'status': game['status'], 'away': away_abbr, 'home': home_abbr, 
+            'text': f"{away_abbr} @ {home_abbr}", 'away_pitcher': away_p, 'home_pitcher': home_p,
+            'away_hand': get_pitcher_hand(away_p), 'home_hand': get_pitcher_hand(home_p),
+            'venue': game.get('venue_name', 'Unknown Stadium')
+        })
+        try:
+            for p in statsapi.get('team_roster', {'teamId': game['away_id']})['roster']: player_to_team[p['person']['fullName']] = away_abbr
+            for p in statsapi.get('team_roster', {'teamId': game['home_id']})['roster']: player_to_team[p['person']['fullName']] = home_abbr
+        except: continue
+    return playing_teams, today_matchups, player_to_team, game_details
+
+@st.cache_data(ttl=3600)
+def get_weather_info(game_id):
+    try:
+        w = statsapi.get('game', {'gamePk': game_id}).get('gameData', {}).get('weather', {})
+        if not w: return "TBD (Belum Update / Dome)", "TBD"
+        return f"{w.get('temp', 'TBD')}°F, {w.get('condition', 'TBD')}", w.get('wind', 'TBD')
+    except: return "N/A", "N/A"
+
 # ====================================================================
-# 4. NAVIGASI TABS
+# 5. NAVIGASI TABS
 # ====================================================================
 tabs = st.tabs([
     "🎯 Tab 1: Sniper Pick", 
