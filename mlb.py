@@ -29,12 +29,25 @@ def load_base_data():
 
 df_hitters, fallback_bullpen_era = load_base_data()
 
-# Load Data hasil bot_updater.py
+# Load Data hasil bot_updater.py (Diperbaiki Path-nya)
 def load_json_data(filename):
-    if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            return json.load(f)
-    return []
+    # Dapatkan letak folder asli tempat app.py ini berada
+    base_dir = os.path.dirname(os.path.abspath(__file__)) 
+    file_path = os.path.join(base_dir, filename)
+    
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            st.error(f"⚠️ File {filename} rusak atau format JSON salah.")
+            return []
+    else:
+        st.warning(f"⚠️ File {filename} tidak ditemukan di path: {file_path}")
+        return []
+
+today_schedule = load_json_data('today_schedule.json')
+yesterday_results = load_json_data('yesterday_results.json')
 
 today_schedule = load_json_data('today_schedule.json')
 yesterday_results = load_json_data('yesterday_results.json')
