@@ -62,6 +62,28 @@ def load_json_data(filename):
 
 today_schedule = load_json_data('today_schedule.json')
 yesterday_results = load_json_data('yesterday_results.json')
+# --- KAMUS TRANSLASI NAMA TIM (API to CSV) ---
+TEAM_MAPPING = {
+    "Arizona Diamondbacks": "ARI", "Atlanta Braves": "ATL", "Baltimore Orioles": "BAL",
+    "Boston Red Sox": "BOS", "Chicago Cubs": "CHC", "Chicago White Sox": "CWS",
+    "Cincinnati Reds": "CIN", "Cleveland Guardians": "CLE", "Colorado Rockies": "COL",
+    "Detroit Tigers": "DET", "Houston Astros": "HOU", "Kansas City Royals": "KC",
+    "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
+    "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
+    "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
+    "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
+    "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB",
+    "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"
+}
+
+# Terjemahkan otomatis semua nama tim di jadwal hari ini biar matching sama CSV
+for game in today_schedule:
+    game['away_team'] = TEAM_MAPPING.get(game['away_team'], game['away_team'])
+    game['home_team'] = TEAM_MAPPING.get(game['home_team'], game['home_team'])
+    # Amankan juga key lama buat fitur Live Boxscore lu
+    if 'away' in game: game['away'] = TEAM_MAPPING.get(game['away'], game['away'])
+    if 'home' in game: game['home'] = TEAM_MAPPING.get(game['home'], game['home'])
+# ---------------------------------------------
 
 # ====================================================================
 # 4. NAVIGASI TABS
