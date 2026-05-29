@@ -317,9 +317,9 @@ with tabs[6]:
             
         st.divider()
 
-        if len(today_schedule) < 2:
+    if len(today_schedule) < 2:
         st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
-        else:
+    else:
         # --- SLIP 2: MONSTER SGPx HR ---
         st.markdown("### 🎫 SLIP 2: MONSTER SGPx HR (2-3 Legs Lintas Match)")
         st.caption("Kombinasi persilangan murni kandidat Home Run paling mematikan dari 2-3 pertandingan berbeda. Hasil riset presisi mendalam dari Statcast.")
