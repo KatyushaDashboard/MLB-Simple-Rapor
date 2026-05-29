@@ -92,7 +92,7 @@ with tabs[0]:
 with tabs[1]:
         st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
         if not df_hitters.empty:
-            df_h_today = df_hitters[df_hitters['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
+            df_h_today = df_hitters[df_hitters['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
             if 'Batting_Order' not in df_h_today.columns: df_h_today['Batting_Order'] = 3
             if 'PA_L14' not in df_h_today.columns: df_h_today['PA_L14'] = 45
             if 'xwOBA_L14' not in df_h_today.columns: df_h_today['xwOBA_L14'] = df_h_today['xwOBA']
