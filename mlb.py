@@ -66,6 +66,10 @@ yesterday_results = load_json_data('yesterday_results.json')
 # ====================================================================
 # 4. NAVIGASI TABS
 # ====================================================================
+playing_teams = []
+if today_schedule:
+    for game in today_schedule:
+        playing_teams.extend([game['away_team'], game['home_team']])
 tabs = st.tabs([
     "🎯 Tab 1: Sniper Pick", 
     "📊 Tab 2: Hitter Stats", 
