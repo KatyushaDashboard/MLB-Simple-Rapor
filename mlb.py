@@ -234,22 +234,22 @@ with tabs[2]:
                     continue
                 
                 # --- SUNTIK LOGIKA PARK FACTOR ---
-# Mapping tim ke stadion kandang (Home team dari game tersebut)
-home_team_val = game['home_team']
-park_mult = PARK_FACTORS.get(home_team_val, 1.00)
+                # Mapping tim ke stadion kandang (Home team dari game tersebut)
+                home_team_val = game['home_team']
+                park_mult = PARK_FACTORS.get(home_team_val, 1.00)
 
-# Kalkulasi Adjusted Metrics buat Hitter yang main di match ini
-team_players = team_players.copy()
-team_players['PF_Multiplier'] = park_mult
-team_players['Adj_Barrel'] = team_players['Barrel%'] * team_players['PF_Multiplier']
-team_players['Adj_xwOBA'] = team_players['xwOBA'] * team_players['PF_Multiplier']
+                # Kalkulasi Adjusted Metrics buat Hitter yang main di match ini
+                team_players = team_players.copy()
+                team_players['PF_Multiplier'] = park_mult
+                team_players['Adj_Barrel'] = team_players['Barrel%'] * team_players['PF_Multiplier']
+                team_players['Adj_xwOBA'] = team_players['xwOBA'] * team_players['PF_Multiplier']
 
-# Sortir pakai metrik yang sudah di-adjust (Prioritas ke Adj_Barrel)
-if 'Adj_xwOBA' in team_players.columns and 'Adj_Barrel' in team_players.columns:
-    best_hitters = team_players.sort_values(by=['Adj_Barrel', 'Adj_xwOBA'], ascending=[False, False]).head(3)
-else:
-    best_hitters = team_players.head(3)
-                
+                # Sortir pakai metrik yang sudah di-adjust (Prioritas ke Adj_Barrel)
+                if 'Adj_xwOBA' in team_players.columns and 'Adj_Barrel' in team_players.columns:
+                    best_hitters = team_players.sort_values(by=['Adj_Barrel', 'Adj_xwOBA'], ascending=[False, False]).head(3)
+                else:
+                    best_hitters = team_players.head(3)
+                # ------------------------------------------
                 col1, col2 = st.columns(2)
                 
                 with col1:
