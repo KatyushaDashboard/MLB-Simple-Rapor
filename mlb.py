@@ -79,8 +79,12 @@ tabs = st.tabs([
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
 with tabs[0]:
         st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
+        # Pastikan kode ini ada di atas sebelum pemanggilan df_p_today
+        teams_playing_today = []
+            for game in today_schedule:
+            teams_playing_today.extend([game['away_team'], game['home_team']])
         if not df_pitchers.empty:
-            df_p_today = df_pitchers[df_pitchers['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+            df_p_today = df_pitchers[df_pitchers['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
             if 'Bullpen_ERA' not in df_p_today.columns:
                 df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
             allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
@@ -88,7 +92,7 @@ with tabs[0]:
 with tabs[1]:
         st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
         if not df_hitters.empty:
-            df_h_today = df_hitters[df_hitters['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+            df_h_today = df_hitters[df_hitters['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
             if 'Batting_Order' not in df_h_today.columns: df_h_today['Batting_Order'] = 3
             if 'PA_L14' not in df_h_today.columns: df_h_today['PA_L14'] = 45
             if 'xwOBA_L14' not in df_h_today.columns: df_h_today['xwOBA_L14'] = df_h_today['xwOBA']
