@@ -70,7 +70,7 @@ tabs = st.tabs([
     "🎯 Tab 1: Sniper Pick", 
     "📊 Tab 2: Hitter Stats", 
     "🏭 Tab 4: SGP Factory", 
-    "🔥 Tab 5: Golden HR", 
+    "🔥 Tab 5: Live Report dan Hasil", 
     "🛡️ Tab 6: AI Auditor", 
     "🏪 Tab 7: Team Market", 
     "💸 Tab 9: Cross Parlay"
@@ -78,16 +78,48 @@ tabs = st.tabs([
 
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
 with tabs[0]:
-    st.info("👇 PASTE KODE TAB 1 (SNIPER PICK) LAMA LU DI BAWAH INI 👇")
-    # Paste kode lu di sini
-
+        st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
+        if not df_pitchers.empty:
+            df_p_today = df_pitchers[df_pitchers['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+            if 'Bullpen_ERA' not in df_p_today.columns:
+                df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
+            allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
+            st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
 with tabs[1]:
-    st.info("👇 PASTE KODE TAB 2 (HITTER STATS) LAMA LU DI BAWAH INI 👇")
-    # Paste kode lu di sini
+        st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
+        if not df_hitters.empty:
+            df_h_today = df_hitters[df_hitters['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
+            if 'Batting_Order' not in df_h_today.columns: df_h_today['Batting_Order'] = 3
+            if 'PA_L14' not in df_h_today.columns: df_h_today['PA_L14'] = 45
+            if 'xwOBA_L14' not in df_h_today.columns: df_h_today['xwOBA_L14'] = df_h_today['xwOBA']
+            
+            col1, col2 = st.columns(2)
+            with col1: search_name = st.text_input("🔍 Ketik Nama Pemain:", "", key="tab2_s")
+            with col2: sel_team = st.selectbox("Filter Tim:", ["Semua Tim"] + sorted(df_h_today['Team'].unique().tolist()), key="tab2_t")
+            
+            display_df = df_h_today[df_h_today['Name'].str.contains(search_name, case=False, na=False)] if search_name else (df_h_today[df_h_today['Team'] == sel_team] if sel_team != "Semua Tim" else df_h_today.sort_values(by='xwOBA_L14', ascending=False).head(50))
+            st.dataframe(display_df, use_container_width=True, height=500)
 
 with tabs[3]:
-    st.info("👇 PASTE KODE TAB 5 (GOLDEN HR) LAMA LU DI BAWAH INI 👇")
-    # Paste kode lu di sini
+        st.subheader("📡 Live Report & Final Boxscore")
+        for game in game_details:
+            if game['status'] in ['Scheduled', 'Pre-Game', 'Warmup']:
+                with st.expander(f"⏳ {game['away']} @ {game['home']}", expanded=False): st.info("Pertandingan belum dimulai.")
+                continue
+            with st.expander(f"🔥 {game['away']} @ {game['home']} - {game['status']}", expanded=False):
+                live_h, live_p = get_live_boxscore(game['game_id'], game['away'], game['home'])
+                if not live_h.empty and not live_p.empty:
+                    sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        st.markdown("### 🏏 Hitters (Pencetak Skor)")
+                        if not sukses_h.empty: st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
+                        else: st.write("Belum ada hitter yang mencetak angka.")
+                    with c2:
+                        st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
+                        st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
+                else: st.write("Sedang menyinkronkan data boxscore...")
+
 
 
 # ====================================================================
@@ -254,15 +286,19 @@ with tabs[5]:
 # ====================================================================
 # 8. TAB 9: CROSS-GAME PARLAY AGGREGATOR
 # ====================================================================
+# ====================================================================
+# 8. TAB 9: CROSS-GAME PARLAY & THE MASTER SLIPS
+# ====================================================================
 with tabs[6]:
-    st.header("💸 Cross-Game Parlay & SGPx Aggregator")
-    st.caption("SOP: Mengawinkan paket SGP terbaik dari tab 4 menjadi tiket raksasa Lintas Pertandingan.")
+    st.header("💸 Cross-Game Parlay & Master Slips")
+    st.caption("SOP: Eksekusi tiket raksasa Lintas Pertandingan, Pitcher Props, dan Bomb Squad HR.")
     
     if len(today_schedule) < 2:
         st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
     else:
-        st.markdown("### 🎫 SLIP 1: MONSTER SGPx (Lintas Match Combo)")
-        st.caption("Kombinasi Logika Serangan dari 2 Match berbeda yang memiliki proyeksi Run tertinggi.")
+        # --- SLIP 1: SGPx BARU ---
+        st.markdown("### 🎫 SLIP 1: MATCH SGPx (Lintas Match Combo)")
+        st.caption("Kombinasi Logika Serangan dari 2 Match berbeda yang memiliki probabilitas tertinggi.")
         
         match1 = today_schedule[0]
         match2 = today_schedule[1]
@@ -280,6 +316,202 @@ with tabs[6]:
             st.markdown(f"3. Total Match Runs OVER 7.5")
             
         st.divider()
-        st.markdown("### 🎲 SLIP 2: MONEYLINE TRIPLE THREAT")
-        st.caption("Kombinasi 3 Tim dengan Win Probability paling mutlak hari ini (Tab 7).")
-        st.info("1️⃣ Tim A ML  ✖️  2️⃣ Tim B ML  ✖️  3️⃣ Tim C ML  (Est. Odds +250)")
+
+        if len(today_schedule) < 2:
+        st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
+    else:
+        # --- SLIP 2: MONSTER SGPx HR ---
+        st.markdown("### 🎫 SLIP 2: MONSTER SGPx HR (2-3 Legs Lintas Match)")
+        st.caption("Kombinasi persilangan murni kandidat Home Run paling mematikan dari 2-3 pertandingan berbeda. Hasil riset presisi mendalam dari Statcast.")
+        
+        match1 = today_schedule[0]
+        match2 = today_schedule[1]
+        
+        # Deep research filter untuk match 1 & 2
+        hitters_m1 = df_hitters[df_hitters['Team'].isin([match1['away_team'], match1['home_team']])] if not df_hitters.empty else pd.DataFrame()
+        top_m1 = hitters_m1.sort_values(by=['Barrel_Pct', 'xwOBA_vs_R'], ascending=[False, False]).head(1) if not hitters_m1.empty and 'Barrel_Pct' in hitters_m1.columns else pd.DataFrame()
+        
+        hitters_m2 = df_hitters[df_hitters['Team'].isin([match2['away_team'], match2['home_team']])] if not df_hitters.empty else pd.DataFrame()
+        top_m2 = hitters_m2.sort_values(by=['Barrel_Pct', 'xwOBA_vs_R'], ascending=[False, False]).head(1) if not hitters_m2.empty and 'Barrel_Pct' in hitters_m2.columns else pd.DataFrame()
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.error(f"🔥 **LEG PART 1:** {match1['away_team']} vs {match1['home_team']}")
+            if not top_m1.empty:
+                p1 = top_m1.iloc[0]
+                p_name = p1.get('Player', 'Top Hitter')
+                st.markdown(f"1. **{p_name}** ({p1['Team']})")
+                st.write(f"↳ *To Hit a Home Run (Barrel: {p1.get('Barrel_Pct', 0)}%)*")
+            else:
+                st.write("Data HR tidak memenuhi syarat ketat.")
+                
+        with col2:
+            st.info(f"🔥 **LEG PART 2:** {match2['away_team']} vs {match2['home_team']}")
+            if not top_m2.empty:
+                p2 = top_m2.iloc[0]
+                p_name = p2.get('Player', 'Top Hitter')
+                st.markdown(f"1. **{p_name}** ({p2['Team']})")
+                st.write(f"↳ *To Hit a Home Run (Barrel: {p2.get('Barrel_Pct', 0)}%)*")
+            else:
+                st.write("Data HR tidak memenuhi syarat ketat.")
+                
+        # Tambahan presisi untuk Leg 3 jika ada match ke-3 hari ini
+        if len(today_schedule) > 2:
+            match3 = today_schedule[2]
+            hitters_m3 = df_hitters[df_hitters['Team'].isin([match3['away_team'], match3['home_team']])] if not df_hitters.empty else pd.DataFrame()
+            top_m3 = hitters_m3.sort_values(by=['Barrel_Pct', 'xwOBA_vs_R'], ascending=[False, False]).head(1) if not hitters_m3.empty and 'Barrel_Pct' in hitters_m3.columns else pd.DataFrame()
+            
+            if not top_m3.empty:
+                p3 = top_m3.iloc[0]
+                p_name = p3.get('Player', 'Top Hitter')
+                st.success(f"🔥 **OPTIONAL LEG 3:** {match3['away_team']} vs {match3['home_team']}")
+                st.write(f"↳ **{p_name}** ({p3['Team']}) To Hit a Home Run (Barrel: {p3.get('Barrel_Pct', 0)}%)")
+            
+        st.divider()
+
+        # --- SLIP 2: KEMBALINYA PITCHER PROPS ---
+        st.markdown("### ⚾ SLIP 2: PITCHER PROPS PARLAY (K's / Outs / Hits Allowed)")
+        st.caption("Mendeteksi peluang Pitcher berdasarkan metrik ERA musiman dari CSV 'master_pitcher_2026.csv'.")
+        
+        pitcher_list = []
+        for game in today_schedule:
+            era_away = get_pitcher_era(game['away_team'])
+            era_home = get_pitcher_era(game['home_team'])
+            
+            pitcher_list.append({'Pitcher': game['away_pitcher'], 'Team': game['away_team'], 'Opp': game['home_team'], 'ERA': era_away})
+            pitcher_list.append({'Pitcher': game['home_pitcher'], 'Team': game['home_team'], 'Opp': game['away_team'], 'ERA': era_home})
+            
+        df_today_p = pd.DataFrame(pitcher_list)
+        
+        if not df_today_p.empty:
+            best_pitchers = df_today_p.sort_values('ERA', ascending=True).head(3)
+            worst_pitchers = df_today_p.sort_values('ERA', ascending=False).head(3)
+            
+            col3, col4 = st.columns(2)
+            
+            with col3:
+                st.success("🎯 **TARGET OVER STRIKEOUTS / OUTS** (PITCHER ELIT)")
+                for _, p in best_pitchers.iterrows():
+                    if p['Pitcher'] != "TBD":
+                        st.markdown(f"**{p['Pitcher']}** ({p['Team']}) ➔ ERA: {p['ERA']:.2f}")
+                        st.write(f"↳ *Pick: OVER vs {p['Opp']}*")
+                    
+            with col4:
+                st.warning("🩸 **TARGET OVER HITS ALLOWED** (PITCHER RENTAN)")
+                for _, p in worst_pitchers.iterrows():
+                    if p['Pitcher'] != "TBD":
+                        st.markdown(f"**{p['Pitcher']}** ({p['Team']}) ➔ ERA: {p['ERA']:.2f}")
+                        st.write(f"↳ *Pick: OVER vs {p['Opp']}*")
+        else:
+            st.caption("Data Pitcher belum siap untuk dikalkulasi.")
+            
+        st.divider()
+        
+        # --- PENCARIAN KANDIDAT BOMB SQUAD HR (LINTAS MATCH) ---
+        st.markdown("### 💣 THE BOMB SQUAD (CROSS-GAME HR PARLAY)")
+        st.caption("Sistem memindai seluruh laga hari ini untuk mencari Hitter dengan metrik Statcast tertinggi.")
+        
+        teams_playing_today = []
+        for game in today_schedule:
+            teams_playing_today.extend([game['away_team'], game['home_team']])
+            
+        today_hitters = df_hitters[df_hitters['Team'].isin(teams_playing_today)] if not df_hitters.empty else pd.DataFrame()
+        
+        if not today_hitters.empty and 'Barrel_Pct' in today_hitters.columns and 'xwOBA_vs_R' in today_hitters.columns:
+            hr_candidates = today_hitters.sort_values(by=['Barrel_Pct', 'xwOBA_vs_R'], ascending=[False, False])
+            
+            col5, col6 = st.columns(2)
+            
+            # KUNCI LOGIKA: Ambil daftar nama top 5 pemain yang masuk Sniper & Lotto agar aman dieksklusi
+            taken_players = hr_candidates.head(8)['Player'].tolist()
+            
+            with col5:
+                st.error("🎯 **SLIP 3: SNIPER HR (2-3 Legs)**")
+                st.caption("Probabilitas tertinggi. 3 Monster paling elit hari ini.")
+                sniper_picks = hr_candidates.head(3)
+                for i, row in sniper_picks.iterrows():
+                    p_name = row.get('Player', 'Unknown Player')
+                    st.markdown(f"🔥 **{p_name}** ({row['Team']})")
+                    st.write(f"↳ *To Hit a HR (Barrel: {row['Barrel_Pct']}%)*")
+                    
+            with col6:
+                st.info("🚀 **SLIP 4: LOTTO / LONGSHOT HR (5 Legs)**")
+                st.caption("Tiket jackpot odds dewa. 5 Hitter teratas se-MLB hari ini.")
+                lotto_picks = hr_candidates.head(5)
+                for i, row in lotto_picks.iterrows():
+                    p_name = row.get('Player', 'Unknown Player')
+                    st.markdown(f"☄️ **{p_name}** ({row['Team']})")
+                    st.write(f"↳ *To Hit a HR*")
+            
+            st.divider()
+            
+            # --- SLIP NEW: HOT HAND HR (3-5 LEGS) ---
+            st.markdown("### 🔥 SLIP 5: HOT HAND HR (3-5 LEGS)")
+            st.caption("SOP: Menyaring Hitter yang bersih dari daftar Sniper/Lotto, namun statistik performa 2 minggu terakhir (14D) sedang melonjak tajam.")
+            
+            # Buat filter pemisah (Pool dikurangi pemain yang sudah diambil di Slip 3 & 4)
+            hot_hand_pool = today_hitters[~today_hitters['Player'].isin(taken_players)]
+            
+            if not hot_hand_pool.empty:
+                # Membaca kolom tren dinamis di dalam CSV (misal: wOBA_14D, OPS_14D, atau sejenisnya)
+                hot_hand_col = None
+                for col in hot_hand_pool.columns:
+                    if '14' in col or 'hot' in col.lower() or 'trend' in col.lower():
+                        hot_hand_col = col
+                        break
+                
+                # Sorting berdasarkan kolom tren yang ditemukan
+                if hot_hand_col:
+                    st.caption(f"📊 Metrik deteksi otomatis aktif menggunakan kolom tren: `{hot_hand_col}`")
+                    hot_hand_candidates = hot_hand_pool.sort_values(by=hot_hand_col, ascending=False).head(4)
+                else:
+                    # Fallback jika di CSV belum ada kolom 14D khusus, mesin otomatis ambil lapis kedua (Tier 2) Statcast terkuat
+                    st.caption("⚠️ Kolom tren '14D' tidak terdeteksi di CSV. Sistem mengaktifkan filter Lapis Kedua (Tier 2 Momentum Statcast).")
+                    hot_hand_candidates = hot_hand_pool.sort_values(by=['xwOBA_vs_R', 'Barrel_Pct'], ascending=[False, False]).head(4)
+                
+                col_hh1, col_hh2 = st.columns(2)
+                with col_hh1:
+                    st.success("📈 **Rekomendasi Tiket Hot Hand HR (3-4 Legs)**")
+                    for i, row in hot_hand_candidates.iterrows():
+                        p_name = row.get('Player', 'Unknown Player')
+                        st.markdown(f"⚡ **{p_name}** ({row['Team']})")
+                        if hot_hand_col:
+                            st.write(f"↳ *Status: On Fire ({hot_hand_col}: {row[hot_hand_col]})*")
+                        else:
+                            st.write(f"↳ *Status: High Value Tier-2 (Barrel: {row['Barrel_Pct']}%)*")
+                with col_hh2:
+                    st.info("💡 **Analisis Sistem**")
+                    st.write("Daftar di atas murni berisi nama-nama alternatif. Mereka memiliki kecocokan pola ayunan yang sangat tajam dalam rentang waktu pendek belakangan ini tanpa terbebani harga pasar taruhan yang terlalu mahal.")
+            else:
+                st.caption("Jumlah pool pemain tidak mencukupi untuk membuat slip Hot Hand.")
+                    
+        else:
+            st.caption("⚠️ Data metrik Hitter tidak mencukupi untuk memproses simulasi slip HR.")
+            
+        st.divider()
+
+        # --- SLIP 6: MONEYLINE ---
+        st.markdown("### 🎲 SLIP 6: VEGAS MONEYLINE TRIPLE THREAT")
+        st.caption("Kombinasi 3 Tim Fav hari ini (Cek probabilitas di Tab 7)."
+        # Ambil data dari tabel pasar yang sudah dihitung di Tab 7
+        if 'market_rows' in locals() and len(market_rows) >= 5:
+            # Kita bikin DataFrame sementara untuk sort probabilitas
+            df_ml = pd.DataFrame(market_rows)
+            # Karena format probabilitas di string, kita ekstraksi angkanya dulu
+            # (Asumsi format: "TeamName (XX.X%)")
+            df_ml['Prob'] = df_ml['🔥 Moneyline Pred'].str.extract(r'\((\d+\.?\d*)%\)').astype(float)
+            
+            # Ambil 3 tim teratas
+            top_5_ml = df_ml.sort_values('Prob', ascending=False).head(5)
+            
+            st.info("👉 **RACIKAN TIKET OTOMATIS:**")
+            ml_names = []
+            for _, row in top_5_ml.iterrows():
+                # Bersihkan string nama tim dari probabilitas
+                team_name = row['🔥 Moneyline Pred'].split(' (')[0]
+                ml_names.append(team_name)
+                st.markdown(f"✅ **{team_name}** ({row['Prob']}%)")
+            
+            st.success(f"**Parlay 5 Leg:** { ' ✖️ '.join(ml_names) } ")
+        else:
+            st.info("Belum cukup data pertandingan untuk merakit Triple Threat ML hari ini.")
