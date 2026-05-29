@@ -79,15 +79,15 @@ tabs = st.tabs([
 # !!! PERHATIAN: PASTE KODE TAB 1, 2, 5 LAMA LU DI DALAM BLOK INI !!!
 with tabs[0]:
         st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
-        if not df_pitchers.empty:
-            teams_playing_today = []
-            for game in today_schedule:
-            teams_playing_today.extend([game['away_team'], game['home_team']])
-            df_p_today = df_pitchers[df_pitchers['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
-            if 'Bullpen_ERA' not in df_p_today.columns:
-                df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
-            allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
-            st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
+        teams_playing_today = []
+    for game in today_schedule:
+        teams_playing_today.extend([game['away_team'], game['home_team']])
+            if not df_pitchers.empty:
+                df_p_today = df_pitchers[df_pitchers['Team'].isin(teams_playing_today)].dropna(subset=['Team']).copy()
+                if 'Bullpen_ERA' not in df_p_today.columns:
+                    df_p_today['Bullpen_ERA'] = df_p_today['Team'].map(fallback_bullpen_era).fillna(4.15)
+                allowed_metrics = [c for c in ['xwOBA Allowed', 'xSLG Allowed', 'xBA Allowed', 'Bullpen_ERA'] if c in df_p_today.columns]
+                st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
 with tabs[1]:
         st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
         if not df_hitters.empty:
