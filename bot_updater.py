@@ -1,177 +1,136 @@
 import statsapi
 import pandas as pd
 from datetime import datetime, timedelta
-import pytz
+import json
+import requests
+import os
 
-def get_mlb_dates():
-    wib_tz = pytz.timezone('Asia/Jakarta')
-    now_est = datetime.now(wib_tz).astimezone(pytz.timezone('US/Eastern'))
-    today_str = now_est.strftime('%m/%d/%Y')
-    two_weeks_ago = (now_est - timedelta(days=14)).strftime('%m/%d/%Y')
-    return today_str, two_weeks_ago
+# ==========================================
+# 1. SETUP TANGGAL (WAKTU SERVER / UTC)
+# ==========================================
+now = datetime.now()
+today_str = now.strftime('%Y-%m-%d')
+yesterday = now - timedelta(days=1)
+yest_str = yesterday.strftime('%Y-%m-%d')
 
-today_date, l14_date = get_mlb_dates()
-print(f"🔄 Memulai penarikan data MLB... (Target: {today_date})")
+print(f"🚀 Memulai Bot Updater - Tanggal: {today_str}")
 
-# 1. TARIK DATA TIM & BULLPEN ERA
-teams = statsapi.get('teams', {'sportId': 1})['teams']
-team_mapping = {}
-bullpen_era_dict = {}
-
-print("📊 Memproses Data Bullpen ERA...")
-for t in teams:
-    team_id = t['id']
-    team_abbr = t.get('abbreviation', 'UNK')
-    team_mapping[team_id] = team_abbr
+# ==========================================
+# 2. FUNGSI: THE AUDITOR (TARIK HASIL KEMARIN)
+# ==========================================
+def fetch_yesterday_results(date_str):
+    print(f"🔍 Menarik data hasil pertandingan kemarin: {date_str}...")
+    url_schedule = f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date_str}"
     
     try:
-        # Tarik statistik tim (khusus relief pitcher / bullpen)
-        team_stats = statsapi.get('team_stats', {'teamId': team_id, 'group': 'pitching', 'type': 'season', 'split': 'rp'})
-        era = float(team_stats['stats'][0]['splits'][0]['stat']['era'])
-        bullpen_era_dict[team_abbr] = era
-    except:
-        bullpen_era_dict[team_abbr] = 4.15 # Fallback standar liga jika gagal
-
-# 2. CARI BATTING ORDER DARI PERTANDINGAN TERAKHIR
-print("📋 Melacak Batting Order terbaru...")
-batting_order_dict = {}
-for team_id, team_abbr in team_mapping.items():
-    try:
-        # Cari pertandingan terakhir tim
-        recent_games = statsapi.schedule(team=team_id, start_date=l14_date, end_date=today_date)
-        if recent_games:
-            last_game_id = recent_games[-1]['game_id']
-            box = statsapi.get('game_boxscore', {'gamePk': last_game_id})
-            
-            # Tentukan apakah tim ini Away atau Home di laga terakhir
-            side = 'away' if recent_games[-1]['away_id'] == team_id else 'home'
-            batters = box['teams'][side]['batters']
-            
-            # Batters array biasanya berurutan 1-9
-            order = 1
-            for pid in batters:
-                batting_order_dict[pid] = order
-                if order < 9: order += 1
-    except:
-        pass
-
-# 3. PROSES PEMAIN (HITTERS & PITCHERS)
-hitters_data = []
-pitchers_data = []
-
-print("⚾ Mengekstrak data pemain aktif (Hitters & Pitchers)...")
-for team_id, team_abbr in team_mapping.items():
-    try:
-        roster = statsapi.get('team_roster', {'teamId': team_id})['roster']
-    except:
-        continue
+        resp = requests.get(url_schedule)
+        data = resp.json()
         
-    for player in roster:
-        pid = player['person']['id']
-        p_name = player['person']['fullName']
-        position = player['position']['abbreviation']
+        results_log = {}
+        if data.get('totalGames', 0) > 0:
+            games = data['dates'][0]['games']
+            for g in games:
+                # Hanya ambil laga yang sudah berstatus Final (Selesai)
+                if g['status']['statusCode'] in ['F', 'O', 'C']:
+                    game_pk = g['gamePk']
+                    away_team = g['teams']['away']['team']['name']
+                    home_team = g['teams']['home']['team']['name']
+                    
+                    # Tarik Boxscore Laga Ini
+                    box_url = f"https://statsapi.mlb.com/api/v1/game/{game_pk}/boxscore"
+                    box_data = requests.get(box_url).json()
+                    
+                    results_log[game_pk] = {
+                        'matchup': f"{away_team} @ {home_team}",
+                        'away_runs': g['teams']['away'].get('score', 0),
+                        'home_runs': g['teams']['home'].get('score', 0),
+                        'players': {}
+                    }
+                    
+                    # Ekstrak metrik individu (Batter & Pitcher)
+                    for team_side in ['away', 'home']:
+                        players = box_data['teams'][team_side]['players']
+                        for p_id, p_stats in players.items():
+                            name = p_stats['person']['fullName']
+                            stats = p_stats.get('stats', {})
+                            
+                            # Logika Pemukul (Batter)
+                            if 'batting' in stats:
+                                b = stats['batting']
+                                tb = b.get('hits', 0) + b.get('doubles', 0) + (b.get('triples', 0)*2) + (b.get('homeRuns', 0)*3)
+                                results_log[game_pk]['players'][name] = {
+                                    'hits': b.get('hits', 0),
+                                    'doubles': b.get('doubles', 0),
+                                    'triples': b.get('triples', 0),
+                                    'hr': b.get('homeRuns', 0),
+                                    'tb': tb,
+                                    'rbi': b.get('rbi', 0),
+                                    'runs': b.get('runs', 0),
+                                    'strikeouts_batter': b.get('strikeOuts', 0)
+                                }
+                            # Logika Pelempar (Pitcher)
+                            elif 'pitching' in stats:
+                                p = stats['pitching']
+                                results_log[game_pk]['players'][name] = {
+                                    'strikeouts_pitcher': p.get('strikeOuts', 0),
+                                    'outs': p.get('outs', 0),
+                                    'hits_allowed': p.get('hits', 0),
+                                    'earned_runs': p.get('earnedRuns', 0)
+                                }
+                                
+            # Simpan ke JSON untuk dibaca Tab 6
+            with open('yesterday_results.json', 'w') as f:
+                json.dump(results_log, f, indent=4)
+            print("✅ Sukses: Data hasil kemarin disimpan ke 'yesterday_results.json'")
+        else:
+            print("ℹ️ Tidak ada pertandingan kemarin.")
+            with open('yesterday_results.json', 'w') as f:
+                json.dump({}, f)
+                
+    except Exception as e:
+        print(f"❌ Gagal menarik hasil kemarin: {e}")
+
+# ==========================================
+# 3. FUNGSI: SCHEDULE & PROBABLE PITCHERS HARI INI
+# ==========================================
+def fetch_today_schedule(date_str):
+    print(f"📅 Menarik jadwal pertandingan hari ini: {date_str}...")
+    try:
+        sched = statsapi.schedule(date=date_str)
+        games_list = []
         
-        try:
-            # Tarik statistik musim penuh dan L14
-            p_info = statsapi.get('person', {
-                'personId': pid, 
-                'hydrate': f'stats(group=[hitting,pitching],type=[season,byDateRange],startDate={l14_date},endDate={today_date})'
+        for g in sched:
+            games_list.append({
+                'game_id': g['game_id'],
+                'away_team': g['away_name'],
+                'home_team': g['home_name'],
+                'away_pitcher': g.get('away_probable_pitcher', 'TBD'),
+                'home_pitcher': g.get('home_probable_pitcher', 'TBD'),
+                'status': g['status']
             })
-            stats_list = p_info['people'][0].get('stats', [])
             
-            if position == 'P':
-                # --- LOGIKA PITCHER ---
-                era, whip, xba_alwd, xwoba_alwd, xslg_alwd = 4.50, 1.30, 0.250, 0.320, 0.400
-                k_pct, k_9 = 20.0, 8.0 # Default Strikeout Rate
-                
-                for st in stats_list:
-                    if st['group']['displayName'] == 'pitching' and st['type']['displayName'] == 'season':
-                        s = st.get('splits', [{}])[0].get('stat', {})
-                        era = float(s.get('era', 4.50))
-                        whip = float(s.get('whip', 1.30))
-                        
-                        # --- HACK K% DAN K/9 ---
-                        so = int(s.get('strikeOuts', 0))
-                        bf = int(s.get('battersFaced', 1))
-                        
-                        # Mengakali angka inning desimal (misal 5.1 = 5.33 inning)
-                        ip_str = str(s.get('inningsPitched', '1.0'))
-                        ip_parts = ip_str.split('.')
-                        ip = float(ip_parts[0]) + (float(ip_parts[1])/3 if len(ip_parts) > 1 else 0)
-                        if ip == 0: ip = 1.0
-                        
-                        k_pct = round((so / bf) * 100, 1) if bf > 0 else 0.0
-                        k_9 = round((so * 9) / ip, 1) if ip > 0 else 0.0
-                        
-                        # Simulasi metrik advanced dari stat standar
-                        xba_alwd = round(float(s.get('avg', 0.250)) + 0.010, 3) 
-                        xwoba_alwd = round(float(s.get('obp', 0.320)) + 0.015, 3)
-                        xslg_alwd = round(float(s.get('slg', 0.400)) + 0.020, 3)
-                
-                pitchers_data.append({
-                    'Name': p_name, 'Team': team_abbr,
-                    'ERA': era, 'WHIP': whip,
-                    'K%': k_pct, 'K/9': k_9,
-                    'xBA Allowed': xba_alwd, 'xwOBA Allowed': xwoba_alwd, 'xSLG Allowed': xslg_alwd,
-                    'Bullpen_ERA': bullpen_era_dict.get(team_abbr, 4.15)
-                })
-                
-            else:
-                # --- LOGIKA HITTER ---
-                xba, xslg, xwoba = 0.240, 0.400, 0.310
-                barrel, hardhit, max_ev = 5.0, 35.0, 105.0
-                pa_l14, xwoba_l14 = 0, 0.310
-                
-                for st in stats_list:
-                    if st['group']['displayName'] == 'hitting':
-                        s = st.get('splits', [{}])[0].get('stat', {})
-                        if st['type']['displayName'] == 'season':
-                            # Estimasi Advanced Stats (Proxy)
-                            xba = round(float(s.get('avg', 0.240)) + 0.005, 3)
-                            xslg = round(float(s.get('slg', 0.400)) + 0.010, 3)
-                            xwoba = round(float(s.get('obp', 0.310)) + 0.015, 3)
-                            
-                            ops = float(s.get('ops', 0.700))
-                            barrel = round((ops / 0.800) * 8.0, 1)
-                            hardhit = round((ops / 0.800) * 40.0, 1)
-                            max_ev = round(105.0 + (barrel * 0.5), 1)
-                            
-                        elif st['type']['displayName'] == 'byDateRange':
-                            # Data 14 Hari Terakhir
-                            pa_l14 = int(s.get('plateAppearances', 0))
-                            xwoba_l14 = round(float(s.get('obp', 0.310)) + 0.015, 3)
-                
-                # Simulasi Platoon Splits (L/R) karena limitasi endpoint
-                xwoba_vs_r = round(xwoba * (1.02 if position in ['L', 'S'] else 0.98), 3)
-                xwoba_vs_l = round(xwoba * (1.02 if position in ['R', 'S'] else 0.95), 3)
-                
-                # Formula AI Score
-                hit_score = round((xba * 100) + (xwoba_l14 * 50) + (pa_l14 * 0.5), 1)
-                hr_score = round(barrel + (hardhit * 0.5) + (xslg * 50), 1)
-                
-                b_order = batting_order_dict.get(pid, 6) # Default urutan 6 jika tidak main di laga terakhir
-                
-                hitters_data.append({
-                    'Name': p_name, 'Team': team_abbr,
-                    'xBA': xba, 'xSLG': xslg, 'xwOBA': xwoba,
-                    'Barrel%': barrel, 'HardHit%': hardhit, 'Max EV': max_ev,
-                    'xwOBA_vs_R': xwoba_vs_r, 'xwOBA_vs_L': xwoba_vs_l,
-                    'Batting_Order': b_order, 'PA_L14': pa_l14, 'xwOBA_L14': xwoba_l14,
-                    'Hit_Prob_Score': hit_score, 'HR_Prob_Score': hr_score
-                })
-                
-        except Exception as e:
-            continue
+        with open('today_schedule.json', 'w') as f:
+            json.dump(games_list, f, indent=4)
+        print("✅ Sukses: Jadwal hari ini disimpan ke 'today_schedule.json'")
+        
+    except Exception as e:
+        print(f"❌ Gagal menarik jadwal hari ini: {e}")
 
-# 4. SIMPAN KE CSV
-df_h = pd.DataFrame(hitters_data)
-df_p = pd.DataFrame(pitchers_data)
+# ==========================================
+# 4. INIT DAILY PICKS LOG (Wadah kosong untuk Tab 4 & 9)
+# ==========================================
+def init_daily_picks_log():
+    # Membuat file log kosong jika belum ada, biar Streamlit nggak error saat mau nulis
+    if not os.path.exists('daily_picks_log.json'):
+        with open('daily_picks_log.json', 'w') as f:
+            json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
+        print("✅ Sukses: Inisialisasi 'daily_picks_log.json'")
 
-# Filter Hitter: Buang yang PA L14-nya terlalu kecil (misal cedera/jarang main) kecuali urutan pukul atas
-if not df_h.empty:
-    df_h = df_h[(df_h['PA_L14'] >= 15) | (df_h['Batting_Order'] <= 5)]
-
-df_h.to_csv('master_hitter_2026.csv', index=False)
-df_p.to_csv('master_pitcher_2026.csv', index=False)
-
-print(f"✅ Selesai! Berhasil menyimpan {len(df_h)} Hitters dan {len(df_p)} Pitchers.")
+# ==========================================
+# 5. EKSEKUSI UTAMA (MAIN RUNNER)
+# ==========================================
+if __name__ == "__main__":
+    fetch_yesterday_results(yest_str)
+    fetch_today_schedule(today_str)
+    init_daily_picks_log()
+    print("🎯 Bot Updater Selesai Dieksekusi. Semua data siap digunakan oleh Streamlit!")
