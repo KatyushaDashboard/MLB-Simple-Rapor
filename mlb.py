@@ -389,9 +389,9 @@ with tabs[6]:
     if len(today_schedule) < 2:
         st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
     else:
-        # --- SLIP 1: SGPx MATCH MARKET MURNI ---
+        # --- SLIP 1: MATCH SGPx MURNI (TEAM/MARKET) ---
         st.markdown("### 🎫 SLIP 1: MATCH SGPx (Lintas Match Combo)")
-        st.caption("Kombinasi Logika Serangan Match Market dari 2 laga. Tidak ada tebak HR pemain.")
+        st.caption("Kombinasi Logika Serangan Match Market murni dari 2 laga. Tidak ada tebakan player props (Pitcher/Hitter).")
         
         match1 = today_schedule[0]
         match2 = today_schedule[1]
@@ -399,15 +399,14 @@ with tabs[6]:
         col1, col2 = st.columns(2)
         with col1:
             st.error(f"🔥 **LEG PART 1:** {match1['away_team']} vs {match1['home_team']}")
-            st.markdown(f"1. {match1['home_team']} OVER 3.5 Total Runs")
-            st.markdown(f"2. {match1['away_pitcher']} OVER 4.5 Hits Allowed")
-            st.markdown(f"3. {match1['home_team']} Moneyline")
+            st.markdown(f"1. **{match1['home_team']}** OVER 3.5 Total Team Runs")
+            st.markdown(f"2. **{match1['home_team']}** Moneyline (To Win)")
+            st.markdown(f"3. **Match Total Runs** OVER 7.5")
         with col2:
             st.info(f"🔥 **LEG PART 2:** {match2['away_team']} vs {match2['home_team']}")
-            # REVISI: Murni market match tim & pitcher
-            st.markdown(f"1. {match2['away_team']} OVER 3.5 Total Runs")
-            st.markdown(f"2. {match2['home_pitcher']} OVER 4.5 Hits Allowed")
-            st.markdown(f"3. {match2['away_team']} +1.5 Handicap")
+            st.markdown(f"1. **{match2['away_team']}** OVER 3.5 Total Team Runs")
+            st.markdown(f"2. **{match2['away_team']}** +1.5 Handicap (Runline)")
+            st.markdown(f"3. **Match Total Runs** OVER 8.5")
             
         st.divider()
 
@@ -416,18 +415,15 @@ with tabs[6]:
         st.caption("Kombinasi persilangan murni kandidat Home Run dari pertandingan berbeda.")
         
         hitters_m1 = df_hitters[df_hitters['Team'].isin([match1['away_team'], match1['home_team']])] if not df_hitters.empty else pd.DataFrame()
-        # REVISI: Mengubah head(1) jadi head(3) buat narik 3 monster teratas
         top_m1 = hitters_m1.sort_values(by=['Barrel%', 'xwOBA'], ascending=[False, False]).head(3) if not hitters_m1.empty and 'Barrel%' in hitters_m1.columns else pd.DataFrame()
         
         hitters_m2 = df_hitters[df_hitters['Team'].isin([match2['away_team'], match2['home_team']])] if not df_hitters.empty else pd.DataFrame()
-        # REVISI: Mengubah head(1) jadi head(3)
         top_m2 = hitters_m2.sort_values(by=['Barrel%', 'xwOBA'], ascending=[False, False]).head(3) if not hitters_m2.empty and 'Barrel%' in hitters_m2.columns else pd.DataFrame()
         
         col_hr1, col_hr2 = st.columns(2)
         with col_hr1:
             st.error(f"🔥 **LEG PART 1:** {match1['away_team']} vs {match1['home_team']}")
             if not top_m1.empty:
-                # REVISI: Pake looping buat nampilin ke-3 pemainnya
                 for i, (_, row) in enumerate(top_m1.iterrows(), 1):
                     p_name = row.get('Name', 'Top Hitter') 
                     st.markdown(f"**{i}. {p_name}** ({row['Team']})")
@@ -438,7 +434,6 @@ with tabs[6]:
         with col_hr2:
             st.info(f"🔥 **LEG PART 2:** {match2['away_team']} vs {match2['home_team']}")
             if not top_m2.empty:
-                # REVISI: Pake looping buat nampilin ke-3 pemainnya
                 for i, (_, row) in enumerate(top_m2.iterrows(), 1):
                     p_name = row.get('Name', 'Top Hitter')
                     st.markdown(f"**{i}. {p_name}** ({row['Team']})")
@@ -447,36 +442,51 @@ with tabs[6]:
                 st.write("Data HR tidak memenuhi syarat ketat.")
             
         st.divider()
+
+        # --- SLIP 3: PITCHER PROPS LINTAS LAGA ---
+        st.markdown("### ⚾ SLIP 3: PITCHER PROPS PARLAY (5-10 Laga Berbeda)")
+        st.caption("Memilih 1 Pitcher dari setiap pertandingan yang berbeda dengan rekomendasi O/U otomatis berdasarkan profil ERA mereka.")
         
-        # --- SLIP 3: PITCHER PROPS ---
-        st.markdown("### ⚾ SLIP 3: PITCHER PROPS PARLAY")
-        
-        pitcher_list = []
+        selected_pitchers = []
         for game in today_schedule:
             era_away = get_pitcher_era(game['away_team'])
             era_home = get_pitcher_era(game['home_team'])
-            pitcher_list.append({'Pitcher': game['away_pitcher'], 'Team': game['away_team'], 'Opp': game['home_team'], 'ERA': era_away})
-            pitcher_list.append({'Pitcher': game['home_pitcher'], 'Team': game['home_team'], 'Opp': game['away_team'], 'ERA': era_home})
             
-        df_today_p = pd.DataFrame(pitcher_list)
-        
-        if not df_today_p.empty:
-            best_pitchers = df_today_p.sort_values('ERA', ascending=True).head(3)
-            worst_pitchers = df_today_p.sort_values('ERA', ascending=False).head(3)
-            
-            col3, col4 = st.columns(2)
-            with col3:
-                st.success("🎯 **TARGET OVER STRIKEOUTS / OUTS**")
-                for _, p in best_pitchers.iterrows():
-                    if p['Pitcher'] != "TBD":
-                        st.markdown(f"**{p['Pitcher']}** ({p['Team']}) ➔ ERA: {p['ERA']:.2f}")
-                        st.write(f"↳ *Pick: OVER vs {p['Opp']}*")
-            with col4:
-                st.warning("🩸 **TARGET OVER HITS ALLOWED**")
-                for _, p in worst_pitchers.iterrows():
-                    if p['Pitcher'] != "TBD":
-                        st.markdown(f"**{p['Pitcher']}** ({p['Team']}) ➔ ERA: {p['ERA']:.2f}")
-                        st.write(f"↳ *Pick: OVER vs {p['Opp']}*")
+            # Logika Pemilihan: Ambil pitcher dengan ERA paling ekstrem di laga tersebut (Paling bagus atau Paling bapuk)
+            if abs(era_away - 4.15) > abs(era_home - 4.15):
+                chosen_p = game['away_pitcher']
+                chosen_team = game['away_team']
+                chosen_opp = game['home_team']
+                chosen_era = era_away
+            else:
+                chosen_p = game['home_pitcher']
+                chosen_team = game['home_team']
+                chosen_opp = game['away_team']
+                chosen_era = era_home
+                
+            if chosen_p != "TBD":
+                # Tentukan Rekomendasi Spesifik
+                if chosen_era < 3.50:
+                    rec = f"🟢 **OVER Strikeouts** atau **OVER Outs Recorded** (Profil Elit)"
+                elif chosen_era > 4.50:
+                    rec = f"🔴 **OVER Hits Allowed** atau **OVER Earned Runs** (Profil Rentan)"
+                else:
+                    rec = f"🟡 **UNDER Strikeouts** atau **OVER Hits Allowed** (Profil Menengah/Kurang Stabil)"
+                    
+                selected_pitchers.append({
+                    'Pitcher': chosen_p, 'Team': chosen_team, 'Opp': chosen_opp, 'ERA': chosen_era, 'Rec': rec
+                })
+                
+            # Batasi maksimal 10 match biar slip parlaynya ga kepanjangan
+            if len(selected_pitchers) >= 10:
+                break
+                
+        if selected_pitchers:
+            for idx, p in enumerate(selected_pitchers, 1):
+                st.markdown(f"**{idx}. {p['Pitcher']}** ({p['Team']}) vs {p['Opp']} ➔ *ERA: {p['ERA']:.2f}*")
+                st.write(f"↳ *Saran Pick: {p['Rec']}*")
+        else:
+            st.caption("Data Pitcher belum siap untuk dikalkulasi.")
             
         st.divider()
         
