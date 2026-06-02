@@ -21,15 +21,15 @@
         "home_team": "Boston Red Sox",
         "away_pitcher": "Shane Baz",
         "home_pitcher": "Connelly Early",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822728,
         "away_team": "Miami Marlins",
         "home_team": "Washington Nationals",
         "away_pitcher": "Lake Bachar",
-        "home_pitcher": "Miles Mikolas",
-        "status": "Scheduled"
+        "home_pitcher": "Richard Lovelady",
+        "status": "Pre-Game"
     },
     {
         "game_id": 823541,
@@ -45,7 +45,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "Noah Cameron",
         "home_pitcher": "Andrew Abbott",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824918,
