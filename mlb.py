@@ -624,24 +624,44 @@ with tabs[6]:
             for _, row in hot_hand_candidates.iterrows():
                 st.markdown(f"⚡ **{row.get('Name', 'Unknown')}** ({row['Team']}) ➔ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
 
+# ====================================================================
+# TAB 8: THE OVERLAP NETWORK (PLAYER CLUSTERS)
+# ====================================================================
 with tabs[7]:
     st.header("🕸️ The Overlap Network (Player Clusters)")
-    st.caption("Visualisasi Hitter yang lolos filtrasi mematikan secara bersamaan.")
+    st.caption("Visualisasi Hitter yang lolos filtrasi mematikan secara bersamaan. (Ditampilkan maksimal 2 pemain terbaik per tim).")
     
     if not df_matrix_global.empty:
-        alphas = df_matrix_global[(df_matrix_global['Conn_Score'] >= 4) & (df_matrix_global['Archetype'] == "🌟 SUPERSTAR (Core)")]
+        
+        # 👑 KLASTER 1: THE ALPHAS
+        # Note: Pastikan batas skor minimal udah disesuaikan (>= 3) biar nggak kosong
+        alphas = df_matrix_global[(df_matrix_global['Conn_Score'] >= 3) & (df_matrix_global['Archetype'] == "🌟 SUPERSTAR (Core)")]
         st.subheader("👑 KLASTER 1: THE ALPHAS (High Floor, High Ceiling)")
         if not alphas.empty:
-            st.dataframe(alphas[['Name', 'Team', 'Conn_Score', 'Adj_Barrel', 'Adj_xwOBA', 'Home_Park']], use_container_width=True)
-        else: st.caption("Tidak ada Alpha Player hari ini.")
+            # SUNTIKAN LOGIKA BARU: Maksimal 2 nama per tim
+            alphas_filtered = alphas.groupby('Team').head(2)
+            st.dataframe(alphas_filtered[['Name', 'Team', 'Conn_Score', 'Adj_Barrel', 'Adj_xwOBA', 'Home_Park']], use_container_width=True)
+        else: 
+            st.caption("Tidak ada Alpha Player hari ini.")
             
+        # 💣 KLASTER 2: MISPRICED LONGSHOTS
         longshots = df_matrix_global[(df_matrix_global['Archetype'] == "☄️ LONGSHOT (Boom/Bust)")]
         st.subheader("💣 KLASTER 2: THE DEEP-SPACE LONGSHOTS (Low Floor, Max Ceiling)")
         if not longshots.empty:
-            st.dataframe(longshots[['Name', 'Team', 'Conn_Score', 'Adj_Barrel', 'Max EV', 'Home_Park']], use_container_width=True)
-        else: st.caption("Tidak ada Longshot ideal hari ini.")
+            # SUNTIKAN LOGIKA BARU: Maksimal 2 nama per tim
+            longshots_filtered = longshots.groupby('Team').head(2)
+            st.dataframe(longshots_filtered[['Name', 'Team', 'Conn_Score', 'Adj_Barrel', 'Max EV', 'Home_Park']], use_container_width=True)
+        else: 
+            st.caption("Tidak ada Longshot ideal hari ini.")
             
+        # 🏟️ KLASTER 3: ENVIRONMENT KINGS
         env_kings = df_matrix_global[(df_matrix_global['PF_Multiplier'] > 1.05) & (df_matrix_global['Conn_Score'] >= 3)]
         st.subheader("🏟️ KLASTER 3: ENVIRONMENT KINGS (Tertolong Cuaca/Stadion)")
         if not env_kings.empty:
-            st.dataframe(env_kings[['Name', 'Team', 'Conn_Score', 'PF_Multiplier', 'Home_Park']], use_container_width=True)
+            # SUNTIKAN LOGIKA BARU: Maksimal 2 nama per tim
+            env_kings_filtered = env_kings.groupby('Team').head(2)
+            st.dataframe(env_kings_filtered[['Name', 'Team', 'Conn_Score', 'PF_Multiplier', 'Home_Park']], use_container_width=True)
+        else: 
+            st.caption("Tidak ada Environment Kings hari ini.")
+    else:
+        st.error("Data Matrix belum siap atau kosong.")
