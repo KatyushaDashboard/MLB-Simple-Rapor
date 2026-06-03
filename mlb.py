@@ -142,9 +142,9 @@ def run_scoring_matrix(df):
         park_mult = row.get('PF_Multiplier', 1.0)
         
         # F1: Core Power (+2)
-        if adj_barrel >= 10.0 and adj_xwoba >= 0.340: score += 2
+        if adj_barrel >= 7.0 and adj_xwoba >= 0.330: score += 2
         # F2: HR Dept (+1)
-        if max_ev >= 108.0: score += 1
+        if max_ev >= 106.0: score += 1
         # F3: RBI Environment (+2)
         proj_runs = team_totals_data.get(team, 4.0) if isinstance(team_totals_data, dict) else 4.0
         if row.get('Is_Team_TB_Leader', False) and proj_runs >= 4.5: score += 2
@@ -152,8 +152,8 @@ def run_scoring_matrix(df):
         if park_mult > 1.02: score += 1
             
         # DNA Tagging
-        if score >= 4 and adj_xwoba >= 0.350: tipe = "🌟 SUPERSTAR (Core)"
-        elif adj_barrel >= 12.0 and adj_xwoba < 0.330: tipe = "☄️ LONGSHOT (Boom/Bust)"
+        if score >= 4 and adj_xwoba >= 0.340: tipe = "🌟 SUPERSTAR (Core)"
+        elif adj_barrel >= 7.5 and adj_xwoba < 0.330: tipe = "☄️ LONGSHOT (Boom/Bust)"
         else: tipe = "🎯 SOLID BAT"
             
         connection_scores.append(score)
@@ -164,6 +164,15 @@ def run_scoring_matrix(df):
     return df_matrix.sort_values(by='Conn_Score', ascending=False)
 
 df_matrix_global = run_scoring_matrix(today_hitters)
+
+# ====================================================================
+# SUNTIK FUNGSI GET LIVE BOXSCORE LU DI SINI WAK 👇
+# ====================================================================
+@st.cache_data(ttl=60) # Biar nggak spam API tiap detik, cache 60 detik
+def get_live_boxscore(game_id, away_t, home_t):
+    # ... (Isi kode fungsi get_live_boxscore lu yang lama) ...
+    # Pastikan outputnya nge-return live_h, live_p
+    # return live_h, live_p
 
 # ====================================================================
 # 5. NAVIGASI TABS (Sekarang ada 8 Tab)
@@ -208,55 +217,133 @@ with tabs[1]:
         else: st.error("❌ Kolom nama pemain tidak ditemukan.")
     else: st.warning("⚠️ Data Hitter kosong.")
 
+# ====================================================================
+# TAB 4: LIVE REPORT & FINAL BOXSCORE
+# ====================================================================
 with tabs[3]:
-    st.subheader("📡 Live Report & Final Boxscore")
-    st.info("Pastikan fungsi get_live_boxscore tersedia di source code.")
+    st.header("📡 Live Report & Final Boxscore")
+    st.caption("Pantau skor langsung dan pemain yang berhasil mencetak stat (Hits, HR, RBI, dll).")
+    
+    if not game_details:
+        st.info("Jadwal pertandingan belum tersedia untuk hari ini.")
+    else:
+        for game in game_details:
+            away_t = game.get('away_team', game.get('away', 'TBD'))
+            home_t = game.get('home_team', game.get('home', 'TBD'))
+            game_status = game.get('status', 'Scheduled')
+            game_id = game.get('game_id', 0)
+            
+            if game_status in ['Scheduled', 'Pre-Game', 'Warmup']:
+                with st.expander(f"⏳ {away_t} @ {home_t}", expanded=False): 
+                    st.info("Pertandingan belum dimulai.")
+                continue
+                
+            with st.expander(f"🔥 {away_t} @ {home_t} - {game_status}", expanded=False):
+                try:
+                    # Pastikan fungsi get_live_boxscore sudah lu copy juga ke bagian atas app.py
+                    live_h, live_p = get_live_boxscore(game_id, away_t, home_t)
+                    
+                    if not live_h.empty and not live_p.empty:
+                        sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
+                        
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            st.markdown("### 🏏 Hitters (Pencetak Skor)")
+                            if not sukses_h.empty: 
+                                st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
+                            else: 
+                                st.write("Belum ada hitter yang mencetak angka.")
+                        with c2:
+                            st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
+                            st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
+                    else: 
+                        st.write("Sedang menyinkronkan data boxscore...")
+                except NameError:
+                    st.error("⚠️ Fungsi 'get_live_boxscore' belum ditemukan! Pastikan lu udah ngopi fungsi itu dari kode lama ke bagian paling atas (sebelum fungsi Tab jalan).")
 
+# ====================================================================
+# TAB 3: SAME GAME PARLAY (SGP) FACTORY (CONN_SCORE ADJUSTED)
+# ====================================================================
 with tabs[2]:
     st.header("🏭 Same Game Parlay (SGP) Factory")
-    st.caption("SOP: Algoritma korelasi narasi untuk mencetak paket SGP anti-kontradiksi.")
+    st.caption("SOP: Algoritma korelasi narasi untuk mencetak paket SGP anti-kontradiksi berbasis Connection Score.")
     
-    if not isinstance(today_schedule, list):
-        st.warning("Jadwal hari ini kosong.")
-    elif today_hitters.empty:
-        st.error("Database Hitter kosong.")
+    if not isinstance(today_schedule, list) or not today_schedule:
+        st.warning("Jadwal hari ini kosong atau bot belum menarik data jadwal.")
+    elif 'df_matrix_global' not in locals() or df_matrix_global.empty:
+        st.error("Database Hitter Matrix kosong. SGP Factory tidak bisa beroperasi.")
     else:
         for idx, game in enumerate(today_schedule):
             with st.expander(f"🎲 MATCH {idx+1}: {game['away_team']} @ {game['home_team']} | SP: {game['away_pitcher']} vs {game['home_pitcher']}"):
-                team_players = today_hitters[today_hitters['Team'].isin([game['away_team'], game['home_team']])]
+                
+                # Tarik pemain dari Matrix Global yang udah mateng
+                team_players = df_matrix_global[df_matrix_global['Team'].isin([game['away_team'], game['home_team']])]
                 if team_players.empty:
                     st.caption(f"⚠️ Data statcast tim tidak ditemukan.")
                     continue
                 
-                # SGP Factory kini murni memakai data Park Adjusted dari Global Engine
-                if 'Adj_xwOBA' in team_players.columns and 'Adj_Barrel' in team_players.columns:
-                    best_hitters = team_players.sort_values(by=['Adj_Barrel', 'Adj_xwOBA'], ascending=[False, False]).head(3)
+                # Sortir Prioritas: Connection Score tertinggi dulu, baru Adj_Barrel
+                if 'Conn_Score' in team_players.columns and 'Adj_Barrel' in team_players.columns:
+                    best_hitters = team_players.sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(3)
                 else:
                     best_hitters = team_players.head(3)
                 
                 col1, col2 = st.columns(2)
+                
                 with col1:
                     st.markdown("#### 💣 1. SGP Home Run (2-3 Legs)")
                     hr_legs = []
                     if 'Adj_Barrel' in best_hitters.columns and 'Max EV' in best_hitters.columns:
                         for _, row in best_hitters.iterrows():
+                            # Kita kasih toleransi Barrel >= 8.0 buat SGP HR karena udah difilter Conn_Score
                             if row['Adj_Barrel'] >= 8.0 and row['Max EV'] >= 105.0:
                                 p_name = row.get('Name', 'Unknown')
-                                hr_legs.append(f"🔥 {p_name} ({row['Team']}) To Hit HR")
+                                hr_legs.append(f"🔥 **{p_name}** ({row['Team']}) To Hit HR *(Conn: {row.get('Conn_Score',0)})*")
+                        
                         if len(hr_legs) >= 2:
-                            for leg in hr_legs: st.markdown(f"- {leg}")
-                            st.success("✅ SGP HR Valid")
-                        else: st.caption("Metrik Statcast kurang memenuhi syarat ketat untuk SGP HR.")
+                            for leg in hr_legs: 
+                                st.markdown(f"- {leg}")
+                            st.success("✅ SGP HR Valid (High Connection)")
+                        else:
+                            st.caption("Kandidat HR di match ini kurang solid untuk dirangkai jadi SGP HR murni.")
+                    else:
+                        st.caption("Data statcast tidak lengkap.")
                 
                 with col2:
                     st.markdown("#### 📐 2. SGP Sniper Engine")
                     if not best_hitters.empty:
                         top_hitter = best_hitters.iloc[0]
-                        target_team, player_name = top_hitter['Team'], top_hitter.get('Name', 'Top Hitter')
+                        target_team = top_hitter['Team']
+                        player_name = top_hitter.get('Name', 'Top Hitter')
                         opp_pitcher = game['home_pitcher'] if target_team == game['away_team'] else game['away_pitcher']
+                        
+                        st.markdown(f"**Target Alpha:** {player_name} (DNA: {top_hitter.get('Archetype', 'Solid')} | Conn: {top_hitter.get('Conn_Score', 0)})")
                         st.markdown(f"- 🟢 **Leg 1:** {player_name} OVER 1.5 Total Bases")
-                        st.markdown(f"- 🟢 **Leg 2:** {opp_pitcher} OVER 4.5 Hits Allowed")
-
+                        st.markdown(f"- 🟢 **Leg 2:** {player_name} OVER 0.5 Runs/RBI")
+                        st.markdown(f"- 🟢 **Leg 3:** {opp_pitcher} OVER 4.5 Hits Allowed")
+                        st.markdown(f"- 🟢 **Leg 4:** {opp_pitcher} UNDER 17.5 Outs Recorded")
+                
+                st.divider()
+                
+                # --- SGP PITCHER DUEL (Original) ---
+                st.markdown("#### ⚾ 3. SGP Pitcher Duel Props")
+                p_away, p_home = game['away_pitcher'], game['home_pitcher']
+                era_away, era_home = get_pitcher_era(game['away_team']), get_pitcher_era(game['home_team'])
+                
+                col3, col4 = st.columns(2)
+                with col3:
+                    st.markdown(f"**{game['away_team']} SP: {p_away}** (ERA: {era_away:.2f})")
+                    if era_away < 4.00:
+                        st.write(f"- 🟢 OVER Strikeouts / 🟢 OVER 15.5 Outs")
+                    else:
+                        st.write(f"- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs")
+                with col4:
+                    st.markdown(f"**{game['home_team']} SP: {p_home}** (ERA: {era_home:.2f})")
+                    if era_home < 4.00:
+                        st.write(f"- 🟢 OVER Strikeouts / 🟢 OVER 15.5 Outs")
+                    else:
+                        st.write(f"- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs")
+                        
 with tabs[4]:
     st.header("🛡️ AI Auditor & Advanced ROI Tracker")
     history = load_betting_history()
@@ -311,15 +398,22 @@ with tabs[5]:
             market_rows.append({'Match': f"{game['away_team']} @ {game['home_team']}", '🔥 Moneyline Pred': f"{fav} ({win_prob}%)", '📐 Runline': hc_rec, '📊 O/U Total': round(proj_r_a + proj_r_h, 1)})
         st.dataframe(pd.DataFrame(market_rows), hide_index=True, use_container_width=True)
 
+# ====================================================================
+# TAB 7: CROSS-GAME PARLAY & MASTER SLIPS (THE ULTIMATE BOMB SQUAD)
+# ====================================================================
 with tabs[6]:
     st.header("💸 Cross-Game Parlay & Master Slips")
+    st.caption("SOP: Eksekusi tiket raksasa Lintas Pertandingan, Pitcher Matrix, dan Bomb Squad HR.")
     
-    if not df_matrix_global.empty:
+    if len(today_schedule) < 2:
+        st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
+    elif not df_matrix_global.empty:
+        
         # ====================================================================
-        # VIP SLIP: THE ULXRARE PAIRING (DIVERSITY MATCHMAKER)
+        # 1. VIP SLIP: THE ULXRARE PAIRING (DIVERSITY MATCHMAKER)
         # ====================================================================
-        st.markdown("### 🎫 VIP SLIP: THE ULXRARE PAIRING (2-LEGS)")
-        st.caption("Algoritma mencari 2 pemain dengan DNA statistik berbeda (Barbell Strategy) untuk menghindari korelasi kehancuran massal.")
+        st.markdown("### 🎫 SLIP 1: VIP ULXRARE PAIRING (2-LEGS)")
+        st.caption("Algoritma mencari 2 pemain dengan DNA statistik berbeda (Barbell Strategy) untuk menghindari over-korelasi.")
         
         survivors = df_matrix_global[df_matrix_global['Conn_Score'] >= 3].to_dict('records')
         
@@ -330,7 +424,7 @@ with tabs[6]:
                 div_score = 0
                 if p1['Team'] != p2['Team']: div_score += 1
                 if p1.get('Home_Park', '') != p2.get('Home_Park', ''): div_score += 1
-                if p1.get('Archetype', '') != p2.get('Archetype', ''): div_score += 2 # Bebot Tipe DNA
+                if p1.get('Archetype', '') != p2.get('Archetype', ''): div_score += 2 # Beda Tipe DNA = Aman!
                 if (p1.get('PF_Multiplier', 1.0) > 1.0) != (p2.get('PF_Multiplier', 1.0) > 1.0): div_score += 1
                 
                 ulx_score = (p1['Conn_Score'] + p2['Conn_Score']) * div_score
@@ -340,20 +434,110 @@ with tabs[6]:
                     
             if best_pair:
                 leg1, leg2, d_score = best_pair
-                st.success(f"🔥 **ULXRARE TICKET FOUND** (Match Score: {max_ulx_score})")
+                st.success(f"🔥 **ULXRARE TICKET FOUND** (Match Score: {max_ulx_score} | Diversity: {d_score}/5)")
                 c1, c2 = st.columns(2)
                 with c1:
                     st.error(f"**LEG 1: {leg1['Name']}** ({leg1['Team']})")
                     st.write(f"🧬 *DNA: {leg1['Archetype']} | Conn: {leg1['Conn_Score']}*")
+                    st.write(f"🏟️ *Park: {leg1.get('Home_Park', '')}*")
                 with c2:
                     st.info(f"**LEG 2: {leg2['Name']}** ({leg2['Team']})")
                     st.write(f"🧬 *DNA: {leg2['Archetype']} | Conn: {leg2['Conn_Score']}*")
-            else: st.caption("Tidak ada kombinasi Diversity yang cukup aman.")
-        else: st.caption("Kandidat Hitter terlalu sedikit.")
+                    st.write(f"🏟️ *Park: {leg2.get('Home_Park', '')}*")
+            else: 
+                st.caption("Tidak ada kombinasi Diversity yang cukup aman (Coba turunkan batas minimal score).")
+        else: 
+            st.caption("Kandidat Hitter terlalu sedikit untuk membentuk sistem silang ULXRARE.")
+            
         st.divider()
 
         # ====================================================================
-        # BOMB SQUAD (TERINTEGRASI SCORING MATRIX)
+        # 2. SLIP KEMBALI: MONSTER SGPx HR (2-3 Legs Lintas Match)
+        # ====================================================================
+        st.markdown("### 💣 SLIP 2: MONSTER SGPx HR (Lintas Match)")
+        st.caption("Mengawinkan kandidat HR terbaik dari dua laga pertama di jadwal.")
+        
+        match1 = today_schedule[0]
+        match2 = today_schedule[1]
+        
+        # Tarik dari matrix yang udah ada Conn_Score
+        top_m1 = df_matrix_global[df_matrix_global['Team'].isin([match1['away_team'], match1['home_team']])].sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(2)
+        top_m2 = df_matrix_global[df_matrix_global['Team'].isin([match2['away_team'], match2['home_team']])].sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(2)
+        
+        col_hr1, col_hr2 = st.columns(2)
+        with col_hr1:
+            st.error(f"🔥 **MATCH 1:** {match1['away_team']} vs {match1['home_team']}")
+            if not top_m1.empty:
+                for i, (_, row) in enumerate(top_m1.iterrows(), 1):
+                    p_name = row.get('Name', 'Top Hitter') 
+                    st.markdown(f"**{i}. {p_name}** ({row['Team']})")
+                    st.write(f"↳ *To Hit HR (Conn: {row.get('Conn_Score',0)} | Barrel: {row.get('Adj_Barrel',0):.1f}%)*")
+            else: st.write("Data hitter tidak tersedia.")
+                
+        with col_hr2:
+            st.info(f"🔥 **MATCH 2:** {match2['away_team']} vs {match2['home_team']}")
+            if not top_m2.empty:
+                for i, (_, row) in enumerate(top_m2.iterrows(), 1):
+                    p_name = row.get('Name', 'Top Hitter')
+                    st.markdown(f"**{i}. {p_name}** ({row['Team']})")
+                    st.write(f"↳ *To Hit HR (Conn: {row.get('Conn_Score',0)} | Barrel: {row.get('Adj_Barrel',0):.1f}%)*")
+            else: st.write("Data hitter tidak tersedia.")
+            
+        st.divider()
+
+        # ====================================================================
+        # 3. FITUR BARU: THE PITCHER MATRIX (SLIP 3)
+        # ====================================================================
+        st.markdown("### ⚾ SLIP 3: THE PITCHER MATRIX PARLAY")
+        st.caption("Sistem klaster otomatis untuk pelempar bola berdasarkan ERA, Park Factor, dan Proyeksi Runs Musuh.")
+        
+        assassins, workhorses, gas_cans = [], [], []
+        
+        for game in today_schedule:
+            home_t = game['home_team']
+            away_t = game['away_team']
+            park_mult = PARK_FACTORS.get(home_t, 1.00)
+            
+            # Evaluasi Away Pitcher
+            era_away = get_pitcher_era(away_t)
+            proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
+            if game['away_pitcher'] != "TBD":
+                if era_away < 3.50 and park_mult < 1.02 and proj_runs_home < 4.0:
+                    assassins.append((game['away_pitcher'], away_t, "OVER Strikeouts"))
+                elif era_away < 4.00 and proj_runs_home < 4.5:
+                    workhorses.append((game['away_pitcher'], away_t, "OVER Outs Recorded"))
+                elif era_away > 4.60 and park_mult > 1.02 and proj_runs_home > 4.5:
+                    gas_cans.append((game['away_pitcher'], away_t, "OVER Hits / Earned Runs Allowed"))
+
+            # Evaluasi Home Pitcher
+            era_home = get_pitcher_era(home_t)
+            proj_runs_away = team_totals_data.get(away_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
+            if game['home_pitcher'] != "TBD":
+                if era_home < 3.50 and park_mult < 1.02 and proj_runs_away < 4.0:
+                    assassins.append((game['home_pitcher'], home_t, "OVER Strikeouts"))
+                elif era_home < 4.00 and proj_runs_away < 4.5:
+                    workhorses.append((game['home_pitcher'], home_t, "OVER Outs Recorded"))
+                elif era_home > 4.60 and park_mult > 1.02 and proj_runs_away > 4.5:
+                    gas_cans.append((game['home_pitcher'], home_t, "OVER Hits / Earned Runs Allowed"))
+
+        col_p1, col_p2, col_p3 = st.columns(3)
+        with col_p1:
+            st.success("👑 **THE ASSASSINS (K's)**")
+            for p, t, rec in assassins[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
+            if not assassins: st.caption("Kosong.")
+        with col_p2:
+            st.info("🛡️ **WORKHORSES (Outs)**")
+            for p, t, rec in workhorses[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
+            if not workhorses: st.caption("Kosong.")
+        with col_p3:
+            st.error("🩸 **GAS CANS (Fade)**")
+            for p, t, rec in gas_cans[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
+            if not gas_cans: st.caption("Kosong.")
+
+        st.divider()
+
+        # ====================================================================
+        # 4. THE BOMB SQUAD (SLIP 4, 5, 6)
         # ====================================================================
         st.markdown("### 🚀 THE BOMB SQUAD (CROSS-GAME HR PARLAY)")
         
@@ -361,21 +545,24 @@ with tabs[6]:
         taken_players = []
         with col_b1:
             st.error("🎯 **SLIP 4: SNIPER HR (2-3 Legs)**")
+            # Ambil 3 Alpha tertinggi
             sniper_picks = df_matrix_global.head(3)
             for _, row in sniper_picks.iterrows():
                 p_name = row.get('Name', 'Unknown')
                 taken_players.append(p_name)
                 st.markdown(f"🔥 **{p_name}** ({row['Team']})")
-                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row['Conn_Score']}*")
+                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
                 
         with col_b2:
             st.info("☄️ **SLIP 5: LOTTO / LONGSHOT HR (5 Legs)**")
-            lotto_picks = df_matrix_global.iloc[3:8] 
+            # Ambil klaster Longshot
+            lotto_pool = df_matrix_global[df_matrix_global['Archetype'] == "☄️ LONGSHOT (Boom/Bust)"]
+            lotto_picks = lotto_pool.head(5) if not lotto_pool.empty else df_matrix_global.iloc[3:8]
             for _, row in lotto_picks.iterrows():
                 p_name = row.get('Name', 'Unknown')
                 taken_players.append(p_name)
                 st.markdown(f"☄️ **{p_name}** ({row['Team']})")
-                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row['Conn_Score']}*")
+                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
                 
         st.divider()
         st.markdown("### 🔥 SLIP 6: HOT HAND HR (3-5 LEGS)")
@@ -383,7 +570,7 @@ with tabs[6]:
         if not hot_hand_pool.empty:
             hot_hand_candidates = hot_hand_pool.sort_values(by=['Adj_xwOBA', 'Adj_Barrel'], ascending=[False, False]).head(4)
             for _, row in hot_hand_candidates.iterrows():
-                st.markdown(f"⚡ **{row.get('Name', 'Unknown')}** ({row['Team']}) ➔ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}%*")
+                st.markdown(f"⚡ **{row.get('Name', 'Unknown')}** ({row['Team']}) ➔ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
 
 with tabs[7]:
     st.header("🕸️ The Overlap Network (Player Clusters)")
