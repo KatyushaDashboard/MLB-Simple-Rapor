@@ -542,44 +542,44 @@ with tabs[6]:
         st.divider()
 
         # ====================================================================
-        # 🎫 SLIP 1C: MEGA LOTTO ULTRA PROPS (5-LEGS - NO OVERLAP)
+        # 🎫 SLIP 1C: MEGA LOTTO ULTRA PROPS (4-LEGS - NO OVERLAP)
         # ====================================================================
-        st.markdown("### 💣 SLIP 1C: MEGA LOTTO ULXRARE (5-LEGS)")
+        st.markdown("### 💣 SLIP 1C: MEGA LOTTO ULXRARE (4-LEGS)")
         st.caption("Tiket High-Risk High-Reward (Boomer Slip). Pemain murni diambil dari sisa database yang belum terjamah.")
         
         # Filter: Buang semua pemain yang sudah dipakai di Slip 1 dan Slip 1B
         survivors_s1c = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].to_dict('records')
         
         best_quad, max_ulx_s1c = None, -1
-        if len(survivors_s1c) >= 5:
-            for p1, p2, p3, p4, p5 in itertools.combinations(survivors_s1c, 5):
+        if len(survivors_s1c) >= 4:
+            for p1, p2, p3, p4 in itertools.combinations(survivors_s1c, 4):
                 div_score = 0
-                for combo in itertools.combinations([p1, p2, p3, p4, p5], 2):
+                for combo in itertools.combinations([p1, p2, p3, p4], 2):
                     if combo[0]['Team'] != combo[1]['Team']: div_score += 1
                     if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
                     if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
                 
-                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score'] + p4['Conn_Score'] + p5['Conn_Score']
+                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score'] + p4['Conn_Score']
                 ulx_score = total_conn * div_score
                 
                 if ulx_score > max_ulx_s1c:
                     max_ulx_s1c = ulx_score
-                    best_quad = (p1, p2, p3, p4, p5, div_score)
+                    best_quad = (p1, p2, p3, p4, div_score)
                     
             if best_quad:
-                q1, q2, q3, q4, q5, d_score_s1c = best_quad
+                q1, q2, q3, q4, d_score_s1c = best_quad
                 
-                st.success(f"🚀 **MEGA LOTTO 5-LEGS DEPLOYED** (Score: {max_ulx_s1c} | Pairwise Diversity Index: {d_score_s1c})")
-                c1, c2, c3, c4, c5 = st.columns(5)
+                st.success(f"🚀 **MEGA LOTTO 4-LEGS DEPLOYED** (Score: {max_ulx_s1c} | Pairwise Diversity Index: {d_score_s1c})")
+                c1, c2, c3, c4 = st.columns(4)
                 with c1: st.error(f"**LEG 1: {q1['Name']}** ({q1['Team']})")
                 with c2: st.info(f"**LEG 2: {q2['Name']}** ({q2['Team']})")
                 with c3: st.warning(f"**LEG 3: {q3['Name']}** ({q3['Team']})")
                 with c4: st.success(f"**LEG 4: {q4['Name']}** ({q4['Team']})")
-                with c5: st.success(f"**LEG 5: {q5['Name']}** ({q5['Team']})")    
-            else: st.caption("Tidak ada kombinasi 5-Leg yang ideal.")
-        else: st.caption("Sisa pool data terlalu kritis, tidak aman dipaksakan bikin 5-Leg.")
+            else: st.caption("Tidak ada kombinasi 4-Leg yang ideal.")
+        else: st.caption("Sisa pool data terlalu kritis, tidak aman dipaksakan bikin 4-Leg.")
             
         st.divider()
+        # ... [Sisa kode bawah lu: ### 🚀 THE BOMB SQUAD, dst] ...
 
         # ====================================================================
         # 2. SLIP KEMBALI: MONSTER SGPx HR (2-3 Legs Lintas Match)
