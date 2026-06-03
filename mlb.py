@@ -455,28 +455,30 @@ with tabs[5]:
 # ====================================================================
 with tabs[6]:
     st.header("💸 Cross-Game Parlay & Master Slips")
-    st.caption("SOP: Eksekusi tiket raksasa Lintas Pertandingan, Pitcher Matrix, dan Bomb Squad HR.")
+    st.caption("SOP: Eksekusi tiket raksasa Lintas Pertandingan, Pitcher Matrix, dan Kombinasi Bertingkat Anti-Overlap.")
     
     if len(today_schedule) < 2:
         st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
     elif not df_matrix_global.empty:
         
+        # Penampung global untuk mencegah overlap pemain antar-slip VIP
+        taken_vip_players = []
+
         # ====================================================================
-        # 1. VIP SLIP: THE ULXRARE PAIRING (DIVERSITY MATCHMAKER)
+        # 🎫 SLIP 1: VIP ULXRARE PAIRING (2-LEGS)
         # ====================================================================
         st.markdown("### 🎫 SLIP 1: VIP ULXRARE PAIRING (2-LEGS)")
-        st.caption("Algoritma mencari 2 pemain dengan DNA statistik berbeda (Barbell Strategy) untuk menghindari over-korelasi.")
+        st.caption("Poros utama parlay hari ini. 2 Pemain terbaik dengan kombinasi Connection + Diversity tertinggi.")
         
-        survivors = df_matrix_global[df_matrix_global['Conn_Score'] >= 3].to_dict('records')
+        survivors_s1 = df_matrix_global[df_matrix_global['Conn_Score'] >= 3].to_dict('records')
         
-        if len(survivors) >= 2:
-            best_pair, max_ulx_score = None, -1
-            
-            for p1, p2 in itertools.combinations(survivors, 2):
+        best_pair, max_ulx_score = None, -1
+        if len(survivors_s1) >= 2:
+            for p1, p2 in itertools.combinations(survivors_s1, 2):
                 div_score = 0
                 if p1['Team'] != p2['Team']: div_score += 1
                 if p1.get('Home_Park', '') != p2.get('Home_Park', ''): div_score += 1
-                if p1.get('Archetype', '') != p2.get('Archetype', ''): div_score += 2 # Beda Tipe DNA = Aman!
+                if p1.get('Archetype', '') != p2.get('Archetype', ''): div_score += 2
                 if (p1.get('PF_Multiplier', 1.0) > 1.0) != (p2.get('PF_Multiplier', 1.0) > 1.0): div_score += 1
                 
                 ulx_score = (p1['Conn_Score'] + p2['Conn_Score']) * div_score
@@ -486,20 +488,96 @@ with tabs[6]:
                     
             if best_pair:
                 leg1, leg2, d_score = best_pair
-                st.success(f"🔥 **ULXRARE TICKET FOUND** (Match Score: {max_ulx_score} | Diversity: {d_score}/5)")
+                taken_vip_players.extend([leg1['Name'], leg2['Name']]) # Cekal pemain ini
+                
+                st.success(f"🔥 **VIP 2-LEGS FOUND** (Score: {max_ulx_score} | Diversity: {d_score}/5)")
                 c1, c2 = st.columns(2)
                 with c1:
-                    st.error(f"**LEG 1: {leg1['Name']}** ({leg1['Team']})")
-                    st.write(f"🧬 *DNA: {leg1['Archetype']} | Conn: {leg1['Conn_Score']}*")
-                    st.write(f"🏟️ *Park: {leg1.get('Home_Park', '')}*")
+                    st.error(f"**LEG 1: {leg1['Name']}** ({leg1['Team']}) ➔ *{leg1['Archetype']}*")
                 with c2:
-                    st.info(f"**LEG 2: {leg2['Name']}** ({leg2['Team']})")
-                    st.write(f"🧬 *DNA: {leg2['Archetype']} | Conn: {leg2['Conn_Score']}*")
-                    st.write(f"🏟️ *Park: {leg2.get('Home_Park', '')}*")
-            else: 
-                st.caption("Tidak ada kombinasi Diversity yang cukup aman (Coba turunkan batas minimal score).")
-        else: 
-            st.caption("Kandidat Hitter terlalu sedikit untuk membentuk sistem silang ULXRARE.")
+                    st.info(f"**LEG 2: {leg2['Name']}** ({leg2['Team']}) ➔ *{leg2['Archetype']}*")
+            else: st.caption("Tidak ada kombinasi 2-Leg yang memenuhi syarat aman.")
+        else: st.caption("Kandidat Hitter terlalu sedikit.")
+        
+        st.divider()
+
+        # ====================================================================
+        # 🎫 SLIP 1B: LOTTO ULXRARE PAIRING (3-LEGS - NO OVERLAP)
+        # ====================================================================
+        st.markdown("### 🎫 SLIP 1B: LOTTO ULXRARE PAIRING (3-LEGS)")
+        st.caption("Tiket sekunder berisiko menengah. Menggunakan pemain alternatif yang bersih dari Slip 1.")
+        
+        # Filter: Buang pemain yang sudah diambil di Slip 1
+        survivors_s1b = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].to_dict('records')
+        
+        best_trio, max_ulx_s1b = None, -1
+        if len(survivors_s1b) >= 3:
+            for p1, p2, p3 in itertools.combinations(survivors_s1b, 3):
+                # Hitung akumulasi keberagaman berpasangan (Pairwise Diversity)
+                div_score = 0
+                for combo in itertools.combinations([p1, p2, p3], 2):
+                    if combo[0]['Team'] != combo[1]['Team']: div_score += 1
+                    if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
+                    if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
+                
+                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score']
+                ulx_score = total_conn * div_score
+                
+                if ulx_score > max_ulx_s1b:
+                    max_ulx_s1b = ulx_score
+                    best_trio = (p1, p2, p3, div_score)
+                    
+            if best_trio:
+                l1, l2, l3, d_score_s1b = best_trio
+                taken_vip_players.extend([l1['Name'], l2['Name'], l3['Name']]) # Tambah ke daftar cekal
+                
+                st.success(f"☄️ **LOTTO 3-LEGS FOUND** (Score: {max_ulx_s1b} | Pairwise Diversity Index: {d_score_s1b})")
+                c1, c2, c3 = st.columns(3)
+                with c1: st.error(f"**LEG 1: {l1['Name']}** ({l1['Team']})")
+                with c2: st.info(f"**LEG 2: {l2['Name']}** ({l2['Team']})")
+                with c3: st.warning(f"**LEG 3: {l3['Name']}** ({l3['Team']})")
+            else: st.caption("Tidak ada kombinasi 3-Leg yang ideal.")
+        else: st.caption("Sisa pemain tidak cukup untuk diracik menjadi 3-Leg Lotto.")
+            
+        st.divider()
+
+        # ====================================================================
+        # 🎫 SLIP 1C: MEGA LOTTO ULTRA PROPS (5-LEGS - NO OVERLAP)
+        # ====================================================================
+        st.markdown("### 💣 SLIP 1C: MEGA LOTTO ULXRARE (5-LEGS)")
+        st.caption("Tiket High-Risk High-Reward (Boomer Slip). Pemain murni diambil dari sisa database yang belum terjamah.")
+        
+        # Filter: Buang semua pemain yang sudah dipakai di Slip 1 dan Slip 1B
+        survivors_s1c = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].to_dict('records')
+        
+        best_quad, max_ulx_s1c = None, -1
+        if len(survivors_s1c) >= 5:
+            for p1, p2, p3, p4, p5 in itertools.combinations(survivors_s1c, 5):
+                div_score = 0
+                for combo in itertools.combinations([p1, p2, p3, p4, p5], 2):
+                    if combo[0]['Team'] != combo[1]['Team']: div_score += 1
+                    if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
+                    if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
+                
+                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score'] + p4['Conn_Score'] + p5['Conn_Score']
+                ulx_score = total_conn * div_score
+                
+                if ulx_score > max_ulx_s1c:
+                    max_ulx_s1c = ulx_score
+                    best_quad = (p1, p2, p3, p4, p5, div_score)
+                    
+            if best_quad:
+                q1, q2, q3, q4, q5, d_score_s1c = best_quad
+                
+                st.success(f"🚀 **MEGA LOTTO 5-LEGS DEPLOYED** (Score: {max_ulx_s1c} | Pairwise Diversity Index: {d_score_s1c})")
+                c1, c2, c3, c4, c5 = st.columns(5)
+                with c1: st.error(f"**LEG 1: {q1['Name']}** ({q1['Team']})")
+                with c2: st.info(f"**LEG 2: {q2['Name']}** ({q2['Team']})")
+                with c3: st.warning(f"**LEG 3: {q3['Name']}** ({q3['Team']})")
+                with c4: st.success(f"**LEG 4: {q4['Name']}** ({q4['Team']})")
+                with c5: st.success(f"**LEG 5: {q5['Name']}** ({q5['Team']})")    
+            else: st.caption("Tidak ada kombinasi 5-Leg yang ideal.")
+        else: st.caption("Sisa pool data terlalu kritis, tidak aman dipaksakan bikin 5-Leg.")
             
         st.divider()
 
