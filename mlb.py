@@ -166,15 +166,64 @@ def run_scoring_matrix(df):
 df_matrix_global = run_scoring_matrix(today_hitters)
 
 # ====================================================================
-# SUNTIK FUNGSI GET LIVE BOXSCORE LU DI SINI WAK 👇
+# FUNGSI LIVE BOXSCORE (FULL CODE, TINGGAL PASTE)
 # ====================================================================
-@st.cache_data(ttl=60) # Biar nggak spam API tiap detik, cache 60 detik
-def get_live_boxscore(game_id, away_t, home_t):
-    # ... (Isi kode fungsi get_live_boxscore lu yang lama) ...
-        live_h = pd.DataFrame()
-        live_p = pd.DataFrame()
-        return live_h, live_p
+@st.cache_data(ttl=60)
+def get_live_boxscore(game_id, away_team, home_team):
+    import pandas as pd
+    if not game_id or game_id == 0:
+        return pd.DataFrame(), pd.DataFrame()
+        
+    url = f"https://statsapi.mlb.com/api/v1/game/{game_id}/boxscore"
+    try:
+        resp = requests.get(url, timeout=10)
+        data = resp.json()
+        
+        hitter_rows = []
+        pitcher_rows = []
+        
+        teams_data = {
+            away_team: data.get('teams', {}).get('away', {}).get('players', {}),
+            home_team: data.get('teams', {}).get('home', {}).get('players', {})
+        }
+        
+        for team_name, players in teams_data.items():
+            for p_id, p_info in players.items():
+                name = p_info['person']['fullName']
+                stats = p_info.get('stats', {})
+                
+                # Ekstrak data Hitters (Pemukul)
+                if 'batting' in stats and stats['batting'].get('plateAppearances', 0) > 0:
+                    b = stats['batting']
+                    tb = b.get('hits', 0) + b.get('doubles', 0) + (b.get('triples', 0)*2) + (b.get('homeRuns', 0)*3)
+                    hitter_rows.append({
+                        'Team': team_name,
+                        'Name': name,
+                        'H': b.get('hits', 0),
+                        'HR': b.get('homeRuns', 0),
+                        'R': b.get('runs', 0),
+                        'RBI': b.get('rbi', 0),
+                        'TB': tb
+                    })
+                    
+                # Ekstrak data Pitchers (Pelempar)
+                if 'pitching' in stats and float(stats['pitching'].get('inningsPitched', '0.0')) > 0:
+                    p = stats['pitching']
+                    pitcher_rows.append({
+                        'Team': team_name,
+                        'Name': name,
+                        'IP': p.get('inningsPitched', '0.0'),
+                        'H Allowed': p.get('hits', 0),
+                        'R Allowed': p.get('runs', 0),
+                        'SO': p.get('strikeOuts', 0)
+                    })
+                    
+        df_h = pd.DataFrame(hitter_rows)
+        df_p = pd.DataFrame(pitcher_rows)
+        return df_h, df_p
+        
     except Exception as e:
+        # Kalau gagal narik data (misal game belum main), balikin tabel kosong biar app nggak crash
         return pd.DataFrame(), pd.DataFrame()
 
 # ====================================================================
