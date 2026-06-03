@@ -171,8 +171,11 @@ df_matrix_global = run_scoring_matrix(today_hitters)
 @st.cache_data(ttl=60) # Biar nggak spam API tiap detik, cache 60 detik
 def get_live_boxscore(game_id, away_t, home_t):
     # ... (Isi kode fungsi get_live_boxscore lu yang lama) ...
-    # Pastikan outputnya nge-return live_h, live_p
-    # return live_h, live_p
+        live_h = pd.DataFrame()
+        live_p = pd.DataFrame()
+        return live_h, live_p
+    except Exception as e:
+        return pd.DataFrame(), pd.DataFrame()
 
 # ====================================================================
 # 5. NAVIGASI TABS (Sekarang ada 8 Tab)
