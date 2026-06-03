@@ -629,7 +629,7 @@ with tabs[7]:
     st.caption("Visualisasi Hitter yang lolos filtrasi mematikan secara bersamaan.")
     
     if not df_matrix_global.empty:
-        alphas = df_matrix_global[(df_matrix_global['Conn_Score'] >= 5) & (df_matrix_global['Archetype'] == "🌟 SUPERSTAR (Core)")]
+        alphas = df_matrix_global[(df_matrix_global['Conn_Score'] >= 4) & (df_matrix_global['Archetype'] == "🌟 SUPERSTAR (Core)")]
         st.subheader("👑 KLASTER 1: THE ALPHAS (High Floor, High Ceiling)")
         if not alphas.empty:
             st.dataframe(alphas[['Name', 'Team', 'Conn_Score', 'Adj_Barrel', 'Adj_xwOBA', 'Home_Park']], use_container_width=True)
