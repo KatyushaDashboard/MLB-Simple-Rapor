@@ -5,7 +5,7 @@
         "home_team": "Washington Nationals",
         "away_pitcher": "Max Meyer",
         "home_pitcher": "Andrew Alvarez",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 822973,
@@ -13,7 +13,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Troy Melton",
         "home_pitcher": "Nick Martinez",
-        "status": "Scheduled"
+        "status": "Final"
     },
     {
         "game_id": 823701,
@@ -21,7 +21,7 @@
         "home_team": "Minnesota Twins",
         "away_pitcher": "Erick Fedde",
         "home_pitcher": "Taj Bradley",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 823130,
@@ -29,7 +29,7 @@
         "home_team": "Seattle Mariners",
         "away_pitcher": "Freddy Peralta",
         "home_pitcher": "George Kirby",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 823456,
@@ -37,7 +37,7 @@
         "home_team": "Philadelphia Phillies",
         "away_pitcher": "Walker Buehler",
         "home_pitcher": "Cristopher S\u00e1nchez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824755,
@@ -45,7 +45,7 @@
         "home_team": "Boston Red Sox",
         "away_pitcher": "Chris Bassitt",
         "home_pitcher": "Payton Tolle",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823540,
@@ -53,7 +53,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Gavin Williams",
         "home_pitcher": "Gerrit Cole",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824509,
@@ -61,7 +61,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "Stephen Kolek",
         "home_pitcher": "Chase Burns",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824917,
@@ -69,7 +69,7 @@
         "home_team": "Atlanta Braves",
         "away_pitcher": "Patrick Corbin",
         "home_pitcher": "Grant Holmes",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823780,
