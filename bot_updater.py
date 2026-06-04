@@ -233,6 +233,72 @@ def update_advanced_metrics(games_list):
     print("✅ Sukses: 'l30_pitchers.json' berhasil dimigrasi ke Last 45 Days Engine!")
 
 # ==========================================
+# 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (STATCAST & L14)
+# ==========================================
+def generate_master_hitter_csv():
+    print("🏏 Mengekstrak Data Hitter Statcast (Full Season & L14 Form)...")
+    try:
+        from pybaseball import batting_stats
+        from datetime import datetime, timedelta
+        
+        now = datetime.now()
+        l14_date = now - timedelta(days=14)
+        
+        print("⏳ Download Full Season Statcast dari FanGraphs...")
+        # Ambil data musim ini, syarat minimal 20 Plate Appearances (biar pemain cadangan mati ga masuk)
+        df_season = batting_stats(2026, qual=20)
+        
+        print("⏳ Download Last 14 Days Form...")
+        # Ambil form terkini (rentang 14 hari terakhir)
+        df_l14 = batting_stats(start_dt=l14_date.strftime('%Y-%m-%d'), end_dt=now.strftime('%Y-%m-%d'), qual=5)
+
+        # Standarisasi Singkatan Tim (FanGraphs pakai singkatan 3 huruf beda untuk beberapa tim)
+        fg_to_mlb = {"TBR": "TB", "CHW": "CWS", "KCR": "KC", "SDP": "SD", "SFG": "SF", "WSN": "WSH"}
+        df_season['Team'] = df_season['Team'].replace(fg_to_mlb)
+        if not df_l14.empty:
+            df_l14['Team'] = df_l14['Team'].replace(fg_to_mlb)
+
+        # Gabungkan ke DataFrame baru sesuai format cetak biru Tab 2 lu
+        df_clean = pd.DataFrame()
+        df_clean['Name'] = df_season['Name']
+        df_clean['Team'] = df_season['Team']
+        
+        # Ekstrak Metrik Statcast Murni
+        df_clean['xBA'] = df_season.get('xBA', df_season.get('AVG', 0.250))
+        df_clean['xSLG'] = df_season.get('xSLG', df_season.get('SLG', 0.400))
+        df_clean['xwOBA'] = df_season.get('xwOBA', df_season.get('wOBA', 0.320))
+        df_clean['Barrel%'] = df_season.get('Barrel%', 0.0)
+        df_clean['HardHit%'] = df_season.get('HardHit%', 35.0)
+        df_clean['Max EV'] = df_season.get('maxEV', 105.0)
+
+        # Split Baseline (pakai rata-rata xwOBA sebagai proxy sementara untuk kecepatan)
+        df_clean['xwOBA_vs_R'] = df_clean['xwOBA'] 
+        df_clean['xwOBA_vs_L'] = df_clean['xwOBA']
+
+        # ⚡ INJEKSI FORM TERKINI (L14 DAYS) ⚡
+        if not df_l14.empty:
+            l14_woba_dict = dict(zip(df_l14['Name'], df_l14.get('xwOBA', df_l14.get('wOBA', 0.320))))
+            l14_pa_dict = dict(zip(df_l14['Name'], df_l14['PA']))
+            
+            # Kalau di 14 hari terakhir dia main, masukin statnya. Kalau cedera/absen, pakai stat season.
+            df_clean['xwOBA_L14'] = df_clean['Name'].map(l14_woba_dict).fillna(df_clean['xwOBA'])
+            df_clean['PA_L14'] = df_clean['Name'].map(l14_pa_dict).fillna(0)
+        else:
+            df_clean['xwOBA_L14'] = df_clean['xwOBA']
+            df_clean['PA_L14'] = 0
+
+        # Kolom dummy Batting Order (nanti diisi oleh fungsi Live di app.py lu)
+        df_clean['Batting'] = 0 
+
+        # Cetak jadi CSV baru
+        df_clean.to_csv('master_hitter_2026.csv', index=False)
+        print("✅ BOOM! master_hitter_2026.csv berhasil di-update dengan Statcast & L14 Form!")
+
+    except Exception as e:
+        print(f"❌ Gagal update hitter CSV: {e}")
+        print("💡 Pastikan 'pybaseball' udah lu masukin di requirements.txt!")
+
+# ==========================================
 # 5. INIT DAILY PICKS LOG
 # ==========================================
 def init_daily_picks_log():
@@ -316,5 +382,6 @@ if __name__ == "__main__":
     if games:
         update_advanced_metrics(games)
         generate_master_pitcher_csv(games)
+        generate_master_hitter_csv()
     init_daily_picks_log()
     print("🎯 Bot Updater Selesai Dieksekusi. Semua data riil siap di-deploy!")
