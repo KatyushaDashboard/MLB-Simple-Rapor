@@ -5,7 +5,7 @@
         "home_team": "Philadelphia Phillies",
         "away_pitcher": "Lucas Giolito",
         "home_pitcher": "Zack Wheeler",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 824753,
@@ -13,7 +13,7 @@
         "home_team": "Boston Red Sox",
         "away_pitcher": "Trevor Rogers",
         "home_pitcher": "Brayan Bello",
-        "status": "Pre-Game"
+        "status": "Warmup"
     },
     {
         "game_id": 823542,
@@ -21,7 +21,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Slade Cecconi",
         "home_pitcher": "Carlos Rod\u00f3n",
-        "status": "Scheduled"
+        "status": "Warmup"
     },
     {
         "game_id": 823779,
@@ -29,7 +29,7 @@
         "home_team": "Milwaukee Brewers",
         "away_pitcher": "Adrian Houser",
         "home_pitcher": "Coleman Crow",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824919,

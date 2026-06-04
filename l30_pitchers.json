@@ -1,28 +1,28 @@
 {
     "Lucas Giolito": {
         "season": {
-            "ERA": 4.97,
-            "HR/9": 1.42,
-            "FB%": 67.9,
-            "Status": "Vulnerable"
+            "ERA": 4.4,
+            "HR/9": 1.26,
+            "FB%": 66.7,
+            "Status": "Average"
         },
         "l45": {
-            "ERA": 4.97,
-            "HR/9": 1.42,
-            "Starts": 3
+            "ERA": 4.4,
+            "HR/9": 1.26,
+            "Starts": 4
         }
     },
     "Zack Wheeler": {
         "season": {
-            "ERA": 2.27,
-            "HR/9": 1.03,
-            "FB%": 50.0,
+            "ERA": 2.17,
+            "HR/9": 0.99,
+            "FB%": 51.7,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.27,
-            "HR/9": 1.03,
-            "Starts": 7
+            "ERA": 2.17,
+            "HR/9": 0.99,
+            "Starts": 8
         }
     },
     "Trevor Rogers": {
