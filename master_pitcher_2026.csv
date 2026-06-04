@@ -1,18 +1,18 @@
-Name,Team,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Lucas Giolito,San Diego Padres,2,0,4.97,12.7,4.26,8.53,7.11,1.42,1.74,0.227,67.9
-Zack Wheeler,Philadelphia Phillies,4,1,2.27,43.7,8.24,1.85,5.77,1.03,0.85,0.183,50.0
-Trevor Rogers,Baltimore Orioles,2,6,6.84,48.7,7.03,3.33,10.73,1.48,1.56,0.291,59.0
-Brayan Bello,Boston Red Sox,2,5,5.63,56.0,6.43,3.38,11.41,1.61,1.64,0.307,41.1
-Slade Cecconi,Cleveland Guardians,3,5,5.25,61.7,7.3,2.92,10.51,1.31,1.49,0.294,52.0
-Carlos Rodón,New York Yankees,1,2,3.32,19.0,9.47,6.16,5.68,0.47,1.32,0.185,45.7
-Adrian Houser,San Francisco Giants,2,5,5.59,56.3,5.59,3.36,10.7,1.44,1.56,0.293,43.5
-Coleman Crow,Milwaukee Brewers,0,0,3.14,14.3,5.02,1.88,6.91,0.63,0.98,0.212,60.0
-Chris Sale,Atlanta Braves,8,3,2.01,67.0,10.75,2.28,6.18,0.81,0.94,0.192,50.9
-Seth Lugo,Kansas City Royals,2,4,3.55,71.0,7.61,2.92,9.25,0.51,1.35,0.269,55.6
-Andrew Morris,Minnesota Twins,1,2,4.07,24.3,8.14,3.33,10.36,0.37,1.52,0.286,56.0
-J.T. Ginn,Athletics,3,3,2.87,59.7,7.84,3.92,6.34,0.91,1.14,0.2,44.9
-Shota Imanaga,Chicago Cubs,4,6,4.37,70.0,8.87,2.31,7.33,1.67,1.07,0.218,56.9
-Jared Jones,Pittsburgh Pirates,0,0,10.38,4.3,12.46,4.15,14.54,4.15,2.08,0.368,50.0
-Kai-Wei Teng,Houston Astros,3,3,2.57,42.0,9.21,4.07,5.79,1.07,1.1,0.185,50.0
-Justin Wrobleski,Los Angeles Dodgers,7,2,2.87,62.7,5.74,2.01,7.04,0.57,1.01,0.21,61.4
-Ryne Nelson,Arizona Diamondbacks,2,4,4.82,65.3,7.16,2.62,8.13,2.07,1.19,0.232,68.3
+Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
+Lucas Giolito,San Diego Padres,3,2,0,4.97,12.7,4.26,8.53,7.11,1.42,1.74,0.227,67.9
+Zack Wheeler,Philadelphia Phillies,7,4,1,2.27,43.7,8.24,1.85,5.77,1.03,0.85,0.183,50.0
+Trevor Rogers,Baltimore Orioles,10,2,6,6.84,48.7,7.03,3.33,10.73,1.48,1.56,0.291,59.0
+Brayan Bello,Boston Red Sox,7,2,5,5.63,56.0,6.43,3.38,11.41,1.61,1.64,0.307,41.1
+Slade Cecconi,Cleveland Guardians,12,3,5,5.25,61.7,7.3,2.92,10.51,1.31,1.49,0.294,52.0
+Carlos Rodón,New York Yankees,4,1,2,3.32,19.0,9.47,6.16,5.68,0.47,1.32,0.185,45.7
+Adrian Houser,San Francisco Giants,11,2,5,5.59,56.3,5.59,3.36,10.7,1.44,1.56,0.293,43.5
+Coleman Crow,Milwaukee Brewers,3,0,0,3.14,14.3,5.02,1.88,6.91,0.63,0.98,0.212,60.0
+Chris Sale,Atlanta Braves,11,8,3,2.01,67.0,10.75,2.28,6.18,0.81,0.94,0.192,50.9
+Seth Lugo,Kansas City Royals,12,2,4,3.55,71.0,7.61,2.92,9.25,0.51,1.35,0.269,55.6
+Andrew Morris,Minnesota Twins,1,1,2,4.07,24.3,8.14,3.33,10.36,0.37,1.52,0.286,56.0
+J.T. Ginn,Athletics,10,3,3,2.87,59.7,7.84,3.92,6.34,0.91,1.14,0.2,44.9
+Shota Imanaga,Chicago Cubs,12,4,6,4.37,70.0,8.87,2.31,7.33,1.67,1.07,0.218,56.9
+Jared Jones,Pittsburgh Pirates,1,0,0,10.38,4.3,12.46,4.15,14.54,4.15,2.08,0.368,50.0
+Kai-Wei Teng,Houston Astros,5,3,3,2.57,42.0,9.21,4.07,5.79,1.07,1.1,0.185,50.0
+Justin Wrobleski,Los Angeles Dodgers,9,7,2,2.87,62.7,5.74,2.01,7.04,0.57,1.01,0.21,61.4
+Ryne Nelson,Arizona Diamondbacks,12,2,4,4.82,65.3,7.16,2.62,8.13,2.07,1.19,0.232,68.3
