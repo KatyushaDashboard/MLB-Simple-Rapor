@@ -240,8 +240,9 @@ def init_daily_picks_log():
         with open('daily_picks_log.json', 'w') as f:
             json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
         print("✅ Sukses: Inisialisasi 'daily_picks_log.json'")
-
-# Update CSV
+# ===============================
+# 5B. Update CSV Master Pitcher 
+# ===============================
 def generate_master_pitcher_csv(games_list):
     print("📊 Mengekstrak Advanced Metrics & Membuat master_pitcher_2026.csv...")
     pitcher_rows = []
@@ -275,6 +276,7 @@ def generate_master_pitcher_csv(games_list):
                 return {
                     'Name': pitcher_name,
                     'Team': team_name,
+                    'GS': p.get('gamesStarted', 0), # Tambahin baris ini
                     'W': p.get('wins', 0),
                     'L': p.get('losses', 0),
                     'ERA': float(p.get('era', '4.15') if p.get('era') != '-.--' else 4.15),
