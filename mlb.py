@@ -229,7 +229,7 @@ def get_live_boxscore(game_id, away_abbr, home_abbr):
     except: return pd.DataFrame(), pd.DataFrame()
 
 # SUNTIK BARIS INI TEPAT DI ATAS FUNGSI YANG ERROR WAK 👇
-mlb_date_str = selected_date.strftime('%Y-%m-%d') 
+mlb_date_str = selected_date.strftime('%m/%d/%Y') 
 
 # Baris lama lu yang error kemaren biarin di bawahnya
 playing_teams, today_matchups, player_team_map, game_details = get_daily_schedule(mlb_date_str)
