@@ -1,1 +1,110 @@
-
+{
+    "Lucas Giolito": {
+        "ERA": 4.97,
+        "HR/9": 1.42,
+        "FB%": 67.9,
+        "Status": "Vulnerable"
+    },
+    "Zack Wheeler": {
+        "ERA": 2.27,
+        "HR/9": 1.03,
+        "FB%": 50.0,
+        "Status": "Elite"
+    },
+    "Trevor Rogers": {
+        "ERA": 6.84,
+        "HR/9": 1.48,
+        "FB%": 59.0,
+        "Status": "Vulnerable"
+    },
+    "Brayan Bello": {
+        "ERA": 5.63,
+        "HR/9": 1.61,
+        "FB%": 41.1,
+        "Status": "Vulnerable"
+    },
+    "Slade Cecconi": {
+        "ERA": 5.25,
+        "HR/9": 1.31,
+        "FB%": 52.0,
+        "Status": "Vulnerable"
+    },
+    "Carlos Rod\u00f3n": {
+        "ERA": 3.32,
+        "HR/9": 0.47,
+        "FB%": 45.7,
+        "Status": "Elite"
+    },
+    "Adrian Houser": {
+        "ERA": 5.59,
+        "HR/9": 1.44,
+        "FB%": 43.5,
+        "Status": "Vulnerable"
+    },
+    "Coleman Crow": {
+        "ERA": 3.14,
+        "HR/9": 0.63,
+        "FB%": 60.0,
+        "Status": "Elite"
+    },
+    "": {
+        "ERA": 4.0,
+        "HR/9": 1.0,
+        "FB%": 30.0,
+        "Status": "Average"
+    },
+    "Chris Sale": {
+        "ERA": 2.01,
+        "HR/9": 0.81,
+        "FB%": 50.9,
+        "Status": "Elite"
+    },
+    "Seth Lugo": {
+        "ERA": 3.55,
+        "HR/9": 0.51,
+        "FB%": 55.6,
+        "Status": "Average"
+    },
+    "Andrew Morris": {
+        "ERA": 4.07,
+        "HR/9": 0.37,
+        "FB%": 56.0,
+        "Status": "Average"
+    },
+    "J.T. Ginn": {
+        "ERA": 2.87,
+        "HR/9": 0.91,
+        "FB%": 44.9,
+        "Status": "Elite"
+    },
+    "Shota Imanaga": {
+        "ERA": 4.37,
+        "HR/9": 1.67,
+        "FB%": 56.9,
+        "Status": "Average"
+    },
+    "Jared Jones": {
+        "ERA": 10.38,
+        "HR/9": 4.15,
+        "FB%": 50.0,
+        "Status": "Vulnerable"
+    },
+    "Kai-Wei Teng": {
+        "ERA": 2.57,
+        "HR/9": 1.07,
+        "FB%": 50.0,
+        "Status": "Elite"
+    },
+    "Justin Wrobleski": {
+        "ERA": 2.87,
+        "HR/9": 0.57,
+        "FB%": 61.4,
+        "Status": "Elite"
+    },
+    "Ryne Nelson": {
+        "ERA": 4.82,
+        "HR/9": 2.07,
+        "FB%": 68.3,
+        "Status": "Vulnerable"
+    }
+}
