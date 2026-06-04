@@ -111,23 +111,49 @@ def fetch_today_schedule(date_str):
 # 4. FUNGSI BARU: ADVANCED METRICS (REAL DATA)
 # ==========================================
 def update_advanced_metrics(games_list):
-    print("⚙️ Mengekstrak Data Pitcher ERA & Proyeksi Team Total (Real API)...")
+    print("⚙️ Mengekstrak Data Pitcher ERA, HR/9, FB% & Proyeksi Team Total...")
     team_totals = {}
     pitchers_data = {}
 
-    def get_real_era(pitcher_name):
-        if pitcher_name == "TBD" or not pitcher_name: return 4.00
+    def get_pitcher_metrics(pitcher_name):
+        # Default fallback kalau pitcher TBD atau data gagal ditarik
+        if pitcher_name == "TBD" or not pitcher_name: return (4.00, 1.0, 30.0) 
+        
         try:
             players = statsapi.lookup_player(pitcher_name)
             if players:
                 p_id = players[0]['id']
-                stats = statsapi.player_stat_data(p_id, group="pitching", type="season")
-                era_str = stats.get('stats', [{}])[0].get('stats', {}).get('era', '4.00')
-                if era_str == '-.--': return 4.00
-                return float(era_str)
-        except:
+                stats_data = statsapi.player_stat_data(p_id, group="pitching", type="season")
+                
+                if stats_data and 'stats' in stats_data and len(stats_data['stats']) > 0:
+                    p_stats = stats_data['stats'][0].get('stats', {})
+                    
+                    # 1. Tarik ERA
+                    era_str = p_stats.get('era', '4.00')
+                    era = float(era_str) if era_str != '-.--' else 4.00
+                    
+                    # 2. Hitung HR/9 Manual: (HR / Innings Pitched) * 9
+                    hr_allowed = int(p_stats.get('homeRuns', 0))
+                    ip_str = str(p_stats.get('inningsPitched', '0.0'))
+                    ip_parts = ip_str.split('.')
+                    ip = float(ip_parts[0])
+                    if len(ip_parts) > 1:
+                        ip += (float(ip_parts[1]) / 3.0)
+                    
+                    hr9 = (hr_allowed / ip) * 9 if ip > 0 else 1.0
+                    
+                    # 3. Hitung FB% Proxy Manual: AirOuts / (AirOuts + GroundOuts)
+                    air_outs = int(p_stats.get('airOuts', 0))
+                    ground_outs = int(p_stats.get('groundOuts', 0))
+                    total_outs = air_outs + ground_outs
+                    fb_pct = (air_outs / total_outs) * 100 if total_outs > 0 else 30.0
+                    
+                    return (era, hr9, fb_pct)
+        except Exception as e:
+            print(f"⚠️ Gagal narik metrik detail untuk {pitcher_name}: {e}")
             pass
-        return 4.00 # Default kalau API gagal narik nama
+            
+        return (4.00, 1.0, 30.0) # Kembalikan default jika error
 
     for g in games_list:
         away_p = g['away_pitcher']
@@ -135,22 +161,33 @@ def update_advanced_metrics(games_list):
         away_team = g['away_team']
         home_team = g['home_team']
 
-        # Tarik ERA aktual
-        away_era = get_real_era(away_p)
-        home_era = get_real_era(home_p)
+        # Eksekusi penarikan metrik detail
+        away_era, away_hr9, away_fb = get_pitcher_metrics(away_p)
+        home_era, home_hr9, home_fb = get_pitcher_metrics(home_p)
 
-        pitchers_data[away_p] = {"ERA": away_era, "Status": "Elite" if away_era < 3.5 else ("Vulnerable" if away_era > 4.5 else "Average")}
-        pitchers_data[home_p] = {"ERA": home_era, "Status": "Elite" if home_era < 3.5 else ("Vulnerable" if home_era > 4.5 else "Average")}
+        # Simpan ke memori dictionary
+        pitchers_data[away_p] = {
+            "ERA": away_era, 
+            "HR/9": round(away_hr9, 2),
+            "FB%": round(away_fb, 1),
+            "Status": "Elite" if away_era < 3.5 else ("Vulnerable" if away_era > 4.5 else "Average")
+        }
+        pitchers_data[home_p] = {
+            "ERA": home_era, 
+            "HR/9": round(home_hr9, 2),
+            "FB%": round(home_fb, 1),
+            "Status": "Elite" if home_era < 3.5 else ("Vulnerable" if home_era > 4.5 else "Average")
+        }
 
-        # Proyeksi Team Totals berdasarkan ERA Pitcher lawan
         team_totals[away_team] = home_era
         team_totals[home_team] = away_era
 
+    # Tulis hasil tambang ke file JSON
     with open('team_totals.json', 'w') as f:
         json.dump(team_totals, f, indent=4)
     with open('l30_pitchers.json', 'w') as f:
         json.dump(pitchers_data, f, indent=4)
-    print("✅ Sukses: File Advanced Metrics riil berhasil di-generate!")
+    print("✅ Sukses: File l30_pitchers.json berhasil di-update dengan HR/9 & FB%!")
 
 # ==========================================
 # 5. INIT DAILY PICKS LOG
