@@ -127,6 +127,7 @@ if not today_hitters.empty and 'Barrel%' in today_hitters.columns and 'xwOBA' in
 # ====================================================================
 # 4. ENGINE BARU: THE MULTI-SCREEN SCORING MATRIX
 # ====================================================================
+@st.cache_data(ttl=3600)
 def run_scoring_matrix(df):
     if df.empty: return df
     df_matrix = df.copy()
@@ -427,28 +428,79 @@ with tabs[4]:
                             st.write(f"🔥 **{p_name} (SP)**: K: {p_stat['strikeouts_pitcher']}")
                 st.divider()
 
+# ====================================================================
+# TAB 6: MATCH & TEAM MARKET TERMINAL (PYTHAGOREAN ENGINE)
+# ====================================================================
 with tabs[5]:
     st.header("🏪 Match & Team Market Terminal")
-    st.caption("SOP: Pemetaan nilai Moneyline, Handicap, dan Distribusi Extra Bases.")
+    st.caption("SOP: Proyeksi Moneyline dan O/U menggunakan Pythagorean Expectation, SP xERA, dan Park Factor.")
+    
     if isinstance(today_schedule, list) and not df_hitters.empty:
-        market_rows, team_spec_rows = [], []
+        market_rows = []
         for game in today_schedule:
-            h_away = df_hitters[df_hitters['Team'] == game['away_team']]
-            h_home = df_hitters[df_hitters['Team'] == game['home_team']]
-            p_era_away = get_pitcher_era(game['away_team'])
-            p_era_home = get_pitcher_era(game['home_team'])
+            away_t = game['away_team']
+            home_t = game['home_team']
+            
+            # 1. Ambil Kualitas Hitter (xwOBA)
+            h_away = df_hitters[df_hitters['Team'] == away_t]
+            h_home = df_hitters[df_hitters['Team'] == home_t]
+            score_away = h_away['xwOBA_L14'].mean() if 'xwOBA_L14' in h_away.columns else (h_away['xwOBA'].mean() if not h_away.empty else 0.315)
+            score_home = h_home['xwOBA_L14'].mean() if 'xwOBA_L14' in h_home.columns else (h_home['xwOBA'].mean() if not h_home.empty else 0.315)
 
-            score_away = h_away['xwOBA_vs_R'].mean() if 'xwOBA_vs_R' in df_hitters.columns and not h_away.empty else 0.320
-            score_home = h_home['xwOBA_vs_R'].mean() if 'xwOBA_vs_R' in df_hitters.columns and not h_home.empty else 0.320
+            # 2. Ambil Kualitas Pitching (Pemisahan SP dan Bullpen)
+            # Karena belum ada data spesifik per SP di JSON jadwal lu, kita pakai fallback pintar
+            # Asumsi: get_pitcher_era mewakili ERA tim keseluruhan (Bullpen proxy)
+            team_era_away = get_pitcher_era(away_t)
+            team_era_home = get_pitcher_era(home_t)
+            
+            # Cari ERA SP spesifik dari df_pitchers jika ada
+            sp_away_name = game.get('away_pitcher', 'TBD')
+            sp_home_name = game.get('home_pitcher', 'TBD')
+            
+            sp_away_df = df_pitchers[df_pitchers['Name'] == sp_away_name] if not df_pitchers.empty else pd.DataFrame()
+            sp_home_df = df_pitchers[df_pitchers['Name'] == sp_home_name] if not df_pitchers.empty else pd.DataFrame()
+            
+            sp_era_away = sp_away_df['ERA'].values[0] if not sp_away_df.empty else team_era_away
+            sp_era_home = sp_home_df['ERA'].values[0] if not sp_home_df.empty else team_era_home
+            
+            # Bobot Pitching: 60% Starter, 40% Bullpen
+            true_pitch_away = (sp_era_away * 0.6) + (team_era_away * 0.4)
+            true_pitch_home = (sp_era_home * 0.6) + (team_era_home * 0.4)
 
-            diff = (score_away - (p_era_home / 15)) - (score_home - (p_era_away / 15))
-            fav, dog, win_prob = (game['away_team'], game['home_team'], min(round(55 + (abs(diff) * 150), 1), 78.0)) if diff > 0 else (game['home_team'], game['away_team'], min(round(55 + (abs(diff) * 150), 1), 78.0))
-            hc_rec = f"{fav} -1.5" if win_prob >= 62.0 else f"{dog} +1.5"
-            proj_r_a = round((score_away * 12) * (p_era_home / 4.00), 1)
-            proj_r_h = round((score_home * 12) * (p_era_away / 4.00), 1)
+            # 3. Faktor Lingkungan
+            park_mult = PARK_FACTORS.get(home_t, 1.00)
 
-            market_rows.append({'Match': f"{game['away_team']} @ {game['home_team']}", '🔥 Moneyline Pred': f"{fav} ({win_prob}%)", '📐 Runline': hc_rec, '📊 O/U Total': round(proj_r_a + proj_r_h, 1)})
+            # 4. Proyeksi Runs (BaseRuns Logic)
+            # Normalisasi rata-rata OBA liga = 0.315, rata-rata ERA = 4.10
+            proj_r_a = (score_away / 0.315) * true_pitch_home * park_mult
+            proj_r_home = (score_home / 0.315) * true_pitch_away * park_mult
+
+            # 5. Pythagorean Win Probability (Eksponen 1.83 adalah standar MLB)
+            pyth_away = (proj_r_a**1.83) / (proj_r_a**1.83 + proj_r_home**1.83)
+            pyth_home = (proj_r_home**1.83) / (proj_r_a**1.83 + proj_r_home**1.83)
+            
+            win_prob_away = round(pyth_away * 100, 1)
+            win_prob_home = round(pyth_home * 100, 1)
+            
+            if win_prob_away > win_prob_home:
+                fav, dog, wp = away_t, home_t, win_prob_away
+            else:
+                fav, dog, wp = home_t, away_t, win_prob_home
+
+            # 6. Rekomendasi Handicap (Runline)
+            hc_rec = f"{fav} -1.5" if wp >= 58.0 else f"{dog} +1.5"
+            
+            market_rows.append({
+                'Match': f"{away_t} (SP: {sp_away_name}) @ {home_t} (SP: {sp_home_name})", 
+                '🔥 Moneyline Pred': f"{fav} ({wp}%)", 
+                '📐 Runline': hc_rec, 
+                '📊 Proj Total': round(proj_r_a + proj_r_home, 1),
+                '📝 Run Splitz': f"{away_t} {round(proj_r_a, 1)} - {round(proj_r_home, 1)} {home_t}"
+            })
+            
         st.dataframe(pd.DataFrame(market_rows), hide_index=True, use_container_width=True)
+    else:
+        st.warning("Data Hitter atau Jadwal belum siap.")
 
 # ====================================================================
 # TAB 7: CROSS-GAME PARLAY & MASTER SLIPS (THE ULTIMATE BOMB SQUAD)
@@ -508,7 +560,7 @@ with tabs[6]:
         st.caption("Tiket sekunder berisiko menengah. Menggunakan pemain alternatif yang bersih dari Slip 1.")
 
         # Filter: Buang pemain yang sudah diambil di Slip 1
-        survivors_s1b = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].to_dict('records')
+        survivors_s1b = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].head(20).to_dict('records')
 
         best_trio, max_ulx_s1b = None, -1
         if len(survivors_s1b) >= 3:
@@ -538,6 +590,45 @@ with tabs[6]:
                 with c3: st.warning(f"**LEG 3: {l3['Name']}** ({l3['Team']})")
             else: st.caption("Tidak ada kombinasi 3-Leg yang ideal.")
         else: st.caption("Sisa pemain tidak cukup untuk diracik menjadi 3-Leg Lotto.")
+
+        st.divider()
+
+        # ====================================================================
+        # 🎫 SLIP 1C: MEGA LOTTO ULTRA PROPS (4-LEGS - NO OVERLAP)
+        # ====================================================================
+        st.markdown("### 💣 SLIP 1C: MEGA LOTTO ULXRARE (4-LEGS)")
+        st.caption("Tiket High-Risk High-Reward (Boomer Slip). Pemain murni diambil dari sisa database yang belum terjamah.")
+        
+        # Filter: Buang semua pemain yang sudah dipakai di Slip 1 dan Slip 1B
+        survivors_s1c = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].head(20).to_dict('records')
+        
+        best_quad, max_ulx_s1c = None, -1
+        if len(survivors_s1c) >= 4:
+            for p1, p2, p3, p4 in itertools.combinations(survivors_s1c, 4):
+                div_score = 0
+                for combo in itertools.combinations([p1, p2, p3, p4], 2):
+                    if combo[0]['Team'] != combo[1]['Team']: div_score += 1
+                    if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
+                    if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
+                
+                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score'] + p4['Conn_Score']
+                ulx_score = total_conn * div_score
+                
+                if ulx_score > max_ulx_s1c:
+                    max_ulx_s1c = ulx_score
+                    best_quad = (p1, p2, p3, p4, div_score)
+                    
+            if best_quad:
+                q1, q2, q3, q4, d_score_s1c = best_quad
+                
+                st.success(f"🚀 **MEGA LOTTO 4-LEGS DEPLOYED** (Score: {max_ulx_s1c} | Pairwise Diversity Index: {d_score_s1c})")
+                c1, c2, c3, c4 = st.columns(4)
+                with c1: st.error(f"**LEG 1: {q1['Name']}** ({q1['Team']})")
+                with c2: st.info(f"**LEG 2: {q2['Name']}** ({q2['Team']})")
+                with c3: st.warning(f"**LEG 3: {q3['Name']}** ({q3['Team']})")
+                with c4: st.success(f"**LEG 4: {q4['Name']}** ({q4['Team']})")
+            else: st.caption("Tidak ada kombinasi 4-Leg yang ideal.")
+        else: st.caption("Sisa pool data terlalu kritis, tidak aman dipaksakan bikin 4-Leg.")
 
         st.divider()
 
