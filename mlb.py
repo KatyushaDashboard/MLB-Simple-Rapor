@@ -268,8 +268,7 @@ with tabs[0]:
     
     if not df_pitchers.empty:
         # 1. Tentukan urutan kolom ideal agar enak dilihat (Nama dan Tim di depan)
-        kolom_ideal = ['Name', 'Team', 'ERA', 'WHIP', 'K/9', 'BB/9', 'H/9', 'HR/9', 'FB%', 'IP', 'W', 'L']
-        
+        kolom_ideal = ['Name', 'Team', 'ERA', 'WHIP', 'K/9', 'BB/9', 'H/9', 'HR/9', 'FB%', 'IP', 'GS', 'W', 'L']
         # Ambil kolom yang benar-benar ada di CSV lu untuk mencegah crash
         available_cols = [c for c in kolom_ideal if c in df_pitchers.columns]
         df_display = df_pitchers[available_cols].copy()
