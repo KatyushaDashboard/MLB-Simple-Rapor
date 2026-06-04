@@ -108,52 +108,107 @@ def fetch_today_schedule(date_str):
         return []
 
 # ==========================================
-# 4. FUNGSI BARU: ADVANCED METRICS (REAL DATA)
+# 4. FUNGSI BARU: ADVANCED METRICS (SEASON + L45 DAYS HYBRID ENGINE)
 # ==========================================
 def update_advanced_metrics(games_list):
-    print("⚙️ Mengekstrak Data Pitcher ERA, HR/9, FB% & Proyeksi Team Total...")
+    print("⚙️ Menggali Data Pitcher: Full Season Baseline & Last 45 Days Current Form...")
     team_totals = {}
     pitchers_data = {}
 
-    def get_pitcher_metrics(pitcher_name):
-        # Default fallback kalau pitcher TBD atau data gagal ditarik
-        if pitcher_name == "TBD" or not pitcher_name: return (4.00, 1.0, 30.0) 
+    def get_pitcher_hybrid_metrics(pitcher_name):
+        default_season = {"ERA": 4.15, "HR/9": 1.0, "FB%": 30.0, "Status": "Average"}
+        default_l45 = {"ERA": 4.15, "HR/9": 1.0, "Starts": 0}
+        
+        if pitcher_name == "TBD" or not pitcher_name: 
+            return default_season, default_l45
         
         try:
             players = statsapi.lookup_player(pitcher_name)
-            if players:
-                p_id = players[0]['id']
-                stats_data = statsapi.player_stat_data(p_id, group="pitching", type="season")
-                
-                if stats_data and 'stats' in stats_data and len(stats_data['stats']) > 0:
-                    p_stats = stats_data['stats'][0].get('stats', {})
-                    
-                    # 1. Tarik ERA
-                    era_str = p_stats.get('era', '4.00')
-                    era = float(era_str) if era_str != '-.--' else 4.00
-                    
-                    # 2. Hitung HR/9 Manual: (HR / Innings Pitched) * 9
-                    hr_allowed = int(p_stats.get('homeRuns', 0))
-                    ip_str = str(p_stats.get('inningsPitched', '0.0'))
-                    ip_parts = ip_str.split('.')
-                    ip = float(ip_parts[0])
-                    if len(ip_parts) > 1:
-                        ip += (float(ip_parts[1]) / 3.0)
-                    
-                    hr9 = (hr_allowed / ip) * 9 if ip > 0 else 1.0
-                    
-                    # 3. Hitung FB% Proxy Manual: AirOuts / (AirOuts + GroundOuts)
-                    air_outs = int(p_stats.get('airOuts', 0))
-                    ground_outs = int(p_stats.get('groundOuts', 0))
-                    total_outs = air_outs + ground_outs
-                    fb_pct = (air_outs / total_outs) * 100 if total_outs > 0 else 30.0
-                    
-                    return (era, hr9, fb_pct)
-        except Exception as e:
-            print(f"⚠️ Gagal narik metrik detail untuk {pitcher_name}: {e}")
-            pass
+            if not players: return default_season, default_l45
+            p_id = players[0]['id']
             
-        return (4.00, 1.0, 30.0) # Kembalikan default jika error
+            # --- 1. AMBIL DATA FULL SEASON ---
+            season_data = statsapi.player_stat_data(p_id, group="pitching", type="season")
+            season_stats = default_season.copy()
+            
+            if season_data and 'stats' in season_data and len(season_data['stats']) > 0:
+                p_stats = season_data['stats'][0].get('stats', {})
+                era_str = p_stats.get('era', '4.15')
+                era = float(era_str) if era_str != '-.--' else 4.15
+                
+                hr_allowed = int(p_stats.get('homeRuns', 0))
+                ip_str = str(p_stats.get('inningsPitched', '0.0'))
+                ip_parts = ip_str.split('.')
+                ip = float(ip_parts[0]) + (float(ip_parts[1])/3.0 if len(ip_parts) > 1 else 0)
+                hr9 = (hr_allowed / ip) * 9 if ip > 0 else 1.0
+                
+                air_outs = int(p_stats.get('airOuts', 0))
+                ground_outs = int(p_stats.get('groundOuts', 0))
+                total_outs = air_outs + ground_outs
+                fb_pct = (air_outs / total_outs) * 100 if total_outs > 0 else 30.0
+                
+                season_stats = {
+                    "ERA": round(era, 2),
+                    "HR/9": round(hr9, 2),
+                    "FB%": round(fb_pct, 1),
+                    "Status": "Elite" if era < 3.5 else ("Vulnerable" if era > 4.5 else "Average")
+                }
+
+            # --- 2. AMBIL DAN FILTER LAST 45 DAYS (KALENDER) ---
+            l45_stats = default_l45.copy()
+            log_data = statsapi.player_stat_data(p_id, group="pitching", type="gameLog")
+            
+            if log_data and 'stats' in log_data and len(log_data['stats']) > 0:
+                games_log = log_data['stats']
+                
+                # SUNTIKAN SAKTI: Set batas waktu 45 hari ke belakang dari hari ini
+                batas_45_hari = datetime.now() - timedelta(days=45)
+                recent_games = []
+                
+                for game in games_log:
+                    g_date_str = game.get('date', today_str) # Format API: 'YYYY-MM-DD'
+                    try:
+                        g_date = datetime.strptime(g_date_str, '%Y-%m-%d')
+                        # Masukkan ke list hanya jika pertandingan masuk dalam jendela 45 hari
+                        if g_date >= batas_45_hari:
+                            recent_games.append(game)
+                    except:
+                        pass
+                
+                total_er = 0
+                total_hr = 0
+                total_ip = 0.0
+                
+                # Jika ada pertandingan dalam 45 hari terakhir
+                if recent_games:
+                    for game in recent_games:
+                        g_stats = game.get('stats', {})
+                        total_er += int(g_stats.get('earnedRuns', 0))
+                        total_hr += int(g_stats.get('homeRuns', 0))
+                        
+                        ip_str = str(g_stats.get('inningsPitched', '0.0'))
+                        ip_parts = ip_str.split('.')
+                        g_ip = float(ip_parts[0]) + (float(ip_parts[1])/3.0 if len(ip_parts) > 1 else 0)
+                        total_ip += g_ip
+                    
+                    l45_era = (total_er / total_ip) * 9 if total_ip > 0 else season_stats["ERA"]
+                    l45_hr9 = (total_hr / total_ip) * 9 if total_ip > 0 else season_stats["HR/9"]
+                    
+                    l45_stats = {
+                        "ERA": round(l45_era, 2),
+                        "HR/9": round(l45_hr9, 2),
+                        "Starts": len(recent_games) # Menyimpan total match di l45 days
+                    }
+                else:
+                    # Fallback kalau ga main sama sekali 45 hari ini, pake data season
+                    l45_stats = {"ERA": season_stats["ERA"], "HR/9": season_stats["HR/9"], "Starts": 0}
+            else:
+                l45_stats = {"ERA": season_stats["ERA"], "HR/9": season_stats["HR/9"], "Starts": 0}
+
+            return season_stats, l45_stats
+            
+        except Exception as e:
+            return default_season, default_l45
 
     for g in games_list:
         away_p = g['away_pitcher']
@@ -161,33 +216,21 @@ def update_advanced_metrics(games_list):
         away_team = g['away_team']
         home_team = g['home_team']
 
-        # Eksekusi penarikan metrik detail
-        away_era, away_hr9, away_fb = get_pitcher_metrics(away_p)
-        home_era, home_hr9, home_fb = get_pitcher_metrics(home_p)
+        away_season, away_l45 = get_pitcher_hybrid_metrics(away_p)
+        home_season, home_l45 = get_pitcher_hybrid_metrics(home_p)
 
-        # Simpan ke memori dictionary
-        pitchers_data[away_p] = {
-            "ERA": away_era, 
-            "HR/9": round(away_hr9, 2),
-            "FB%": round(away_fb, 1),
-            "Status": "Elite" if away_era < 3.5 else ("Vulnerable" if away_era > 4.5 else "Average")
-        }
-        pitchers_data[home_p] = {
-            "ERA": home_era, 
-            "HR/9": round(home_hr9, 2),
-            "FB%": round(home_fb, 1),
-            "Status": "Elite" if home_era < 3.5 else ("Vulnerable" if home_era > 4.5 else "Average")
-        }
+        # Simpan dengan anak kunci baru: .season dan .l45
+        pitchers_data[away_p] = {"season": away_season, "l45": away_l45}
+        pitchers_data[home_p] = {"season": home_season, "l45": home_l45}
 
-        team_totals[away_team] = home_era
-        team_totals[home_team] = away_era
+        team_totals[away_team] = home_season["ERA"]
+        team_totals[home_team] = away_season["ERA"]
 
-    # Tulis hasil tambang ke file JSON
     with open('team_totals.json', 'w') as f:
         json.dump(team_totals, f, indent=4)
     with open('l30_pitchers.json', 'w') as f:
         json.dump(pitchers_data, f, indent=4)
-    print("✅ Sukses: File l30_pitchers.json berhasil di-update dengan HR/9 & FB%!")
+    print("✅ Sukses: 'l30_pitchers.json' berhasil dimigrasi ke Last 45 Days Engine!")
 
 # ==========================================
 # 5. INIT DAILY PICKS LOG
