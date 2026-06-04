@@ -233,70 +233,90 @@ def update_advanced_metrics(games_list):
     print("✅ Sukses: 'l30_pitchers.json' berhasil dimigrasi ke Last 45 Days Engine!")
 
 # ==========================================
-# 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (STATCAST & L14)
+# 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (BYPASS FANGRAPHS)
 # ==========================================
 def generate_master_hitter_csv():
-    print("🏏 Mengekstrak Data Hitter Statcast (Full Season & L14 Form)...")
+    print("🏏 Mengekstrak Data Hitter (Bypass FanGraphs via Savant & B-Ref)...")
     try:
-        from pybaseball import batting_stats
+        from pybaseball import batting_stats_bref, statcast_batter_expected_stats, statcast_batter_exitvelo_barrels, bref_daily_batter
         from datetime import datetime, timedelta
+        import pandas as pd
         
         now = datetime.now()
-        l14_date = now - timedelta(days=14)
-        
-        print("⏳ Download Full Season Statcast dari FanGraphs...")
-        # Ambil data musim ini, syarat minimal 20 Plate Appearances (biar pemain cadangan mati ga masuk)
-        df_season = batting_stats(2026, qual=20)
-        
-        print("⏳ Download Last 14 Days Form...")
-        # Ambil form terkini (rentang 14 hari terakhir)
-        df_l14 = batting_stats(start_dt=l14_date.strftime('%Y-%m-%d'), end_dt=now.strftime('%Y-%m-%d'), qual=5)
+        year = now.year
+        l14_start = (now - timedelta(days=14)).strftime('%Y-%m-%d')
+        l14_end = now.strftime('%Y-%m-%d')
 
-        # Standarisasi Singkatan Tim (FanGraphs pakai singkatan 3 huruf beda untuk beberapa tim)
-        fg_to_mlb = {"TBR": "TB", "CHW": "CWS", "KCR": "KC", "SDP": "SD", "SFG": "SF", "WSN": "WSH"}
-        df_season['Team'] = df_season['Team'].replace(fg_to_mlb)
-        if not df_l14.empty:
-            df_l14['Team'] = df_l14['Team'].replace(fg_to_mlb)
+        print("⏳ Download B-Ref Season Stats (Base & Team)...")
+        df_bref = batting_stats_bref(year)
+        # Bersihkan nama dari karakter aneh (asterisk dll)
+        df_bref['Name'] = df_bref['Name'].str.replace(r'[*#]', '', regex=True).str.strip()
 
-        # Gabungkan ke DataFrame baru sesuai format cetak biru Tab 2 lu
+        print("⏳ Download Savant Expected Stats...")
+        df_exp = statcast_batter_expected_stats(year, 20)
+        # Rapikan kapitalisasi nama dari Savant (dari "shohei ohtani" jadi "Shohei Ohtani")
+        df_exp['Name'] = df_exp['first_name'].str.strip().str.title() + ' ' + df_exp['last_name'].str.strip().str.title()
+
+        print("⏳ Download Savant Exit Velo & Barrels...")
+        df_ev = statcast_batter_exitvelo_barrels(year, 20)
+        df_ev['Name'] = df_ev['first_name'].str.strip().str.title() + ' ' + df_ev['last_name'].str.strip().str.title()
+
+        print("⏳ Download B-Ref L14 Form...")
+        try:
+            df_l14 = bref_daily_batter(l14_start, l14_end)
+            df_l14['Name'] = df_l14['Name'].str.replace(r'[*#]', '', regex=True).str.strip()
+        except:
+            df_l14 = pd.DataFrame()
+
+        # Mulai Proses Penggabungan Data (Merge)
         df_clean = pd.DataFrame()
-        df_clean['Name'] = df_season['Name']
-        df_clean['Team'] = df_season['Team']
+        df_clean['Name'] = df_bref['Name']
         
-        # Ekstrak Metrik Statcast Murni
-        df_clean['xBA'] = df_season.get('xBA', df_season.get('AVG', 0.250))
-        df_clean['xSLG'] = df_season.get('xSLG', df_season.get('SLG', 0.400))
-        df_clean['xwOBA'] = df_season.get('xwOBA', df_season.get('wOBA', 0.320))
-        df_clean['Barrel%'] = df_season.get('Barrel%', 0.0)
-        df_clean['HardHit%'] = df_season.get('HardHit%', 35.0)
-        df_clean['Max EV'] = df_season.get('maxEV', 105.0)
+        # 1. Konversi Singkatan Tim agar cocok dengan Streamlit lu
+        bref_to_mlb = {"TBR": "TB", "CHW": "CWS", "KCR": "KC", "SDP": "SD", "SFG": "SF", "WSN": "WSH"}
+        df_clean['Team'] = df_bref['Tm'].replace(bref_to_mlb)
 
-        # Split Baseline (pakai rata-rata xwOBA sebagai proxy sementara untuk kecepatan)
-        df_clean['xwOBA_vs_R'] = df_clean['xwOBA'] 
+        # 2. Siapkan Kamus Data Statcast
+        exp_xwoba = dict(zip(df_exp['Name'], df_exp['xwoba']))
+        exp_xba = dict(zip(df_exp['Name'], df_exp['xba']))
+        exp_xslg = dict(zip(df_exp['Name'], df_exp['xslg']))
+        
+        ev_max = dict(zip(df_ev['Name'], df_ev['max_hit_speed']))
+        ev_brl = dict(zip(df_ev['Name'], df_ev['brl_percent']))
+        ev_hard = dict(zip(df_ev['Name'], df_ev['ev95percent']))
+
+        # 3. Suntikkan ke DataFrame (Kalau nama nggak cocok, pakai angka rata-rata aman)
+        df_clean['xwOBA'] = df_clean['Name'].map(exp_xwoba).fillna(0.320)
+        df_clean['xBA'] = df_clean['Name'].map(exp_xba).fillna(0.250)
+        df_clean['xSLG'] = df_clean['Name'].map(exp_xslg).fillna(0.400)
+        
+        df_clean['Max EV'] = df_clean['Name'].map(ev_max).fillna(105.0)
+        df_clean['Barrel%'] = df_clean['Name'].map(ev_brl).fillna(0.0)
+        df_clean['HardHit%'] = df_clean['Name'].map(ev_hard).fillna(35.0)
+
+        # Kolom dummy agar Streamlit tidak crash
+        df_clean['xwOBA_vs_R'] = df_clean['xwOBA']
         df_clean['xwOBA_vs_L'] = df_clean['xwOBA']
+        df_clean['Batting'] = 0
 
-        # ⚡ INJEKSI FORM TERKINI (L14 DAYS) ⚡
+        # 4. Injeksi Tren L14 (Konversi OPS menjadi rasio xwOBA)
         if not df_l14.empty:
-            l14_woba_dict = dict(zip(df_l14['Name'], df_l14.get('xwOBA', df_l14.get('wOBA', 0.320))))
-            l14_pa_dict = dict(zip(df_l14['Name'], df_l14['PA']))
+            l14_ops = dict(zip(df_l14['Name'], df_l14['OPS']))
+            l14_pa = dict(zip(df_l14['Name'], df_l14['PA']))
             
-            # Kalau di 14 hari terakhir dia main, masukin statnya. Kalau cedera/absen, pakai stat season.
-            df_clean['xwOBA_L14'] = df_clean['Name'].map(l14_woba_dict).fillna(df_clean['xwOBA'])
-            df_clean['PA_L14'] = df_clean['Name'].map(l14_pa_dict).fillna(0)
+            # Rumus konversi kasar: OPS dibagi 2.3 nilainya setara dengan skala xwOBA
+            df_clean['xwOBA_L14'] = round((df_clean['Name'].map(l14_ops) / 2.3), 3).fillna(df_clean['xwOBA'])
+            df_clean['PA_L14'] = df_clean['Name'].map(l14_pa).fillna(0)
         else:
             df_clean['xwOBA_L14'] = df_clean['xwOBA']
             df_clean['PA_L14'] = 0
 
-        # Kolom dummy Batting Order (nanti diisi oleh fungsi Live di app.py lu)
-        df_clean['Batting'] = 0 
-
-        # Cetak jadi CSV baru
+        # Cetak File
         df_clean.to_csv('master_hitter_2026.csv', index=False)
-        print("✅ BOOM! master_hitter_2026.csv berhasil di-update dengan Statcast & L14 Form!")
+        print("✅ BOOM! master_hitter_2026.csv berhasil di-update dari Savant & BRef!")
 
     except Exception as e:
-        print(f"❌ Gagal update hitter CSV: {e}")
-        print("💡 Pastikan 'pybaseball' udah lu masukin di requirements.txt!")
+        print(f"❌ FATAL ERROR Hitter CSV: {e}")
 
 # ==========================================
 # 5. INIT DAILY PICKS LOG
