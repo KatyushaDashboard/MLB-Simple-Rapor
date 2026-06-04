@@ -129,10 +129,10 @@ if not today_hitters.empty and 'Barrel%' in today_hitters.columns and 'xwOBA' in
         today_hitters['Is_Team_TB_Leader'] = False
 
 # ====================================================================
-# 4. ENGINE BARU: THE MULTI-SCREEN SCORING MATRIX (UPGRADED ULXRARE)
+# 4. ENGINE BARU: THE MULTI-SCREEN SCORING MATRIX
 # ====================================================================
-@st.cache_data(ttl=600) # Gembok cache 10 menit biar dashboard lu ngebut kenceng!
-def run_scoring_matrix(df, _df_pitchers, _team_to_opp_pitcher):
+@st.cache_data(ttl=600) 
+def run_scoring_matrix(df, _l30_pitchers, _team_to_opp_pitcher):
     if df.empty: return df
     df_matrix = df.copy()
 
@@ -156,19 +156,19 @@ def run_scoring_matrix(df, _df_pitchers, _team_to_opp_pitcher):
         # F4: Green Park (+1)
         if park_mult > 1.02: score += 1
 
-        # 🔥 F5: DETEKSI KELEMAHAN PITCHER LAWAN (+1 Poin)
+        # 🔥 F5: DETEKSI PITCHER LEMAH DARI DATA BOT (+1 Poin)
         opp_pitcher_name = _team_to_opp_pitcher.get(team, 'TBD')
-        if opp_pitcher_name != 'TBD' and not _df_pitchers.empty:
-            pitcher_row = _df_pitchers[_df_pitchers['Name'] == opp_pitcher_name]
-            if not pitcher_row.empty:
-                opp_hr9 = pitcher_row['HR/9'].values[0] if 'HR/9' in pitcher_row.columns else 0.0
-                opp_fb = pitcher_row['FB%'].values[0] if 'FB%' in pitcher_row.columns else 0.0
-                
-                # Jika Pitcher hobi lepas HR (>1.5) atau gampang kena Flyball (>40%)
-                if opp_hr9 >= 1.5 or opp_fb >= 40.0: 
-                    score += 1
+        if opp_pitcher_name != 'TBD' and isinstance(_l30_pitchers, dict):
+            # Tarik data dari JSON l30_pitchers_data
+            p_data = _l30_pitchers.get(opp_pitcher_name, {})
+            opp_hr9 = p_data.get('HR/9', 0.0)
+            opp_fb = p_data.get('FB%', 0.0)
+            
+            # Kalau Pitcher musuh hobi lepas HR (>1.3) ATAU sering lempar bola terbang (>40%)
+            if opp_hr9 >= 1.3 or opp_fb >= 40.0: 
+                score += 1
 
-        # DNA Tagging
+        # DNA Tagging (Syarat poin ditaikkan sedikit karena ada tambahan F5)
         if score >= 4 and adj_xwoba >= 0.340: tipe = "🌟 SUPERSTAR (Core)"
         elif adj_barrel >= 7.5 and adj_xwoba < 0.330: tipe = "☄️ LONGSHOT (Boom/Bust)"
         else: tipe = "🎯 SOLID BAT"
@@ -180,8 +180,8 @@ def run_scoring_matrix(df, _df_pitchers, _team_to_opp_pitcher):
     df_matrix['Archetype'] = archetypes
     return df_matrix.sort_values(by='Conn_Score', ascending=False)
 
-# Panggil fungsi dengan parameter baru
-df_matrix_global = run_scoring_matrix(today_hitters, df_pitchers, team_to_opp_pitcher)
+# 🔥 PASTIKAN BARIS PEMANGGILAN INI JUGA BERUBAH (Berikan data l30_pitchers_data)
+df_matrix_global = run_scoring_matrix(today_hitters, l30_pitchers_data, team_to_opp_pitcher)
 
 # ====================================================================
 # FUNGSI LIVE BOXSCORE (FULL CODE, TINGGAL PASTE)
