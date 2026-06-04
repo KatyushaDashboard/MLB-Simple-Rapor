@@ -168,63 +168,27 @@ df_matrix_global = run_scoring_matrix(today_hitters)
 # ====================================================================
 # FUNGSI LIVE BOXSCORE (FULL CODE, TINGGAL PASTE)
 # ====================================================================
-@st.cache_data(ttl=60)
-def get_live_boxscore(game_id, away_team, home_team):
-    import pandas as pd
-    if not game_id or game_id == 0:
-        return pd.DataFrame(), pd.DataFrame()
-        
-    url = f"https://statsapi.mlb.com/api/v1/game/{game_id}/boxscore"
+# --- 4. LIVE BOXSCORE ---
+@st.cache_data(ttl=300)
+def get_live_boxscore(game_id, away_abbr, home_abbr):
     try:
-        resp = requests.get(url, timeout=10)
-        data = resp.json()
-        
-        hitter_rows = []
-        pitcher_rows = []
-        
-        teams_data = {
-            away_team: data.get('teams', {}).get('away', {}).get('players', {}),
-            home_team: data.get('teams', {}).get('home', {}).get('players', {})
-        }
-        
-        for team_name, players in teams_data.items():
-            for p_id, p_info in players.items():
-                name = p_info['person']['fullName']
-                stats = p_info.get('stats', {})
-                
-                # Ekstrak data Hitters (Pemukul)
-                if 'batting' in stats and stats['batting'].get('plateAppearances', 0) > 0:
-                    b = stats['batting']
-                    tb = b.get('hits', 0) + b.get('doubles', 0) + (b.get('triples', 0)*2) + (b.get('homeRuns', 0)*3)
-                    hitter_rows.append({
-                        'Team': team_name,
-                        'Name': name,
-                        'H': b.get('hits', 0),
-                        'HR': b.get('homeRuns', 0),
-                        'R': b.get('runs', 0),
-                        'RBI': b.get('rbi', 0),
-                        'TB': tb
-                    })
-                    
-                # Ekstrak data Pitchers (Pelempar)
-                if 'pitching' in stats and float(stats['pitching'].get('inningsPitched', '0.0')) > 0:
-                    p = stats['pitching']
-                    pitcher_rows.append({
-                        'Team': team_name,
-                        'Name': name,
-                        'IP': p.get('inningsPitched', '0.0'),
-                        'H Allowed': p.get('hits', 0),
-                        'R Allowed': p.get('runs', 0),
-                        'SO': p.get('strikeOuts', 0)
-                    })
-                    
-        df_h = pd.DataFrame(hitter_rows)
-        df_p = pd.DataFrame(pitcher_rows)
-        return df_h, df_p
-        
-    except Exception as e:
-        # Kalau gagal narik data (misal game belum main), balikin tabel kosong biar app nggak crash
-        return pd.DataFrame(), pd.DataFrame()
+        raw = statsapi.get('game_boxscore', {'gamePk': game_id})
+        teams_data = raw.get('teams', {})
+        hitters, pitchers = [], []
+        for side, abbr in [('away', away_abbr), ('home', home_abbr)]:
+            players = teams_data.get(side, {}).get('players', {})
+            for pid, pdata in players.items():
+                name = pdata.get('person', {}).get('fullName', 'Unknown')
+                b, p = pdata.get('stats', {}).get('batting', {}), pdata.get('stats', {}).get('pitching', {})
+                if b and b.get('plateAppearances', 0) > 0:
+                    hitters.append({'Team': abbr, 'Name': name, 'AB': b.get('atBats', 0), 'R': b.get('runs', 0), 'H': b.get('hits', 0), 'HR': b.get('homeRuns', 0), 'RBI': b.get('rbi', 0), 'TB': b.get('totalBases', b.get('hits', 0))})
+                if p and p.get('battersFaced', 0) > 0:
+                    pitchers.append({'Team': abbr, 'Name': name, 'IP': str(p.get('inningsPitched', '0.0')), 'H Allowed': p.get('hits', 0), 'R Allowed': p.get('runs', 0), 'SO': p.get('strikeOuts', 0)})
+        return pd.DataFrame(hitters), pd.DataFrame(pitchers)
+    except: return pd.DataFrame(), pd.DataFrame()
+
+playing_teams, today_matchups, player_team_map, game_details = get_daily_schedule(mlb_date_str)
+df_hitters, df_pitchers = load_local_data()
 
 # ====================================================================
 # 5. NAVIGASI TABS (Sekarang ada 8 Tab)
@@ -273,45 +237,24 @@ with tabs[1]:
 # TAB 4: LIVE REPORT & FINAL BOXSCORE
 # ====================================================================
 with tabs[3]:
-    st.header("📡 Live Report & Final Boxscore")
-    st.caption("Pantau skor langsung dan pemain yang berhasil mencetak stat (Hits, HR, RBI, dll).")
-    
-    if not game_details:
-        st.info("Jadwal pertandingan belum tersedia untuk hari ini.")
-    else:
+        st.subheader("📡 Live Report & Final Boxscore")
         for game in game_details:
-            away_t = game.get('away_team', game.get('away', 'TBD'))
-            home_t = game.get('home_team', game.get('home', 'TBD'))
-            game_status = game.get('status', 'Scheduled')
-            game_id = game.get('game_id', 0)
-            
-            if game_status in ['Scheduled', 'Pre-Game', 'Warmup']:
-                with st.expander(f"⏳ {away_t} @ {home_t}", expanded=False): 
-                    st.info("Pertandingan belum dimulai.")
+            if game['status'] in ['Scheduled', 'Pre-Game', 'Warmup']:
+                with st.expander(f"⏳ {game['away']} @ {game['home']}", expanded=False): st.info("Pertandingan belum dimulai.")
                 continue
-                
-            with st.expander(f"🔥 {away_t} @ {home_t} - {game_status}", expanded=False):
-                try:
-                    # Pastikan fungsi get_live_boxscore sudah lu copy juga ke bagian atas app.py
-                    live_h, live_p = get_live_boxscore(game_id, away_t, home_t)
-                    
-                    if not live_h.empty and not live_p.empty:
-                        sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
-                        
-                        c1, c2 = st.columns(2)
-                        with c1:
-                            st.markdown("### 🏏 Hitters (Pencetak Skor)")
-                            if not sukses_h.empty: 
-                                st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
-                            else: 
-                                st.write("Belum ada hitter yang mencetak angka.")
-                        with c2:
-                            st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
-                            st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
-                    else: 
-                        st.write("Sedang menyinkronkan data boxscore...")
-                except NameError:
-                    st.error("⚠️ Fungsi 'get_live_boxscore' belum ditemukan! Pastikan lu udah ngopi fungsi itu dari kode lama ke bagian paling atas (sebelum fungsi Tab jalan).")
+            with st.expander(f"🔥 {game['away']} @ {game['home']} - {game['status']}", expanded=False):
+                live_h, live_p = get_live_boxscore(game['game_id'], game['away'], game['home'])
+                if not live_h.empty and not live_p.empty:
+                    sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        st.markdown("### 🏏 Hitters (Pencetak Skor)")
+                        if not sukses_h.empty: st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
+                        else: st.write("Belum ada hitter yang mencetak angka.")
+                    with c2:
+                        st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
+                        st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
+                else: st.write("Sedang menyinkronkan data boxscore...")
 
 # ====================================================================
 # TAB 3: SAME GAME PARLAY (SGP) FACTORY (CONN_SCORE ADJUSTED)
