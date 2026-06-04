@@ -260,14 +260,29 @@ tabs = st.tabs([
 ])
 
 with tabs[0]:
-    st.subheader("Pitcher Metrics & Team Bullpen ERA Allowed")
-    if not df_pitchers.empty:
-        df_p_today = df_pitchers[df_pitchers['Team'].isin(playing_teams)].dropna(subset=['Team']).copy()
-        if 'Bullpen_ERA' not in df_p_today.columns:
-            df_p_today['Bullpen_ERA'] = df_p_today['Team'].apply(get_pitcher_era)
-        st.dataframe(df_p_today.style.background_gradient(cmap='RdYlGn_r', subset=['Bullpen_ERA']) if 'Bullpen_ERA' in df_p_today.columns else df_p_today, use_container_width=True, height=500)
+    st.subheader("🎯 Starting Pitcher Metrics - Full Season Baseline")
+    if isinstance(l30_pitchers_data, dict) and l30_pitchers_data:
+        p_rows = []
+        for p_name, p_data in l30_pitchers_data.items():
+            if p_name != "TBD" and isinstance(p_data, dict):
+                # Ambil sub-objek season
+                s_data = p_data.get('season', {})
+                p_rows.append({
+                    'Pitcher': p_name,
+                    'ERA Full Season': s_data.get('ERA', 4.15),
+                    'HR/9 Baseline': s_data.get('HR/9', 1.0),
+                    'FB% Baseline': s_data.get('FB%', 30.0),
+                    'Kasta Pemain': s_data.get('Status', 'Average')
+                })
+        
+        if p_rows:
+            df_live_p = pd.DataFrame(p_rows).sort_values(by='ERA Full Season')
+            st.dataframe(
+                df_live_p.style.background_gradient(cmap='RdYlGn_r', subset=['ERA Full Season', 'HR/9 Baseline', 'FB% Baseline']), 
+                use_container_width=True, height=500
+            )
     else:
-        st.warning("⚠️ Data Pitcher kosong.")
+        st.warning("Data pitcher kosong. Jalankan bot terlebih dahulu.")
 
 with tabs[1]:
     st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
@@ -691,10 +706,10 @@ with tabs[6]:
         st.divider()
 
         # ====================================================================
-        # 3. FITUR BARU: THE PITCHER MATRIX (SLIP 3)
+        # 3. FITUR BARU: THE PITCHER MATRIX (SLIP 3 - L45 DAYS OPTIMIZED)
         # ====================================================================
-        st.markdown("### ⚾ SLIP 3: THE PITCHER MATRIX PARLAY")
-        st.caption("Sistem klaster otomatis untuk pelempar bola berdasarkan ERA, Park Factor, dan Proyeksi Runs Musuh.")
+        st.markdown("### ⚾ SLIP 3: THE PITCHER MATRIX PARLAY (45-DAYS FORM)")
+        st.caption("Sistem klaster otomatis pelempar berdasarkan tren kalender LAST 45 DAYS, Park Factor, dan Proyeksi Musuh.")
 
         assassins, workhorses, gas_cans = [], [], []
 
@@ -702,40 +717,58 @@ with tabs[6]:
             home_t = game['home_team']
             away_t = game['away_team']
             park_mult = PARK_FACTORS.get(home_t, 1.00)
+            
+            p_away = game.get('away_pitcher', 'TBD')
+            p_home = game.get('home_pitcher', 'TBD')
 
-            # Evaluasi Away Pitcher
-            era_away = get_pitcher_era(away_t)
-            proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
-            if game['away_pitcher'] != "TBD":
-                if era_away < 3.60 and park_mult < 1.02 and proj_runs_home < 4.0:
-                    assassins.append((game['away_pitcher'], away_t, "OVER Strikeouts"))
-                elif era_away < 4.00 and proj_runs_home < 5:
-                    workhorses.append((game['away_pitcher'], away_t, "OVER Outs Recorded"))
-                elif era_away > 4.60 and park_mult > 1.02 and proj_runs_home > 5:
-                    gas_cans.append((game['away_pitcher'], away_t, "OVER Hits / Earned Runs Allowed"))
-
-            # Evaluasi Home Pitcher
-            era_home = get_pitcher_era(home_t)
+            # 🔥 TRACKING FORM BERDASARKAN OBJEK .get('l45')
+            p_data_away = l30_pitchers_data.get(p_away, {}) if isinstance(l30_pitchers_data, dict) else {}
+            p_data_home = l30_pitchers_data.get(p_home, {}) if isinstance(l30_pitchers_data, dict) else {}
+            
+            # Ganti pancingan kuncinya ke 'l45'
+            era_away = p_data_away.get('l45', {}).get('ERA', 4.15)
+            starts_away = p_data_away.get('l45', {}).get('Starts', 0)
+            
+            era_home = p_data_home.get('l45', {}).get('ERA', 4.15)
+            starts_home = p_data_home.get('l45', {}).get('Starts', 0)
+            
             proj_runs_away = team_totals_data.get(away_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
-            if game['home_pitcher'] != "TBD":
-                if era_home < 3.60 and park_mult < 1.02 and proj_runs_away < 4.0:
-                    assassins.append((game['home_pitcher'], home_t, "OVER Strikeouts"))
-                elif era_home < 4.00 and proj_runs_away < 5.0:
-                    workhorses.append((game['home_pitcher'], home_t, "OVER Outs Recorded"))
-                elif era_home > 4.60 and park_mult > 1.02 and proj_runs_away > 5.0:
-                    gas_cans.append((game['home_pitcher'], home_t, "OVER Hits / Earned Runs Allowed"))
+            proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
+
+            # Evaluasi Form Terkini Away Pitcher (Syarat mutlak: Minimal caps 3 pertandingan dalam 45 hari terakhir biar ga buta sample)
+            if p_away != "TBD":
+                label_a = f"{p_away} (L45: {starts_away}G)"
+                if era_away < 3.50 and park_mult < 1.02 and proj_runs_home < 4.0 and starts_away >= 3:
+                    assassins.append((label_a, away_t, "OVER Strikeouts (Form: Hot 🔥)"))
+                elif era_away < 4.10 and proj_runs_home < 5.0 and starts_away >= 3:
+                    workhorses.append((label_a, away_t, "OVER Outs Recorded"))
+                elif (era_away > 4.60 or starts_away < 3) and park_mult > 1.01 and proj_runs_home > 4.5:
+                    # Kalau mainnya < 3x dalam sebulan setengah, otomatis di-flag rawan (Gas Can) karena karat/absen lama
+                    reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_away >= 3 else "FADE (Unstable/Sample Kurang)"
+                    gas_cans.append((label_a, away_t, reason))
+
+            # Evaluasi Form Terkini Home Pitcher
+            if p_home != "TBD":
+                label_h = f"{p_home} (L45: {starts_home}G)"
+                if era_home < 3.50 and park_mult < 1.02 and proj_runs_away < 4.0 and starts_home >= 3:
+                    assassins.append((label_h, home_t, "OVER Strikeouts (Form: Hot 🔥)"))
+                elif era_home < 4.10 and proj_runs_away < 5.0 and starts_home >= 3:
+                    workhorses.append((label_h, home_t, "OVER Outs Recorded"))
+                elif (era_home > 4.60 or starts_home < 3) and park_mult > 1.01 and proj_runs_away > 4.5:
+                    reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_home >= 3 else "FADE (Unstable/Sample Kurang)"
+                    gas_cans.append((label_h, home_t, reason))
 
         col_p1, col_p2, col_p3 = st.columns(3)
         with col_p1:
-            st.success("👑 **THE ASSASSINS (K's)**")
+            st.success("👑 **THE ASSASSINS (Form 45d Hot)**")
             for p, t, rec in assassins[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
             if not assassins: st.caption("Kosong.")
         with col_p2:
-            st.info("🛡️ **WORKHORSES (Outs)**")
+            st.info("🛡️ **WORKHORSES (Innings Eater)**")
             for p, t, rec in workhorses[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
             if not workhorses: st.caption("Kosong.")
         with col_p3:
-            st.error("🩸 **GAS CANS (Fade)**")
+            st.error("🩸 **GAS CANS (Fade Target 45d)**")
             for p, t, rec in gas_cans[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
             if not gas_cans: st.caption("Kosong.")
 
