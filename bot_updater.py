@@ -241,6 +241,70 @@ def init_daily_picks_log():
             json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
         print("✅ Sukses: Inisialisasi 'daily_picks_log.json'")
 
+# Update CSV
+def generate_master_pitcher_csv(games_list):
+    print("📊 Mengekstrak Advanced Metrics & Membuat master_pitcher_2026.csv...")
+    pitcher_rows = []
+
+    def get_full_advanced_stats(pitcher_name, team_name):
+        if pitcher_name == "TBD" or not pitcher_name: return None
+        try:
+            players = statsapi.lookup_player(pitcher_name)
+            if not players: return None
+            
+            p_id = players[0]['id']
+            season_data = statsapi.player_stat_data(p_id, group="pitching", type="season")
+
+            if season_data and 'stats' in season_data and len(season_data['stats']) > 0:
+                p = season_data['stats'][0].get('stats', {})
+
+                # Parsing Innings Pitched dengan akurat (contoh: 4.1 jadi 4.333)
+                ip_str = str(p.get('inningsPitched', '0.0'))
+                ip_parts = ip_str.split('.')
+                ip = float(ip_parts[0]) + (float(ip_parts[1])/3.0 if len(ip_parts) > 1 else 0)
+
+                if ip == 0: return None # Hindari pembagian dengan nol
+
+                so = int(p.get('strikeOuts', 0))
+                bb = int(p.get('baseOnBalls', 0))
+                hits = int(p.get('hits', 0))
+                hr = int(p.get('homeRuns', 0))
+                air_outs = int(p.get('airOuts', 0))
+                ground_outs = int(p.get('groundOuts', 0))
+
+                return {
+                    'Name': pitcher_name,
+                    'Team': team_name,
+                    'W': p.get('wins', 0),
+                    'L': p.get('losses', 0),
+                    'ERA': float(p.get('era', '4.15') if p.get('era') != '-.--' else 4.15),
+                    'IP': round(ip, 1),
+                    'K/9': round((so / ip) * 9, 2),
+                    'BB/9': round((bb / ip) * 9, 2),
+                    'H/9': round((hits / ip) * 9, 2),
+                    'HR/9': round((hr / ip) * 9, 2),
+                    'WHIP': float(p.get('whip', '1.30') if p.get('whip') != '-.--' else 1.30),
+                    'Opp_BA': float(p.get('avg', '.250') if p.get('avg') != '.---' else 0.250),
+                    'FB%': round((air_outs / (air_outs + ground_outs) * 100) if (air_outs + ground_outs) > 0 else 30.0, 1)
+                }
+        except Exception as e:
+            print(f"⚠️ Error menarik metrik CSV untuk {pitcher_name}: {e}")
+            return None
+
+    # Looping semua SP di jadwal hari ini
+    for g in games_list:
+        away_p = get_full_advanced_stats(g['away_pitcher'], g['away_team'])
+        home_p = get_full_advanced_stats(g['home_pitcher'], g['home_team'])
+
+        if away_p: pitcher_rows.append(away_p)
+        if home_p: pitcher_rows.append(home_p)
+
+    # Simpan/Timpa langsung jadi CSV
+    if pitcher_rows:
+        df = pd.DataFrame(pitcher_rows)
+        df.to_csv('master_pitcher_2026.csv', index=False)
+        print("✅ BOOM! master_pitcher_2026.csv berhasil di-update secara otomatis!")
+
 # ==========================================
 # 6. EKSEKUSI UTAMA (MAIN RUNNER)
 # ==========================================
@@ -249,5 +313,6 @@ if __name__ == "__main__":
     games = fetch_today_schedule(today_str)
     if games:
         update_advanced_metrics(games)
+        generate_master_pitcher_csv(games)
     init_daily_picks_log()
     print("🎯 Bot Updater Selesai Dieksekusi. Semua data riil siap di-deploy!")
