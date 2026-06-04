@@ -228,6 +228,10 @@ def get_live_boxscore(game_id, away_abbr, home_abbr):
         return pd.DataFrame(hitters), pd.DataFrame(pitchers)
     except: return pd.DataFrame(), pd.DataFrame()
 
+# SUNTIK BARIS INI TEPAT DI ATAS FUNGSI YANG ERROR WAK 👇
+mlb_date_str = selected_date.strftime('%Y-%m-%d') 
+
+# Baris lama lu yang error kemaren biarin di bawahnya
 playing_teams, today_matchups, player_team_map, game_details = get_daily_schedule(mlb_date_str)
 df_hitters, df_pitchers = load_local_data()
 
