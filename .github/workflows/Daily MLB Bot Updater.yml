@@ -28,7 +28,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pandas MLB-StatsAPI pybaseball
+          pip install requests pandas MLB-StatsAPI pybaseball lxml beautifulsoup4 html5lib
           # Tambahkan library lain di atas kalau ada yang kurang
           
       - name: Run Bot Updater
