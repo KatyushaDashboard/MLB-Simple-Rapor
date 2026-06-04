@@ -103,12 +103,16 @@ def load_betting_history():
 # ====================================================================
 playing_teams = []
 team_to_park = {}
+team_to_opp_pitcher = {} # <-- SUNTIKAN BARU UNTUK DETEKSI PITCHER LAWAN
 
 if isinstance(today_schedule, list):
     for game in today_schedule:
         playing_teams.extend([game['away_team'], game['home_team']])
         team_to_park[game['away_team']] = game['home_team']
         team_to_park[game['home_team']] = game['home_team']
+        # Petakan siapa SP lawan untuk masing-masing tim hari ini
+        team_to_opp_pitcher[game['away_team']] = game.get('home_pitcher', 'TBD')
+        team_to_opp_pitcher[game['home_team']] = game.get('away_pitcher', 'TBD')
 
 today_hitters = df_hitters[df_hitters['Team'].isin(playing_teams)].copy() if not df_hitters.empty else pd.DataFrame()
 
@@ -125,10 +129,10 @@ if not today_hitters.empty and 'Barrel%' in today_hitters.columns and 'xwOBA' in
         today_hitters['Is_Team_TB_Leader'] = False
 
 # ====================================================================
-# 4. ENGINE BARU: THE MULTI-SCREEN SCORING MATRIX
+# 4. ENGINE BARU: THE MULTI-SCREEN SCORING MATRIX (UPGRADED ULXRARE)
 # ====================================================================
-@st.cache_data(ttl=3600)
-def run_scoring_matrix(df):
+@st.cache_data(ttl=600) # Gembok cache 10 menit biar dashboard lu ngebut kenceng!
+def run_scoring_matrix(df, _df_pitchers, _team_to_opp_pitcher):
     if df.empty: return df
     df_matrix = df.copy()
 
@@ -152,6 +156,18 @@ def run_scoring_matrix(df):
         # F4: Green Park (+1)
         if park_mult > 1.02: score += 1
 
+        # 🔥 F5: DETEKSI KELEMAHAN PITCHER LAWAN (+1 Poin)
+        opp_pitcher_name = _team_to_opp_pitcher.get(team, 'TBD')
+        if opp_pitcher_name != 'TBD' and not _df_pitchers.empty:
+            pitcher_row = _df_pitchers[_df_pitchers['Name'] == opp_pitcher_name]
+            if not pitcher_row.empty:
+                opp_hr9 = pitcher_row['HR/9'].values[0] if 'HR/9' in pitcher_row.columns else 0.0
+                opp_fb = pitcher_row['FB%'].values[0] if 'FB%' in pitcher_row.columns else 0.0
+                
+                # Jika Pitcher hobi lepas HR (>1.5) atau gampang kena Flyball (>40%)
+                if opp_hr9 >= 1.5 or opp_fb >= 40.0: 
+                    score += 1
+
         # DNA Tagging
         if score >= 4 and adj_xwoba >= 0.340: tipe = "🌟 SUPERSTAR (Core)"
         elif adj_barrel >= 7.5 and adj_xwoba < 0.330: tipe = "☄️ LONGSHOT (Boom/Bust)"
@@ -164,7 +180,8 @@ def run_scoring_matrix(df):
     df_matrix['Archetype'] = archetypes
     return df_matrix.sort_values(by='Conn_Score', ascending=False)
 
-df_matrix_global = run_scoring_matrix(today_hitters)
+# Panggil fungsi dengan parameter baru
+df_matrix_global = run_scoring_matrix(today_hitters, df_pitchers, team_to_opp_pitcher)
 
 # ====================================================================
 # FUNGSI LIVE BOXSCORE (FULL CODE, TINGGAL PASTE)
@@ -271,11 +288,18 @@ with tabs[1]:
     else: st.warning("⚠️ Data Hitter kosong.")
 
 # ====================================================================
-# TAB 4: LIVE REPORT & FINAL BOXSCORE
+# TAB 4: LIVE REPORT & FINAL BOXSCORE (MOBILE OPTIMIZED)
 # ====================================================================
 with tabs[3]:
     st.header("📡 Live Report & Final Boxscore")
-    st.caption("Pantau skor langsung dan pemain yang berhasil mencetak stat (Hits, HR, RBI, dll).")
+    st.caption("Pantau skor langsung langsung dari lapangan. Dioptimalkan khusus tampilan mobile browser.")
+
+    # 🔄 TOMBOL MANUAL REFRESH (Anti-Lag & Hemat Kuota HP)
+    col_ref, _ = st.columns([1, 2])
+    with col_ref:
+        if st.button("🔄 Sinkronkan Skor Sekarang", use_container_width=True):
+            st.cache_data.clear() # Paksa buang cache live report saat diklik
+            st.success("Berhasil ditarik ulang!")
 
     if not game_details:
         st.info("Jadwal pertandingan belum tersedia untuk hari ini.")
@@ -293,26 +317,26 @@ with tabs[3]:
 
             with st.expander(f"🔥 {away_t} @ {home_t} - {game_status}", expanded=False):
                 try:
-                    # Pastikan fungsi get_live_boxscore sudah lu copy juga ke bagian atas app.py
                     live_h, live_p = get_live_boxscore(game_id, away_t, home_t)
 
                     if not live_h.empty and not live_p.empty:
                         sukses_h = live_h[(live_h['H'] >= 1) | (live_h['HR'] >= 1) | (live_h['R'] >= 1) | (live_h['RBI'] >= 1) | (live_h['TB'] >= 1)]
 
-                        c1, c2 = st.columns(2)
-                        with c1:
-                            st.markdown("### 🏏 Hitters (Pencetak Skor)")
-                            if not sukses_h.empty: 
-                                st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
-                            else: 
-                                st.write("Belum ada hitter yang mencetak angka.")
-                        with c2:
-                            st.markdown("### 🎯 Pitchers (Rapor Lemparan)")
-                            st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
+                        # 📱 LAYOUT HP: Dibuat berurutan ke bawah (Hitter dulu, baru Pitcher)
+                        st.markdown("#### 🏏 Hitters (Pencetak Skor)")
+                        if not sukses_h.empty: 
+                            st.dataframe(sukses_h.sort_values(by=['TB', 'H'], ascending=False), hide_index=True, use_container_width=True)
+                        else: 
+                            st.write("Belum ada hitter yang pecah telor.")
+                            
+                        st.divider()
+                        
+                        st.markdown("#### 🎯 Pitchers (Rapor Lemparan)")
+                        st.dataframe(live_p[['Team', 'Name', 'IP', 'H Allowed', 'R Allowed', 'SO']], hide_index=True, use_container_width=True)
                     else: 
                         st.write("Sedang menyinkronkan data boxscore...")
-                except NameError:
-                    st.error("⚠️ Fungsi 'get_live_boxscore' belum ditemukan! Pastikan lu udah ngopi fungsi itu dari kode lama ke bagian paling atas (sebelum fungsi Tab jalan).")
+                except Exception as e:
+                    st.error(f"Gagal memuat log stats: {e}")
 
 # ====================================================================
 # TAB 3: SAME GAME PARLAY (SGP) FACTORY (CONN_SCORE ADJUSTED)
