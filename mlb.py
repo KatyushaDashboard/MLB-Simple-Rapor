@@ -259,30 +259,50 @@ tabs = st.tabs([
     "🕸️ Tab 8: Overlap Network"
 ])
 
+# ====================================================================
+# TAB 1: STARTING PITCHER METRICS (FULL SEASON BASELINE)
+# ====================================================================
 with tabs[0]:
     st.subheader("🎯 Starting Pitcher Metrics - Full Season Baseline")
-    if isinstance(l30_pitchers_data, dict) and l30_pitchers_data:
-        p_rows = []
-        for p_name, p_data in l30_pitchers_data.items():
-            if p_name != "TBD" and isinstance(p_data, dict):
-                # Ambil sub-objek season
-                s_data = p_data.get('season', {})
-                p_rows.append({
-                    'Pitcher': p_name,
-                    'ERA Full Season': s_data.get('ERA', 4.15),
-                    'HR/9 Baseline': s_data.get('HR/9', 1.0),
-                    'FB% Baseline': s_data.get('FB%', 30.0),
-                    'Kasta Pemain': s_data.get('Status', 'Average')
-                })
+    st.caption("Data performa kumulatif musim ini. Di-update otomatis oleh bot github setiap hari.")
+    
+    if not df_pitchers.empty:
+        # 1. Tentukan urutan kolom ideal agar enak dilihat (Nama dan Tim di depan)
+        kolom_ideal = ['Name', 'Team', 'ERA', 'WHIP', 'K/9', 'BB/9', 'H/9', 'HR/9', 'FB%', 'IP', 'W', 'L']
         
-        if p_rows:
-            df_live_p = pd.DataFrame(p_rows).sort_values(by='ERA Full Season')
-            st.dataframe(
-                df_live_p.style.background_gradient(cmap='RdYlGn_r', subset=['ERA Full Season', 'HR/9 Baseline', 'FB% Baseline']), 
-                use_container_width=True, height=500
-            )
+        # Ambil kolom yang benar-benar ada di CSV lu untuk mencegah crash
+        available_cols = [c for c in kolom_ideal if c in df_pitchers.columns]
+        df_display = df_pitchers[available_cols].copy()
+        
+        # 2. SUNTIKAN KAWIN DATA: Ambil label 'Status/Kasta' dari l30_pitchers.json
+        if isinstance(l30_pitchers_data, dict) and l30_pitchers_data:
+            kasta_list = []
+            for idx, row in df_display.iterrows():
+                p_name = row.get('Name')
+                # Tarik teks status ("Elite", "Vulnerable", "Average") dari sub-objek 'season'
+                status_live = l30_pitchers_data.get(p_name, {}).get('season', {}).get('Status', 'Average')
+                kasta_list.append(status_live)
+                
+            df_display['Kasta'] = kasta_list
+            
+            # Pindahkan kolom 'Kasta' ke urutan ketiga (setelah nama & tim) biar rapi
+            cols = list(df_display.columns)
+            if 'Kasta' in cols:
+                cols.insert(2, cols.pop(cols.index('Kasta')))
+                df_display = df_display[cols]
+
+        # 3. RENDER DATAFRAME + GRADASI WARNA (VISUAL AUDIT)
+        # - ERA, WHIP, H/9, HR/9, FB%: Makin KECIL makin HIJAU (Bagus buat Pitcher), Makin BESAR makin MERAH (Ampas)
+        # - K/9: Makin BESAR makin HIJAU (Raja Strikeout)
+        st.dataframe(
+            df_display.style.background_gradient(cmap='RdYlGn_r', subset=['ERA', 'WHIP', 'H/9', 'HR/9', 'FB%'])
+            .background_gradient(cmap='RdYlGn', subset=['K/9']),
+            use_container_width=True,
+            height=520,
+            hide_index=True
+        )
     else:
-        st.warning("Data pitcher kosong. Jalankan bot terlebih dahulu.")
+        st.warning("⚠️ Data 'master_pitcher_2026.csv' kosong. Pastikan workflow github actions lu sudah berjalan sukses malam ini.")
 
 with tabs[1]:
     st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
