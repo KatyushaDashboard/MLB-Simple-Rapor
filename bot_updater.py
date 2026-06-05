@@ -263,8 +263,7 @@ def generate_master_hitter_csv():
             except:
                 continue
 
-        # 2. SEDOT DATA SAVANT DARI LINK LU
-        # Note: min=q diganti min=10 agar aman, ditambah &csv=true di belakang
+        # 2. SEDOT DATA SAVANT
         savant_url = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=10&selections=player_age%2Cpa%2Chome_run%2Ck_percent%2Cbb_percent%2Cbatting_avg%2Cb_rbi%2Cb_total_bases%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Cwobadiff%2Cblasts_contact%2Cideal_angle_rate%2Cexit_velocity_avg%2Claunch_angle_avg%2Csweet_spot_percent%2Cbarrel%2Cbarrel_batted_rate%2Csolidcontact_percent%2Cpoorlyweak_percent%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Cz_swing_percent%2Coz_swing_percent%2Cout_zone_swing%2Cout_zone_percent%2Ciz_contact_percent%2Cin_zone_percent%2Cwhiff_percent%2Cswing_percent%2Cpull_percent%2Cflyballs_percent&chart=false&x=player_age&y=player_age&r=no&chartType=beeswarm&sort=avg_best_speed&sortDir=desc&csv=true"
         
         headers = {"User-Agent": "Mozilla/5.0"}
@@ -272,23 +271,47 @@ def generate_master_hitter_csv():
         response = requests.get(savant_url, headers=headers, timeout=15)
         df = pd.read_csv(io.StringIO(response.text))
 
-        # 3. BALIK NAMA & TEMPEL TIM
-        # Membalik format "Ohtani, Shohei" jadi "Shohei Ohtani"
-        if 'player' in df.columns:
-            df['player'] = df['player'].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
-        
-        # Mapping nama ke tim, kalau nggak ketemu kasih 'TBD'
-        df['Team'] = df['player'].map(player_to_team).fillna('TBD')
+        # 🛠️ DEBUG PRINT: Biar kita tahu isi asli kepalanya CSV kalau error lagi
+        print("🔍 Kolom yang didapat dari Savant:", df.columns.tolist())
 
-        # Dummy untuk Tab Lainnya agar nggak crash
-        df['Name'] = df['player'] # Bikin duplikat kolom buat jaga-jaga kalau app.py masih nyari 'Name'
-        df['xwOBA_vs_R'] = df['xwoba']
-        df['xwOBA_vs_L'] = df['xwoba']
-        df['xwOBA_L14'] = df['xwoba']
-        df['PA_L14'] = df['pa']
+        # 3. RADAR PENDETEKSI NAMA PEMAIN CERDAS
+        name_col = None
+        for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name']:
+            if col in df.columns:
+                name_col = col
+                break
+                
+        if name_col:
+            # Balik nama dari "Judge, Aaron" ke "Aaron Judge"
+            df[name_col] = df[name_col].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
+            
+            # Mapping Tim berdasarkan nama
+            df['Team'] = df[name_col].map(player_to_team).fillna('TBD')
+            
+            # Paksa namanya jadi 'player' biar app.py lu aman sentosa
+            df.rename(columns={name_col: 'player'}, inplace=True)
+        else:
+            print("⚠️ GAWAT: Nggak nemu kolom nama pemain di Savant!")
+            df['Team'] = 'TBD'
+            df['player'] = 'Unknown'
+
+        # 4. DATA DUMMY PENGAMAN (Agar Tab lain nggak ikut meledak)
+        # Gunakan if-else agar aman kalau xwoba huruf besar/kecil
+        xwoba_col = 'xwoba' if 'xwoba' in df.columns else df.columns[df.columns.str.lower() == 'xwoba'][0] if any(df.columns.str.lower() == 'xwoba') else None
+        
+        if xwoba_col:
+            df['xwOBA_vs_R'] = df[xwoba_col]
+            df['xwOBA_vs_L'] = df[xwoba_col]
+            df['xwOBA_L14'] = df[xwoba_col]
+        else:
+            df['xwOBA_vs_R'] = 0.300
+            df['xwOBA_vs_L'] = 0.300
+            df['xwOBA_L14'] = 0.300
+            
+        df['PA_L14'] = df['pa'] if 'pa' in df.columns else 0
         df['Batting'] = 0
 
-        # Simpan perawan tanpa rename kolom aslinya
+        # Simpan
         df.to_csv('master_hitter_2026.csv', index=False)
         print("✅ BOOM! master_hitter_2026.csv sukses digenerate secara murni & ter-mapping!")
         
