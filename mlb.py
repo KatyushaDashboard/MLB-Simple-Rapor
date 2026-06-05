@@ -501,24 +501,29 @@ with tabs[2]:
 
                 st.divider()
 
-                # --- SGP PITCHER DUEL (Original) ---
+                # --- SGP PITCHER DUEL (UPGRADED VERSION) ---
                 st.markdown("#### ⚾ 3. SGP Pitcher Duel Props")
                 p_away, p_home = game['away_pitcher'], game['home_pitcher']
                 era_away, era_home = get_pitcher_era(game['away_team']), get_pitcher_era(game['home_team'])
 
                 col3, col4 = st.columns(2)
+                
+                # Fungsi internal buat ngasih rekomendasi prop yang lebih tajam
+                def get_pitcher_props(era):
+                    if era < 3.50:
+                        return "- 🟢 OVER Strikeouts / 🟢 UNDER Earned Runs"
+                    elif 3.50 <= era <= 4.40:
+                        return "- 🟡 OVER 15.5 Outs / 🟡 FADE Strikeouts (Risiko Tinggi)"
+                    else:
+                        return "- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs"
+
                 with col3:
                     st.markdown(f"**{game['away_team']} SP: {p_away}** (ERA: {era_away:.2f})")
-                    if era_away < 4.00:
-                        st.write(f"- 🟢 OVER Strikeouts / 🟢 OVER 15.5 Outs")
-                    else:
-                        st.write(f"- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs")
+                    st.write(get_pitcher_props(era_away))
+                
                 with col4:
                     st.markdown(f"**{game['home_team']} SP: {p_home}** (ERA: {era_home:.2f})")
-                    if era_home < 4.00:
-                        st.write(f"- 🟢 OVER Strikeouts / 🟢 OVER 15.5 Outs")
-                    else:
-                        st.write(f"- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs")
+                    st.write(get_pitcher_props(era_home))
 
 with tabs[4]:
     st.header("🛡️ AI Auditor & Advanced ROI Tracker")
@@ -818,27 +823,28 @@ with tabs[6]:
             
             proj_runs_away = team_totals_data.get(away_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
             proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
-
-            # Evaluasi Form Terkini Away Pitcher (Syarat mutlak: Minimal caps 3 pertandingan dalam 45 hari terakhir biar ga buta sample)
+            
+            i# Evaluasi Form Terkini Away Pitcher
             if p_away != "TBD":
                 label_a = f"{p_away} (L45: {starts_away}G)"
-                if era_away < 3.50 and park_mult < 1.02 and proj_runs_home < 4.0 and starts_away >= 3:
+                # UPGRADE: Toleransi Proyeksi dinaikkan ke 4.3, Park Factor dilonggarkan ke 1.05
+                if era_away < 3.60 and park_mult <= 1.05 and proj_runs_home <= 4.3 and starts_away >= 3:
                     assassins.append((label_a, away_t, "OVER Strikeouts (Form: Hot 🔥)"))
-                elif era_away < 4.10 and proj_runs_home < 5.0 and starts_away >= 3:
+                elif era_away <= 4.30 and starts_away >= 3:
                     workhorses.append((label_a, away_t, "OVER Outs Recorded"))
-                elif (era_away > 4.60 or starts_away < 3) and park_mult > 1.01 and proj_runs_home > 4.5:
-                    # Kalau mainnya < 3x dalam sebulan setengah, otomatis di-flag rawan (Gas Can) karena karat/absen lama
+                elif (era_away > 4.50 or starts_away < 3) and proj_runs_home >= 4.2:
+                    # UPGRADE: Park Factor dihapus saringannya. Pitcher busuk ketemu musuh jago = Auto Fade.
                     reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_away >= 3 else "FADE (Unstable/Sample Kurang)"
                     gas_cans.append((label_a, away_t, reason))
 
             # Evaluasi Form Terkini Home Pitcher
             if p_home != "TBD":
                 label_h = f"{p_home} (L45: {starts_home}G)"
-                if era_home < 3.50 and park_mult < 1.02 and proj_runs_away < 4.0 and starts_home >= 3:
+                if era_home < 3.60 and park_mult <= 1.05 and proj_runs_away <= 4.3 and starts_home >= 3:
                     assassins.append((label_h, home_t, "OVER Strikeouts (Form: Hot 🔥)"))
-                elif era_home < 4.10 and proj_runs_away < 5.0 and starts_home >= 3:
+                elif era_home <= 4.30 and starts_home >= 3:
                     workhorses.append((label_h, home_t, "OVER Outs Recorded"))
-                elif (era_home > 4.60 or starts_home < 3) and park_mult > 1.01 and proj_runs_away > 4.5:
+                elif (era_home > 4.50 or starts_home < 3) and proj_runs_away >= 4.2:
                     reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_home >= 3 else "FADE (Unstable/Sample Kurang)"
                     gas_cans.append((label_h, home_t, reason))
 
