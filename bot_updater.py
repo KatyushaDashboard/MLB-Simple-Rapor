@@ -236,61 +236,64 @@ def update_advanced_metrics(games_list):
 # 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (BYPASS FANGRAPHS)
 # ==========================================
 def generate_master_hitter_csv():
-    print("🏏 Menyedot Custom Data Hitter Langsung dari Baseball Savant...")
+    print("🏏 Menyedot Data Hitter (Raw Savant) + Mapping Tim statsapi...")
     try:
         import pandas as pd
         import requests
         import io
+        import statsapi
 
-        # URL Super Custom hasil ramuan lu + Injeksi Rahasia max_hit_speed & player_team + &csv=true
-        savant_url = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=20&selections=pa%2Ck_percent%2Cbb_percent%2Cbatting_avg%2Cb_total_bases%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Cwobadiff%2Cblasts_contact%2Cexit_velocity_avg%2Claunch_angle_avg%2Csweet_spot_percent%2Cbarrel%2Cbarrel_batted_rate%2Csolidcontact_percent%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Ciz_contact_percent%2Cin_zone_percent%2Cwhiff_percent%2Cswing_percent%2Cpull_percent%2Cchase_percent%2Cfly_ball_percent%2Cmax_hit_speed%2Cplayer_team&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=xwoba&sortDir=desc&csv=true"
-        
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        # 1. BIKIN KAMUS TIM DARI MLB STATS-API
+        print("⏳ Membangun Kamus Roster dari 30 Tim MLB...")
+        team_abbr_map = {
+            133: "OAK", 134: "PIT", 135: "SD", 136: "SEA", 137: "SF",
+            138: "STL", 139: "TB", 140: "TEX", 141: "TOR", 142: "MIN",
+            143: "PHI", 144: "ATL", 145: "CWS", 146: "MIA", 147: "NYY",
+            158: "MIL", 108: "LAA", 109: "ARI", 110: "BAL", 111: "BOS",
+            112: "CHC", 113: "CIN", 114: "CLE", 115: "COL", 116: "DET",
+            117: "HOU", 118: "KC", 119: "LAD", 120: "WSH", 121: "NYM"
         }
+        player_to_team = {}
+        for team_id, team_abbr in team_abbr_map.items():
+            try:
+                roster = statsapi.get('team_roster', {'teamId': team_id})
+                for p in roster['roster']:
+                    name = p['person']['fullName']
+                    player_to_team[name] = team_abbr
+            except:
+                continue
+
+        # 2. SEDOT DATA SAVANT DARI LINK LU
+        # Note: min=q diganti min=10 agar aman, ditambah &csv=true di belakang
+        savant_url = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=10&selections=player_age%2Cpa%2Chome_run%2Ck_percent%2Cbb_percent%2Cbatting_avg%2Cb_rbi%2Cb_total_bases%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Cwobadiff%2Cblasts_contact%2Cideal_angle_rate%2Cexit_velocity_avg%2Claunch_angle_avg%2Csweet_spot_percent%2Cbarrel%2Cbarrel_batted_rate%2Csolidcontact_percent%2Cpoorlyweak_percent%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Cz_swing_percent%2Coz_swing_percent%2Cout_zone_swing%2Cout_zone_percent%2Ciz_contact_percent%2Cin_zone_percent%2Cwhiff_percent%2Cswing_percent%2Cpull_percent%2Cflyballs_percent&chart=false&x=player_age&y=player_age&r=no&chartType=beeswarm&sort=avg_best_speed&sortDir=desc&csv=true"
         
-        print("⏳ Mengunduh CSV Grosiran dari Savant...")
+        headers = {"User-Agent": "Mozilla/5.0"}
+        print("⏳ Mengunduh File CSV dari Baseball Savant...")
         response = requests.get(savant_url, headers=headers, timeout=15)
-        
-        # Baca teks response langsung jadi DataFrame Pandas
         df = pd.read_csv(io.StringIO(response.text))
+
+        # 3. BALIK NAMA & TEMPEL TIM
+        # Membalik format "Ohtani, Shohei" jadi "Shohei Ohtani"
+        if 'player' in df.columns:
+            df['player'] = df['player'].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
         
-        # 🧹 PENYELARASAN HEADER: Ubah nama kolom bawaan Savant agar klop dengan Dashboard lu
-        df.rename(columns={
-            'player': 'Name',
-            'player_team': 'Team',
-            'team': 'Team',
-            'xwoba': 'xwOBA',
-            'barrel_batted_rate': 'Barrel%',
-            'max_hit_speed': 'Max EV',       # Hasil Injeksi Hacker!
-            'hard_hit_percent': 'HardHit%',
-            'xba': 'xBA',
-            'xslg': 'xSLG',
-            'chase_percent': 'Chase%',       # Out of Zone Swing%
-            'fly_ball_percent': 'FB%',
-            'whiff_percent': 'Whiff%',
-            'iz_contact_percent': 'ZoneContact%',
-            'pull_percent': 'Pull%',
-            'launch_angle_avg': 'LaunchAngle'
-        }, inplace=True)
-        
-        # 🔄 REVERSE NAMA: Mengubah format "Judge, Aaron" menjadi "Aaron Judge"
-        if 'Name' in df.columns:
-            df['Name'] = df['Name'].apply(lambda x: ' '.join(x.split(', ')[::-1]) if ', ' in str(x) else x)
-        
-        # Tambahkan kolom dummy pelengkap agar Tab 6/Tab Lainnya gak nyariin
-        df['xwOBA_vs_R'] = df['xwOBA']
-        df['xwOBA_vs_L'] = df['xwOBA']
-        df['xwOBA_L14'] = df['xwOBA']
+        # Mapping nama ke tim, kalau nggak ketemu kasih 'TBD'
+        df['Team'] = df['player'].map(player_to_team).fillna('TBD')
+
+        # Dummy untuk Tab Lainnya agar nggak crash
+        df['Name'] = df['player'] # Bikin duplikat kolom buat jaga-jaga kalau app.py masih nyari 'Name'
+        df['xwOBA_vs_R'] = df['xwoba']
+        df['xwOBA_vs_L'] = df['xwoba']
+        df['xwOBA_L14'] = df['xwoba']
         df['PA_L14'] = df['pa']
         df['Batting'] = 0
 
-        # Cetak jadi master hitter utama!
+        # Simpan perawan tanpa rename kolom aslinya
         df.to_csv('master_hitter_2026.csv', index=False)
-        print("✅ BOOM! master_hitter_2026.csv sukses diperbarui via Jalur Belakang Savant!")
+        print("✅ BOOM! master_hitter_2026.csv sukses digenerate secara murni & ter-mapping!")
         
     except Exception as e:
-        print(f"❌ Gagal total memperbarui Hitter CSV: {e}")
+        print(f"❌ Gagal nyedot Savant: {e}")
 
 # ==========================================
 # 5. INIT DAILY PICKS LOG
