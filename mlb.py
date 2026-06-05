@@ -450,17 +450,17 @@ with tabs[2]:
         st.error("Database Hitter Matrix kosong. SGP Factory tidak bisa beroperasi.")
     else:
         for idx, game in enumerate(today_schedule):
-            with st.expander(f"🎲 MATCH {idx+1}: {game['away_team']} @ {game['home_team']} | SP: {game['away_pitcher']} vs {game['home_pitcher']}"):
+            with st.expander(f"🎲 MATCH {idx+1}: {game['away_team']} @ {game['home_team']} | SP: {game.get('away_pitcher', 'TBD')} vs {game.get('home_pitcher', 'TBD')}"):
 
-                # Tarik pemain dari Matrix Global yang udah mateng
+                # Tarik pemain dari Matrix Global
                 team_players = df_matrix_global[df_matrix_global['Team'].isin([game['away_team'], game['home_team']])]
                 if team_players.empty:
                     st.caption(f"⚠️ Data statcast tim tidak ditemukan.")
                     continue
 
-                # Sortir Prioritas: Connection Score tertinggi dulu, baru Adj_Barrel
-                if 'Conn_Score' in team_players.columns and 'Adj_Barrel' in team_players.columns:
-                    best_hitters = team_players.sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(3)
+                # Sortir Prioritas: Connection Score tertinggi dulu, baru Barrel% murni
+                if 'Conn_Score' in team_players.columns and 'Barrel%' in team_players.columns:
+                    best_hitters = team_players.sort_values(by=['Conn_Score', 'Barrel%'], ascending=[False, False]).head(3)
                 else:
                     best_hitters = team_players.head(3)
 
@@ -469,21 +469,22 @@ with tabs[2]:
                 with col1:
                     st.markdown("#### 💣 1. SGP Home Run (2-3 Legs)")
                     hr_legs = []
-                    if 'Adj_Barrel' in best_hitters.columns and 'Max EV' in best_hitters.columns:
+                    # UPGRADE: Menggunakan Barrel% murni dan Max EV
+                    if 'Barrel%' in best_hitters.columns and 'Max EV' in best_hitters.columns:
                         for _, row in best_hitters.iterrows():
-                            # Kita kasih toleransi Barrel >= 8.0 buat SGP HR karena udah difilter Conn_Score
-                            if row['Adj_Barrel'] >= 8.0 and row['Max EV'] >= 105.0:
+                            # Standar Baru: Barrel di atas 8% dan Avg Best Speed (Max EV) di atas 100 mph = Elit Power
+                            if row['Barrel%'] >= 8.0 and row['Max EV'] >= 100.0:
                                 p_name = row.get('Name', 'Unknown')
                                 hr_legs.append(f"🔥 **{p_name}** ({row['Team']}) To Hit HR *(Conn: {row.get('Conn_Score',0)})*")
 
                         if len(hr_legs) >= 2:
                             for leg in hr_legs: 
                                 st.markdown(f"- {leg}")
-                            st.success("✅ SGP HR Valid (High Connection)")
+                            st.success("✅ SGP HR Valid (High Connection & Power)")
                         else:
                             st.caption("Kandidat HR di match ini kurang solid untuk dirangkai jadi SGP HR murni.")
                     else:
-                        st.caption("Data statcast tidak lengkap.")
+                        st.caption("Data statcast Barrel/EV tidak lengkap.")
 
                 with col2:
                     st.markdown("#### 📐 2. SGP Sniper Engine")
@@ -491,7 +492,7 @@ with tabs[2]:
                         top_hitter = best_hitters.iloc[0]
                         target_team = top_hitter['Team']
                         player_name = top_hitter.get('Name', 'Top Hitter')
-                        opp_pitcher = game['home_pitcher'] if target_team == game['away_team'] else game['away_pitcher']
+                        opp_pitcher = game.get('home_pitcher', 'TBD') if target_team == game['away_team'] else game.get('away_pitcher', 'TBD')
 
                         st.markdown(f"**Target Alpha:** {player_name} (DNA: {top_hitter.get('Archetype', 'Solid')} | Conn: {top_hitter.get('Conn_Score', 0)})")
                         st.markdown(f"- 🟢 **Leg 1:** {player_name} OVER 1.5 Total Bases")
@@ -501,28 +502,33 @@ with tabs[2]:
 
                 st.divider()
 
-                # --- SGP PITCHER DUEL (UPGRADED VERSION) ---
+                # --- SGP PITCHER DUEL (UPGRADED & FIXED) ---
                 st.markdown("#### ⚾ 3. SGP Pitcher Duel Props")
-                p_away, p_home = game['away_pitcher'], game['home_pitcher']
-                era_away, era_home = get_pitcher_era(game['away_team']), get_pitcher_era(game['home_team'])
+                p_away, p_home = game.get('away_pitcher', 'TBD'), game.get('home_pitcher', 'TBD')
+
+                # Tarik ERA dari data l45 yang benar (Bukan dari nama Tim lagi)
+                p_data_away = l30_pitchers_data.get(p_away, {}) if isinstance(l30_pitchers_data, dict) else {}
+                era_away = p_data_away.get('l45', {}).get('ERA', 4.15)
+                
+                p_data_home = l30_pitchers_data.get(p_home, {}) if isinstance(l30_pitchers_data, dict) else {}
+                era_home = p_data_home.get('l45', {}).get('ERA', 4.15)
 
                 col3, col4 = st.columns(2)
                 
-                # Fungsi internal buat ngasih rekomendasi prop yang lebih tajam
                 def get_pitcher_props(era):
-                    if era < 3.50:
+                    if era < 3.60:
                         return "- 🟢 OVER Strikeouts / 🟢 UNDER Earned Runs"
-                    elif 3.50 <= era <= 4.40:
+                    elif 3.60 <= era <= 4.40:
                         return "- 🟡 OVER 15.5 Outs / 🟡 FADE Strikeouts (Risiko Tinggi)"
                     else:
                         return "- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs"
 
                 with col3:
-                    st.markdown(f"**{game['away_team']} SP: {p_away}** (ERA: {era_away:.2f})")
+                    st.markdown(f"**{game.get('away_team', 'AWAY')} SP: {p_away}** (ERA: {era_away:.2f})")
                     st.write(get_pitcher_props(era_away))
                 
                 with col4:
-                    st.markdown(f"**{game['home_team']} SP: {p_home}** (ERA: {era_home:.2f})")
+                    st.markdown(f"**{game.get('home_team', 'HOME')} SP: {p_home}** (ERA: {era_home:.2f})")
                     st.write(get_pitcher_props(era_home))
 
 with tabs[4]:
@@ -561,7 +567,7 @@ with tabs[4]:
 # ====================================================================
 with tabs[5]:
     st.header("🏪 Match & Team Market Terminal")
-    st.caption("SOP: Proyeksi Moneyline dan O/U menggunakan Pythagorean Expectation, SP xERA, dan Park Factor.")
+    st.caption("SOP: Proyeksi Moneyline dan O/U menggunakan Pythagorean Expectation, L45 SP ERA, dan Park Factor.")
     
     if isinstance(today_schedule, list) and not df_hitters.empty:
         market_rows = []
@@ -569,27 +575,25 @@ with tabs[5]:
             away_t = game['away_team']
             home_t = game['home_team']
             
-            # 1. Ambil Kualitas Hitter (xwOBA)
+            # 1. Ambil Kualitas Hitter (Murni pakai xwOBA dari pembaruan Savant)
             h_away = df_hitters[df_hitters['Team'] == away_t]
             h_home = df_hitters[df_hitters['Team'] == home_t]
-            score_away = h_away['xwOBA_L14'].mean() if 'xwOBA_L14' in h_away.columns else (h_away['xwOBA'].mean() if not h_away.empty else 0.315)
-            score_home = h_home['xwOBA_L14'].mean() if 'xwOBA_L14' in h_home.columns else (h_home['xwOBA'].mean() if not h_home.empty else 0.315)
+            score_away = h_away['xwOBA'].mean() if not h_away.empty else 0.315
+            score_home = h_home['xwOBA'].mean() if not h_home.empty else 0.315
 
-            # 2. Ambil Kualitas Pitching (Pemisahan SP dan Bullpen)
-            # Karena belum ada data spesifik per SP di JSON jadwal lu, kita pakai fallback pintar
-            # Asumsi: get_pitcher_era mewakili ERA tim keseluruhan (Bullpen proxy)
+            # 2. Ambil Kualitas Pitching (Integrasi dengan L45 Matrix dari Tab 7)
             team_era_away = get_pitcher_era(away_t)
             team_era_home = get_pitcher_era(home_t)
             
-            # Cari ERA SP spesifik dari df_pitchers jika ada
             sp_away_name = game.get('away_pitcher', 'TBD')
             sp_home_name = game.get('home_pitcher', 'TBD')
             
-            sp_away_df = df_pitchers[df_pitchers['Name'] == sp_away_name] if not df_pitchers.empty else pd.DataFrame()
-            sp_home_df = df_pitchers[df_pitchers['Name'] == sp_home_name] if not df_pitchers.empty else pd.DataFrame()
+            # Tarik ERA L45 Pitcher (Lebih presisi dari df_pitchers bawaan)
+            p_data_away = l30_pitchers_data.get(sp_away_name, {}) if isinstance(l30_pitchers_data, dict) else {}
+            p_data_home = l30_pitchers_data.get(sp_home_name, {}) if isinstance(l30_pitchers_data, dict) else {}
             
-            sp_era_away = sp_away_df['ERA'].values[0] if not sp_away_df.empty else team_era_away
-            sp_era_home = sp_home_df['ERA'].values[0] if not sp_home_df.empty else team_era_home
+            sp_era_away = p_data_away.get('l45', {}).get('ERA', team_era_away)
+            sp_era_home = p_data_home.get('l45', {}).get('ERA', team_era_home)
             
             # Bobot Pitching: 60% Starter, 40% Bullpen
             true_pitch_away = (sp_era_away * 0.6) + (team_era_away * 0.4)
@@ -599,9 +603,9 @@ with tabs[5]:
             park_mult = PARK_FACTORS.get(home_t, 1.00)
 
             # 4. Proyeksi Runs (BaseRuns Logic)
-            # Normalisasi rata-rata OBA liga = 0.315, rata-rata ERA = 4.10
             proj_r_a = (score_away / 0.315) * true_pitch_home * park_mult
             proj_r_home = (score_home / 0.315) * true_pitch_away * park_mult
+            total_proj = round(proj_r_a + proj_r_home, 1)
 
             # 5. Pythagorean Win Probability (Eksponen 1.83 adalah standar MLB)
             pyth_away = (proj_r_a**1.83) / (proj_r_a**1.83 + proj_r_home**1.83)
@@ -615,18 +619,34 @@ with tabs[5]:
             else:
                 fav, dog, wp = home_t, away_t, win_prob_home
 
-            # 6. Rekomendasi Handicap (Runline)
+            # 6. Rekomendasi Handicap (Runline) & Over/Under
             hc_rec = f"{fav} -1.5" if wp >= 58.0 else f"{dog} +1.5"
             
+            if total_proj >= 9.0:
+                ou_rec = "🟢 OVER"
+            elif total_proj <= 7.5:
+                ou_rec = "🔴 UNDER"
+            else:
+                ou_rec = "🟡 PASS"
+            
+            # 7. Memasukkan ke Tabel Visual
             market_rows.append({
-                'Match': f"{away_t} (SP: {sp_away_name}) @ {home_t} (SP: {sp_home_name})", 
-                '🔥 Moneyline Pred': f"{fav} ({wp}%)", 
+                'Match': f"{away_t} @ {home_t}",
+                'SP Duel': f"{sp_away_name} vs {sp_home_name}", 
+                '🔥 ML Pick': fav, 
+                'WP%': wp, 
                 '📐 Runline': hc_rec, 
-                '📊 Proj Total': round(proj_r_a + proj_r_home, 1),
-                '📝 Run Splitz': f"{away_t} {round(proj_r_a, 1)} - {round(proj_r_home, 1)} {home_t}"
+                '📊 Proj Total': total_proj,
+                'O/U Pick': ou_rec
             })
             
-        st.dataframe(pd.DataFrame(market_rows), hide_index=True, use_container_width=True)
+        # Rendering dengan Panduan Warna Gradasi
+        df_market = pd.DataFrame(market_rows)
+        
+        # Kolom WP% akan berwarna hijau pekat jika peluang menang di atas 60%
+        styled_market = df_market.style.background_gradient(cmap='Greens', subset=['WP%'])
+        
+        st.dataframe(styled_market, hide_index=True, use_container_width=True)
     else:
         st.warning("Data Hitter atau Jadwal belum siap.")
 
@@ -824,9 +844,10 @@ with tabs[6]:
             proj_runs_away = team_totals_data.get(away_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
             proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
             
-            i# Evaluasi Form Terkini Away Pitcher
+            # Evaluasi Form Terkini Away Pitcher
             if p_away != "TBD":
-                label_a = f"{p_away} (L45: {starts_away}G)"
+                label_a = f"{p_away} (ERA: {era_away:.2f} | L45: {starts_away}G)"
+                
                 # UPGRADE: Toleransi Proyeksi dinaikkan ke 4.3, Park Factor dilonggarkan ke 1.05
                 if era_away < 3.60 and park_mult <= 1.05 and proj_runs_home <= 4.3 and starts_away >= 3:
                     assassins.append((label_a, away_t, "OVER Strikeouts (Form: Hot 🔥)"))
@@ -839,7 +860,8 @@ with tabs[6]:
 
             # Evaluasi Form Terkini Home Pitcher
             if p_home != "TBD":
-                label_h = f"{p_home} (L45: {starts_home}G)"
+                label_h = f"{p_home} (ERA: {era_home:.2f} | L45: {starts_home}G)"
+                
                 if era_home < 3.60 and park_mult <= 1.05 and proj_runs_away <= 4.3 and starts_home >= 3:
                     assassins.append((label_h, home_t, "OVER Strikeouts (Form: Hot 🔥)"))
                 elif era_home <= 4.30 and starts_home >= 3:
