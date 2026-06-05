@@ -303,23 +303,57 @@ with tabs[0]:
     else:
         st.warning("⚠️ Data 'master_pitcher_2026.csv' kosong. Pastikan workflow github actions lu sudah berjalan sukses malam ini.")
 
+# ====================================================================
+# TAB 2: HITTER STATCAST & DISCIPLINE METRICS
+# ====================================================================
 with tabs[1]:
-    st.subheader("Hitter Advanced, Batting Order & Recent Form (14d)")
+    st.subheader("🏏 Hitter Statcast & Plate Discipline Radar")
+    st.caption("Data performa pukulan & kedisiplinan mata. Di-update harian otomatis via Savant.")
+    
     if not df_hitters.empty:
-        df_h_today = today_hitters.copy() if not today_hitters.empty else df_hitters[df_hitters['Team'].isin(playing_teams)].copy()
-        if 'xwOBA_L14' not in df_h_today.columns: 
-            df_h_today['xwOBA_L14'] = df_h_today.get('xwOBA', df_h_today.get('xwOBA_vs_R', 0.300))
-
-        col1, col2 = st.columns(2)
-        with col1: search_name = st.text_input("🔍 Ketik Nama Pemain:", "", key="tab2_s")
-        with col2: sel_team = st.selectbox("Filter Tim:", ["Semua Tim"] + sorted(df_h_today['Team'].unique().tolist()), key="tab2_t")
-
-        player_col = 'Name' if 'Name' in df_h_today.columns else ('Player' if 'Player' in df_h_today.columns else None)
-        if player_col:
-            display_df = df_h_today[df_h_today[player_col].str.contains(search_name, case=False, na=False)] if search_name else (df_h_today[df_h_today['Team'] == sel_team] if sel_team != "Semua Tim" else df_h_today.sort_values(by='xwOBA_L14', ascending=False).head(50))
-            st.dataframe(display_df, use_container_width=True, height=500)
-        else: st.error("❌ Kolom nama pemain tidak ditemukan.")
-    else: st.warning("⚠️ Data Hitter kosong.")
+        # 1. Kumpulkan list tim yang dijadwalkan bertanding hari ini
+        playing_teams = []
+        if isinstance(today_schedule, list):
+            for game in today_schedule:
+                if game.get('away_team'): playing_teams.append(game['away_team'])
+                if game.get('home_team'): playing_teams.append(game['home_team'])
+        
+        # 2. Filter data: Hanya tampilkan hitter yang timnya tanding hari ini
+        df_display_hitters = df_hitters[df_hitters['Team'].isin(playing_teams)].copy()
+        
+        # Fallback: Kalau data filter kosong (misal belum rilis jadwal), tampilkan Top 50 Liga
+        if df_display_hitters.empty:
+            df_display_hitters = df_hitters.head(50).copy()
+            
+        # 3. Atur barisan kolom ideal agar muat dan rapi pas dibuka di HP
+        kolom_hitter = [
+            'Name', 'Team', 'xwOBA', 'xBA', 'Barrel%', 'Max EV', 
+            'HardHit%', 'Chase%', 'Whiff%', 'ZoneContact%', 'Pull%', 'LaunchAngle'
+        ]
+        available_hitter_cols = [c for c in kolom_hitter if c in df_display_hitters.columns]
+        df_display_hitters = df_display_hitters[available_hitter_cols]
+        
+        # 4. ENGINE GRADASI WARNA (VISUAL AUDIT HITTER)
+        # - Kategori Positif (Makin TINGGI makin HIJAU): Power, EV, dan Kontak Dalam Zona
+        kolom_hijau_tinggi = [c for c in ['xwOBA', 'xBA', 'Barrel%', 'Max EV', 'HardHit%', 'ZoneContact%', 'Pull%'] if c in df_display_hitters.columns]
+        # - Kategori Negatif (Makin TINGGI makin MERAH): Suka ngayun bola zonk (Chase%) & sering meleset (Whiff%)
+        kolom_merah_tinggi = [c for c in ['Chase%', 'Whiff%'] if c in df_display_hitters.columns]
+        
+        styled_hitters = df_display_hitters.style
+        if kolom_hijau_tinggi:
+            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn', subset=kolom_hijau_tinggi)
+        if kolom_merah_tinggi:
+            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn_r', subset=kolom_merah_tinggi)
+            
+        # 5. Render ke Layar Dashboard
+        st.dataframe(
+            styled_hitters,
+            use_container_width=True,
+            height=520,
+            hide_index=True
+        )
+    else:
+        st.warning("⚠️ Data 'master_hitter_2026.csv' kosong atau belum digenerate oleh bot.")
 
 # ====================================================================
 # TAB 4: LIVE REPORT & FINAL BOXSCORE (MOBILE OPTIMIZED)
