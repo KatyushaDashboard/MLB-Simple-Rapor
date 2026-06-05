@@ -20,39 +20,40 @@ selected_date = st.sidebar.date_input("Pilih Tanggal Pertandingan:", datetime.to
 # ====================================================================
 @st.cache_data
 def load_base_data():
-    try:
-        df_hitters = pd.read_csv('master_hitter_2026.csv') 
-        # ==========================================
-# PENGAMAN GLOBAL & CUCI NAMA KOLOM SAVANT
 # ==========================================
-    if not df_hitters.empty:
-    # Bikin kolom 'Name' dan 'Age' biar algoritma lama lu nggak crash
-    if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
-        df_hitters['Name'] = df_hitters['player']
-    if 'player_age' in df_hitters.columns and 'Age' not in df_hitters.columns:
-        df_hitters['Age'] = df_hitters['player_age']
-        
-    # Standarisasi kolom Savant secara global
-    rename_global = {
-        'xwoba': 'xwOBA',
-        'xba': 'xBA',
-        'xslg': 'xSLG',
-        'k_percent': 'K%',
-        'bb_percent': 'BB%',
-        'barrel_batted_rate': 'Barrel%',
-        'avg_best_speed': 'Max EV',      # Dikembalikan ke Max EV agar Tab lain bisa ngitung Adj_Barrel
-        'hard_hit_percent': 'HardHit%',
-        'sweet_spot_percent': 'SweetSpot%',
-        'flyballs_percent': 'FB%',
-        'oz_swing_percent': 'Chase%',
-        'whiff_percent': 'Whiff%',
-        'iz_contact_percent': 'ZoneContact%',
-        'pull_percent': 'Pull%'
-    }
-    df_hitters.rename(columns=rename_global, inplace=True)
-    except FileNotFoundError:
-        st.sidebar.error("⚠️ File 'master_hitter_2026.csv' tidak ditemukan.")
-        df_hitters = pd.DataFrame()
+# LOAD DATA HITTER
+# ==========================================
+    try:
+    df_hitters = pd.read_csv('master_hitter_2026.csv')
+    
+    # --- MULAI BAGIAN 1 (PENGAMAN & CUCI KOLOM) ---
+        if not df_hitters.empty:
+            if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
+            df_hitters['Name'] = df_hitters['player']
+            if 'player_age' in df_hitters.columns and 'Age' not in df_hitters.columns:
+            df_hitters['Age'] = df_hitters['player_age']
+            
+            rename_global = {
+                'xwoba': 'xwOBA',
+                'xba': 'xBA',
+                'xslg': 'xSLG',
+                'k_percent': 'K%',
+                'bb_percent': 'BB%',
+                'barrel_batted_rate': 'Barrel%',
+                'avg_best_speed': 'Max EV',
+                'hard_hit_percent': 'HardHit%',
+                'sweet_spot_percent': 'SweetSpot%',
+                'flyballs_percent': 'FB%',
+                'oz_swing_percent': 'Chase%',
+                'whiff_percent': 'Whiff%',
+                'iz_contact_percent': 'ZoneContact%',
+                'pull_percent': 'Pull%'
+                }
+            df_hitters.rename(columns=rename_global, inplace=True)
+    # --- AKHIR BAGIAN 1 ---
+
+    except FileNotFoundError: # <--- INI DIA YANG TADI KEHAPUS/KEGESER WAK!
+    df_hitters = pd.DataFrame()
 
     try:
         df_pitchers = pd.read_csv('master_pitcher_2026.csv')
