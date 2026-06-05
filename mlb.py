@@ -22,6 +22,9 @@ selected_date = st.sidebar.date_input("Pilih Tanggal Pertandingan:", datetime.to
 def load_base_data():
     try:
         df_hitters = pd.read_csv('master_hitter_2026.csv') 
+        # Suntikan dadakan biar Tab 3, 7, 8 nggak error nyari 'Name'
+        if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
+            df_hitters['Name'] = df_hitters['player']
     except FileNotFoundError:
         st.sidebar.error("⚠️ File 'master_hitter_2026.csv' tidak ditemukan.")
         df_hitters = pd.DataFrame()
