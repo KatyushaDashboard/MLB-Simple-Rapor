@@ -236,87 +236,61 @@ def update_advanced_metrics(games_list):
 # 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (BYPASS FANGRAPHS)
 # ==========================================
 def generate_master_hitter_csv():
-    print("🏏 Mengekstrak Data Hitter (Bypass FanGraphs via Savant & B-Ref)...")
+    print("🏏 Menyedot Custom Data Hitter Langsung dari Baseball Savant...")
     try:
-        from pybaseball import batting_stats_bref, statcast_batter_expected_stats, statcast_batter_exitvelo_barrels, bref_daily_batter
-        from datetime import datetime, timedelta
         import pandas as pd
+        import requests
+        import io
+
+        # URL Super Custom hasil ramuan lu + Injeksi Rahasia max_hit_speed & player_team + &csv=true
+        savant_url = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=20&selections=pa%2Ck_percent%2Cbb_percent%2Cbatting_avg%2Cb_total_bases%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Cwobadiff%2Cblasts_contact%2Cexit_velocity_avg%2Claunch_angle_avg%2Csweet_spot_percent%2Cbarrel%2Cbarrel_batted_rate%2Csolidcontact_percent%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Ciz_contact_percent%2Cin_zone_percent%2Cwhiff_percent%2Cswing_percent%2Cpull_percent%2Cchase_percent%2Cfly_ball_percent%2Cmax_hit_speed%2Cplayer_team&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=xwoba&sortDir=desc&csv=true"
         
-        now = datetime.now()
-        year = now.year
-        l14_start = (now - timedelta(days=14)).strftime('%Y-%m-%d')
-        l14_end = now.strftime('%Y-%m-%d')
-
-        print("⏳ Download B-Ref Season Stats (Base & Team)...")
-        df_bref = batting_stats_bref(year)
-        # Bersihkan nama dari karakter aneh (asterisk dll)
-        df_bref['Name'] = df_bref['Name'].str.replace(r'[*#]', '', regex=True).str.strip()
-
-        print("⏳ Download Savant Expected Stats...")
-        df_exp = statcast_batter_expected_stats(year, 20)
-        # Rapikan kapitalisasi nama dari Savant (dari "shohei ohtani" jadi "Shohei Ohtani")
-        df_exp['Name'] = df_exp['first_name'].str.strip().str.title() + ' ' + df_exp['last_name'].str.strip().str.title()
-
-        print("⏳ Download Savant Exit Velo & Barrels...")
-        df_ev = statcast_batter_exitvelo_barrels(year, 20)
-        df_ev['Name'] = df_ev['first_name'].str.strip().str.title() + ' ' + df_ev['last_name'].str.strip().str.title()
-
-        print("⏳ Download B-Ref L14 Form...")
-        try:
-            df_l14 = bref_daily_batter(l14_start, l14_end)
-            df_l14['Name'] = df_l14['Name'].str.replace(r'[*#]', '', regex=True).str.strip()
-        except:
-            df_l14 = pd.DataFrame()
-
-        # Mulai Proses Penggabungan Data (Merge)
-        df_clean = pd.DataFrame()
-        df_clean['Name'] = df_bref['Name']
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
         
-        # 1. Konversi Singkatan Tim agar cocok dengan Streamlit lu
-        bref_to_mlb = {"TBR": "TB", "CHW": "CWS", "KCR": "KC", "SDP": "SD", "SFG": "SF", "WSN": "WSH"}
-        df_clean['Team'] = df_bref['Tm'].replace(bref_to_mlb)
-
-        # 2. Siapkan Kamus Data Statcast
-        exp_xwoba = dict(zip(df_exp['Name'], df_exp['xwoba']))
-        exp_xba = dict(zip(df_exp['Name'], df_exp['xba']))
-        exp_xslg = dict(zip(df_exp['Name'], df_exp['xslg']))
+        print("⏳ Mengunduh CSV Grosiran dari Savant...")
+        response = requests.get(savant_url, headers=headers, timeout=15)
         
-        ev_max = dict(zip(df_ev['Name'], df_ev['max_hit_speed']))
-        ev_brl = dict(zip(df_ev['Name'], df_ev['brl_percent']))
-        ev_hard = dict(zip(df_ev['Name'], df_ev['ev95percent']))
-
-        # 3. Suntikkan ke DataFrame (Kalau nama nggak cocok, pakai angka rata-rata aman)
-        df_clean['xwOBA'] = df_clean['Name'].map(exp_xwoba).fillna(0.320)
-        df_clean['xBA'] = df_clean['Name'].map(exp_xba).fillna(0.250)
-        df_clean['xSLG'] = df_clean['Name'].map(exp_xslg).fillna(0.400)
+        # Baca teks response langsung jadi DataFrame Pandas
+        df = pd.read_csv(io.StringIO(response.text))
         
-        df_clean['Max EV'] = df_clean['Name'].map(ev_max).fillna(105.0)
-        df_clean['Barrel%'] = df_clean['Name'].map(ev_brl).fillna(0.0)
-        df_clean['HardHit%'] = df_clean['Name'].map(ev_hard).fillna(35.0)
+        # 🧹 PENYELARASAN HEADER: Ubah nama kolom bawaan Savant agar klop dengan Dashboard lu
+        df.rename(columns={
+            'player': 'Name',
+            'player_team': 'Team',
+            'team': 'Team',
+            'xwoba': 'xwOBA',
+            'barrel_batted_rate': 'Barrel%',
+            'max_hit_speed': 'Max EV',       # Hasil Injeksi Hacker!
+            'hard_hit_percent': 'HardHit%',
+            'xba': 'xBA',
+            'xslg': 'xSLG',
+            'chase_percent': 'Chase%',       # Out of Zone Swing%
+            'fly_ball_percent': 'FB%',
+            'whiff_percent': 'Whiff%',
+            'iz_contact_percent': 'ZoneContact%',
+            'pull_percent': 'Pull%',
+            'launch_angle_avg': 'LaunchAngle'
+        }, inplace=True)
+        
+        # 🔄 REVERSE NAMA: Mengubah format "Judge, Aaron" menjadi "Aaron Judge"
+        if 'Name' in df.columns:
+            df['Name'] = df['Name'].apply(lambda x: ' '.join(x.split(', ')[::-1]) if ', ' in str(x) else x)
+        
+        # Tambahkan kolom dummy pelengkap agar Tab 6/Tab Lainnya gak nyariin
+        df['xwOBA_vs_R'] = df['xwOBA']
+        df['xwOBA_vs_L'] = df['xwOBA']
+        df['xwOBA_L14'] = df['xwOBA']
+        df['PA_L14'] = df['pa']
+        df['Batting'] = 0
 
-        # Kolom dummy agar Streamlit tidak crash
-        df_clean['xwOBA_vs_R'] = df_clean['xwOBA']
-        df_clean['xwOBA_vs_L'] = df_clean['xwOBA']
-        df_clean['Batting'] = 0
-
-        # 4. Injeksi Tren L14 (Konversi OPS menjadi rasio xwOBA)
-        if not df_l14.empty:
-            l14_ops = dict(zip(df_l14['Name'], df_l14['OPS']))
-            l14_pa = dict(zip(df_l14['Name'], df_l14['PA']))
-            
-            # Rumus konversi kasar: OPS dibagi 2.3 nilainya setara dengan skala xwOBA
-            df_clean['xwOBA_L14'] = round((df_clean['Name'].map(l14_ops) / 2.3), 3).fillna(df_clean['xwOBA'])
-            df_clean['PA_L14'] = df_clean['Name'].map(l14_pa).fillna(0)
-        else:
-            df_clean['xwOBA_L14'] = df_clean['xwOBA']
-            df_clean['PA_L14'] = 0
-
-        # Cetak File
-        df_clean.to_csv('master_hitter_2026.csv', index=False)
-        print("✅ BOOM! master_hitter_2026.csv berhasil di-update dari Savant & BRef!")
-
+        # Cetak jadi master hitter utama!
+        df.to_csv('master_hitter_2026.csv', index=False)
+        print("✅ BOOM! master_hitter_2026.csv sukses diperbarui via Jalur Belakang Savant!")
+        
     except Exception as e:
-        print(f"❌ FATAL ERROR Hitter CSV: {e}")
+        print(f"❌ Gagal total memperbarui Hitter CSV: {e}")
 
 # ==========================================
 # 5. INIT DAILY PICKS LOG
