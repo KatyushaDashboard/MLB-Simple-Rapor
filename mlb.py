@@ -24,7 +24,7 @@ def load_base_data():
 # LOAD DATA HITTER
 # ==========================================
     try:
-    df_hitters = pd.read_csv('master_hitter_2026.csv')
+        df_hitters = pd.read_csv('master_hitter_2026.csv')
     
     # --- MULAI BAGIAN 1 (PENGAMAN & CUCI KOLOM) ---
         if not df_hitters.empty:
