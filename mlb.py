@@ -304,48 +304,68 @@ with tabs[0]:
         st.warning("⚠️ Data 'master_pitcher_2026.csv' kosong. Pastikan workflow github actions lu sudah berjalan sukses malam ini.")
 
 # ====================================================================
-# TAB 2: HITTER STATCAST & DISCIPLINE METRICS
+# TAB 2: HITTER STATCAST & DISCIPLINE RADAR (RAW SAVANT VER)
 # ====================================================================
 with tabs[1]:
     st.subheader("🏏 Hitter Statcast & Plate Discipline Radar")
-    st.caption("Data performa pukulan & kedisiplinan mata. Di-update harian otomatis via Savant.")
+    st.caption("Data performa pukulan. Di-update harian otomatis via Savant.")
     
     if not df_hitters.empty:
-        # 1. Kumpulkan list tim yang dijadwalkan bertanding hari ini
         playing_teams = []
         if isinstance(today_schedule, list):
             for game in today_schedule:
                 if game.get('away_team'): playing_teams.append(game['away_team'])
                 if game.get('home_team'): playing_teams.append(game['home_team'])
         
-        # 2. Filter data: Hanya tampilkan hitter yang timnya tanding hari ini
-        df_display_hitters = df_hitters[df_hitters['Team'].isin(playing_teams)].copy()
-        
-        # Fallback: Kalau data filter kosong (misal belum rilis jadwal), tampilkan Top 50 Liga
-        if df_display_hitters.empty:
-            df_display_hitters = df_hitters.head(50).copy()
-            
-        # 3. Atur barisan kolom ideal agar muat dan rapi pas dibuka di HP
-        kolom_hitter = [
-            'Name', 'Team', 'xwOBA', 'xBA', 'Barrel%', 'Max EV', 
-            'HardHit%', 'Chase%', 'Whiff%', 'ZoneContact%', 'Pull%', 'LaunchAngle'
+        # Filter yang main hari ini
+        df_display = df_hitters[df_hitters['Team'].isin(playing_teams)].copy()
+        if df_display.empty:
+            df_display = df_hitters.head(50).copy()
+
+        # 1. PILIH KOLOM ASLI DARI SAVANT CSV
+        raw_cols = [
+            'player', 'player_age', 'Team', 'xwoba', 'xba', 'barrel_batted_rate', 
+            'avg_best_speed', 'hard_hit_percent', 'sweet_spot_percent', 
+            'flyballs_percent', 'oz_swing_percent', 'whiff_percent', 
+            'iz_contact_percent', 'pull_percent'
         ]
-        available_hitter_cols = [c for c in kolom_hitter if c in df_display_hitters.columns]
-        df_display_hitters = df_display_hitters[available_hitter_cols]
+        avail_cols = [c for c in raw_cols if c in df_display.columns]
+        df_display = df_display[avail_cols]
+
+        # 2. RENAME ON-THE-FLY KHUSUS UNTUK TAMPILAN LAYAR
+        display_names = {
+            'player': 'Name',
+            'player_age': 'Age',
+            'xwoba': 'xwOBA',
+            'xba': 'xBA',
+            'barrel_batted_rate': 'Barrel%',
+            'avg_best_speed': 'BestSpeed',
+            'hard_hit_percent': 'HardHit%',
+            'sweet_spot_percent': 'SweetSpot%',
+            'flyballs_percent': 'FB%',
+            'oz_swing_percent': 'Chase%',
+            'whiff_percent': 'Whiff%',
+            'iz_contact_percent': 'ZoneContact%',
+            'pull_percent': 'Pull%'
+        }
+        df_display.rename(columns=display_names, inplace=True)
+
+        # 3. ATUR WARNA GRADASI BERDASARKAN NAMA KOLOM TAMPILAN
+        styled_hitters = df_display.style
         
-        # 4. ENGINE GRADASI WARNA (VISUAL AUDIT HITTER)
-        # - Kategori Positif (Makin TINGGI makin HIJAU): Power, EV, dan Kontak Dalam Zona
-        kolom_hijau_tinggi = [c for c in ['xwOBA', 'xBA', 'Barrel%', 'Max EV', 'HardHit%', 'ZoneContact%', 'Pull%'] if c in df_display_hitters.columns]
-        # - Kategori Negatif (Makin TINGGI makin MERAH): Suka ngayun bola zonk (Chase%) & sering meleset (Whiff%)
-        kolom_merah_tinggi = [c for c in ['Chase%', 'Whiff%'] if c in df_display_hitters.columns]
+        # Metrik Power & Kontak (Tinggi = Hijau)
+        hijau = [c for c in ['xwOBA', 'xBA', 'Barrel%', 'BestSpeed', 'HardHit%', 'SweetSpot%', 'FB%', 'ZoneContact%', 'Pull%'] if c in df_display.columns]
         
-        styled_hitters = df_display_hitters.style
-        if kolom_hijau_tinggi:
-            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn', subset=kolom_hijau_tinggi)
-        if kolom_merah_tinggi:
-            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn_r', subset=kolom_merah_tinggi)
+        # Metrik Buta Huruf (Tinggi = Merah)
+        merah = [c for c in ['Chase%', 'Whiff%'] if c in df_display.columns]
+        
+        # Usia (Opsional, nggak diwarnai atau bisa diset sendiri nanti)
+        
+        if hijau:
+            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn', subset=hijau)
+        if merah:
+            styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn_r', subset=merah)
             
-        # 5. Render ke Layar Dashboard
         st.dataframe(
             styled_hitters,
             use_container_width=True,
@@ -353,7 +373,7 @@ with tabs[1]:
             hide_index=True
         )
     else:
-        st.warning("⚠️ Data 'master_hitter_2026.csv' kosong atau belum digenerate oleh bot.")
+        st.warning("⚠️ Data 'master_hitter_2026.csv' kosong.")
 
 # ====================================================================
 # TAB 4: LIVE REPORT & FINAL BOXSCORE (MOBILE OPTIMIZED)
