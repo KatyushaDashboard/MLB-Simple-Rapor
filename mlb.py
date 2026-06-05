@@ -29,9 +29,9 @@ def load_base_data():
     # --- MULAI BAGIAN 1 (PENGAMAN & CUCI KOLOM) ---
         if not df_hitters.empty:
             if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
-            df_hitters['Name'] = df_hitters['player']
+                df_hitters['Name'] = df_hitters['player']
             if 'player_age' in df_hitters.columns and 'Age' not in df_hitters.columns:
-            df_hitters['Age'] = df_hitters['player_age']
+                df_hitters['Age'] = df_hitters['player_age']
             
             rename_global = {
                 'xwoba': 'xwOBA',
@@ -53,7 +53,7 @@ def load_base_data():
     # --- AKHIR BAGIAN 1 ---
 
     except FileNotFoundError: # <--- INI DIA YANG TADI KEHAPUS/KEGESER WAK!
-    df_hitters = pd.DataFrame()
+        df_hitters = pd.DataFrame()
 
     try:
         df_pitchers = pd.read_csv('master_pitcher_2026.csv')
