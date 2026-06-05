@@ -22,9 +22,34 @@ selected_date = st.sidebar.date_input("Pilih Tanggal Pertandingan:", datetime.to
 def load_base_data():
     try:
         df_hitters = pd.read_csv('master_hitter_2026.csv') 
-        # Suntikan dadakan biar Tab 3, 7, 8 nggak error nyari 'Name'
-        if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
-            df_hitters['Name'] = df_hitters['player']
+        # ==========================================
+# PENGAMAN GLOBAL & CUCI NAMA KOLOM SAVANT
+# ==========================================
+    if not df_hitters.empty:
+    # Bikin kolom 'Name' dan 'Age' biar algoritma lama lu nggak crash
+    if 'player' in df_hitters.columns and 'Name' not in df_hitters.columns:
+        df_hitters['Name'] = df_hitters['player']
+    if 'player_age' in df_hitters.columns and 'Age' not in df_hitters.columns:
+        df_hitters['Age'] = df_hitters['player_age']
+        
+    # Standarisasi kolom Savant secara global
+    rename_global = {
+        'xwoba': 'xwOBA',
+        'xba': 'xBA',
+        'xslg': 'xSLG',
+        'k_percent': 'K%',
+        'bb_percent': 'BB%',
+        'barrel_batted_rate': 'Barrel%',
+        'avg_best_speed': 'Max EV',      # Dikembalikan ke Max EV agar Tab lain bisa ngitung Adj_Barrel
+        'hard_hit_percent': 'HardHit%',
+        'sweet_spot_percent': 'SweetSpot%',
+        'flyballs_percent': 'FB%',
+        'oz_swing_percent': 'Chase%',
+        'whiff_percent': 'Whiff%',
+        'iz_contact_percent': 'ZoneContact%',
+        'pull_percent': 'Pull%'
+    }
+    df_hitters.rename(columns=rename_global, inplace=True)
     except FileNotFoundError:
         st.sidebar.error("⚠️ File 'master_hitter_2026.csv' tidak ditemukan.")
         df_hitters = pd.DataFrame()
@@ -307,68 +332,50 @@ with tabs[0]:
         st.warning("⚠️ Data 'master_pitcher_2026.csv' kosong. Pastikan workflow github actions lu sudah berjalan sukses malam ini.")
 
 # ====================================================================
-# TAB 2: HITTER STATCAST & DISCIPLINE RADAR (RAW SAVANT VER)
+# TAB 2: HITTER STATCAST & DISCIPLINE RADAR
 # ====================================================================
 with tabs[1]:
     st.subheader("🏏 Hitter Statcast & Plate Discipline Radar")
     st.caption("Data performa pukulan. Di-update harian otomatis via Savant.")
     
     if not df_hitters.empty:
+        # 1. Kumpulkan list tim yang bertanding hari ini
         playing_teams = []
         if isinstance(today_schedule, list):
             for game in today_schedule:
                 if game.get('away_team'): playing_teams.append(game['away_team'])
                 if game.get('home_team'): playing_teams.append(game['home_team'])
         
-        # Filter yang main hari ini
+        # 2. Filter data: Hanya tampilkan hitter yang timnya main hari ini
         df_display = df_hitters[df_hitters['Team'].isin(playing_teams)].copy()
+        
+        # Fallback kalau data kosong (belum rilis jadwal)
         if df_display.empty:
             df_display = df_hitters.head(50).copy()
 
-        # 1. PILIH KOLOM ASLI DARI SAVANT CSV
-        raw_cols = [
-            'player', 'player_age', 'Team', 'xwoba', 'xba', 'barrel_batted_rate', 
-            'avg_best_speed', 'hard_hit_percent', 'sweet_spot_percent', 
-            'flyballs_percent', 'oz_swing_percent', 'whiff_percent', 
-            'iz_contact_percent', 'pull_percent'
+        # 3. Panggil kolom yang SUDAH DISTANDARISASI di global
+        avail_cols = [
+            'Name', 'Age', 'Team', 'xwOBA', 'xBA', 'xSLG', 'K%', 'BB%',
+            'Barrel%', 'Max EV', 'HardHit%', 'SweetSpot%', 
+            'FB%', 'Chase%', 'Whiff%', 'ZoneContact%', 'Pull%'
         ]
-        avail_cols = [c for c in raw_cols if c in df_display.columns]
-        df_display = df_display[avail_cols]
+        df_display = df_display[[c for c in avail_cols if c in df_display.columns]]
 
-        # 2. RENAME ON-THE-FLY KHUSUS UNTUK TAMPILAN LAYAR
-        display_names = {
-            'player': 'Name',
-            'player_age': 'Age',
-            'xwoba': 'xwOBA',
-            'xba': 'xBA',
-            'barrel_batted_rate': 'Barrel%',
-            'avg_best_speed': 'BestSpeed',
-            'hard_hit_percent': 'HardHit%',
-            'sweet_spot_percent': 'SweetSpot%',
-            'flyballs_percent': 'FB%',
-            'oz_swing_percent': 'Chase%',
-            'whiff_percent': 'Whiff%',
-            'iz_contact_percent': 'ZoneContact%',
-            'pull_percent': 'Pull%'
-        }
-        df_display.rename(columns=display_names, inplace=True)
-
-        # 3. ATUR WARNA GRADASI BERDASARKAN NAMA KOLOM TAMPILAN
+        # 4. ATUR WARNA GRADASI 
         styled_hitters = df_display.style
         
-        # Metrik Power & Kontak (Tinggi = Hijau)
-        hijau = [c for c in ['xwOBA', 'xBA', 'Barrel%', 'BestSpeed', 'HardHit%', 'SweetSpot%', 'FB%', 'ZoneContact%', 'Pull%'] if c in df_display.columns]
+        # Hijau = Makin tinggi makin jago (Power & Kontak)
+        hijau = [c for c in ['xwOBA', 'xBA', 'xSLG', 'BB%', 'Barrel%', 'Max EV', 'HardHit%', 'SweetSpot%', 'FB%', 'ZoneContact%', 'Pull%'] if c in df_display.columns]
         
-        # Metrik Buta Huruf (Tinggi = Merah)
-        merah = [c for c in ['Chase%', 'Whiff%'] if c in df_display.columns]
-        
-        # Usia (Opsional, nggak diwarnai atau bisa diset sendiri nanti)
+        # Merah = Makin tinggi makin ampas (Strikeout & Buta Huruf)
+        merah = [c for c in ['K%', 'Chase%', 'Whiff%'] if c in df_display.columns]
         
         if hijau:
             styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn', subset=hijau)
         if merah:
             styled_hitters = styled_hitters.background_gradient(cmap='RdYlGn_r', subset=merah)
             
+        # 5. Render DataFrame ke layar
         st.dataframe(
             styled_hitters,
             use_container_width=True,
@@ -376,7 +383,7 @@ with tabs[1]:
             hide_index=True
         )
     else:
-        st.warning("⚠️ Data 'master_hitter_2026.csv' kosong.")
+        st.warning("⚠️ Data 'master_hitter_2026.csv' kosong atau belum digenerate oleh bot.")
 
 # ====================================================================
 # TAB 4: LIVE REPORT & FINAL BOXSCORE (MOBILE OPTIMIZED)
