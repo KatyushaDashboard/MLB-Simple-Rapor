@@ -406,30 +406,38 @@ def bangun_database_hitter():
     except:
         df_l30_rhp = pd.DataFrame()
 
+    print(f"   📊 [DEBUG] Baris Data Disedot -> DNA: {len(df_dna)} | L30 LHP: {len(df_l30_lhp)} | L30 RHP: {len(df_l30_rhp)}")
+
     print("   - The Merge (Menggabungkan data)...")
     # Bersihkan nama sebelum merge buat jaga-jaga
     def clean_name(df_temp):
         name_c = None
-        for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name']:
+        # 🔥 FIX: Tambahin 'player_name' ke dalam radar deteksi kolom
+        for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name', 'player_name']:
             if col in df_temp.columns:
                 name_c = col
                 break
+        
         if name_c:
+            # Balik nama "Judge, Aaron" jadi "Aaron Judge"
             df_temp[name_c] = df_temp[name_c].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
-            df_temp.rename(columns={name_c: 'player_name'}, inplace=True)
+            # Paksa ubah nama kolomnya jadi standar biar pasti bisa di-merge
+            df_temp.rename(columns={name_c: 'player_name_std'}, inplace=True)
         return df_temp
 
+    # Eksekusi pembersihan nama
     df_dna = clean_name(df_dna)
     df_l30_lhp = clean_name(df_l30_lhp)
     df_l30_rhp = clean_name(df_l30_rhp)
 
-    if not df_l30_lhp.empty and not df_dna.empty:
-        df_final_lhp = pd.merge(df_dna, df_l30_lhp, how='inner', on='player_name', suffixes=('_Full', '_L30'))
+    # Lakukan Inner Merge dengan kolom standar baru
+    if not df_l30_lhp.empty and not df_dna.empty and 'player_name_std' in df_dna.columns and 'player_name_std' in df_l30_lhp.columns:
+        df_final_lhp = pd.merge(df_dna, df_l30_lhp, how='inner', on='player_name_std', suffixes=('_Full', '_L30'))
     else:
         df_final_lhp = pd.DataFrame()
 
-    if not df_l30_rhp.empty and not df_dna.empty:
-        df_final_rhp = pd.merge(df_dna, df_l30_rhp, how='inner', on='player_name', suffixes=('_Full', '_L30'))
+    if not df_l30_rhp.empty and not df_dna.empty and 'player_name_std' in df_dna.columns and 'player_name_std' in df_l30_rhp.columns:
+        df_final_rhp = pd.merge(df_dna, df_l30_rhp, how='inner', on='player_name_std', suffixes=('_Full', '_L30'))
     else:
         df_final_rhp = pd.DataFrame()
 
