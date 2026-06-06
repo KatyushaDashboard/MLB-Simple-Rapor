@@ -443,96 +443,163 @@ with tabs[3]:
 # ====================================================================
 # TAB 3: SAME GAME PARLAY (SGP) FACTORY (CONN_SCORE ADJUSTED)
 # ====================================================================
-with tabs[2]:
-    st.header("🏭 Same Game Parlay (SGP) Factory")
-    st.caption("SOP: Algoritma korelasi narasi untuk mencetak paket SGP anti-kontradiksi berbasis Connection Score.")
+with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
+        st.header("🏟️ Tab 3: Today Matchup Matrix")
+        st.markdown("Analisis Komparasi Langsung: **Hitter Projections vs Opposing Starting Pitcher**")
 
-    if not isinstance(today_schedule, list) or not today_schedule:
-        st.warning("Jadwal hari ini kosong atau bot belum menarik data jadwal.")
-    elif 'df_matrix_global' not in locals() or df_matrix_global.empty:
-        st.error("Database Hitter Matrix kosong. SGP Factory tidak bisa beroperasi.")
-    else:
-        for idx, game in enumerate(today_schedule):
-            with st.expander(f"🎲 MATCH {idx+1}: {game['away_team']} @ {game['home_team']} | SP: {game.get('away_pitcher', 'TBD')} vs {game.get('home_pitcher', 'TBD')}"):
+        # 1. LOAD SEMUA BAHAN BAKU DATA
+        data_siap = True
+        try:
+            import json
+            import numpy as np
+            
+            # Load Jadwal Hari Ini
+            with open('today_schedule.json', 'r') as f:
+                jadwal_hari_ini = json.load(f)
+                
+            # Load Database Platoon
+            df_h_lhp = pd.read_csv("hitter_vs_lhp.csv")
+            df_h_rhp = pd.read_csv("hitter_vs_rhp.csv")
+            df_p_lhb = pd.read_csv("pitcher_vs_lhb.csv")
+            df_p_rhb = pd.read_csv("pitcher_vs_rhb.csv")
+            
+        except Exception as e:
+            st.error(f"⚠️ Gagal memuat data pertandingan hari ini: {e}")
+            data_siap = False
 
-                # Tarik pemain dari Matrix Global
-                team_players = df_matrix_global[df_matrix_global['Team'].isin([game['away_team'], game['home_team']])]
-                if team_players.empty:
-                    st.caption(f"⚠️ Data statcast tim tidak ditemukan.")
-                    continue
+        if data_siap:
+            if not jadwal_hari_ini:
+                st.warning("Tidak ada jadwal pertandingan aktif untuk hari ini.")
+            else:
+                # 2. DROPDOWN PILIHAN PERTANDINGAN
+                opsi_match = [f"{g['away_team']} @ {g['home_team']} (ID: {g['game_id']})" for g in jadwal_hari_ini]
+                pilihan_user = st.selectbox("🎯 Pilih Pertandingan Hari Ini untuk Dianslisis:", opsi_match, key="sb_match_t3")
+                
+                # Ambil data game yang dipilih
+                idx_match = opsi_match.index(pilihan_user)
+                game_terpilih = jadwal_hari_ini[idx_match]
+                
+                away_team = game_terpilih['away_team']
+                home_team = game_terpilih['home_team']
+                away_sp = game_terpilih['away_pitcher']
+                home_sp = game_terpielder = game_terpilih['home_pitcher'] if 'home_pitcher' in game_terpilih else game_terpilih.get('home_pitcher', 'TBD')
+                home_sp = game_terpilih['home_pitcher']
 
-                # Sortir Prioritas: Connection Score tertinggi dulu, baru Barrel% murni
-                if 'Conn_Score' in team_players.columns and 'Barrel%' in team_players.columns:
-                    best_hitters = team_players.sort_values(by=['Conn_Score', 'Barrel%'], ascending=[False, False]).head(3)
-                else:
-                    best_hitters = team_players.head(3)
+                # --- FUNGSI DETEKSI TANGAN PITCHER (LHP/RHP) ---
+                # Mendeteksi otomatis tangan pitcher berdasarkan keberadaan namanya di database platoon pitcher
+                def deteksi_tangan_sp(nama_pitcher):
+                    if nama_pitcher in df_p_lhb['player_name_std'].values:
+                        return "LHP (Kidal)"
+                    elif nama_pitcher in df_p_rhb['player_name_std'].values:
+                        return "RHP (Kanan)"
+                    return "RHP (Kanan)" # Fallback standar jika data rookie/TBD
 
-                col1, col2 = st.columns(2)
+                away_sp_hand = deteksi_tangan_sp(away_sp)
+                home_sp_hand = deteksi_tangan_sp(home_sp)
 
-                with col1:
-                    st.markdown("#### 💣 1. SGP Home Run (2-3 Legs)")
-                    hr_legs = []
-                    # UPGRADE: Menggunakan Barrel% murni dan Max EV
-                    if 'Barrel%' in best_hitters.columns and 'Max EV' in best_hitters.columns:
-                        for _, row in best_hitters.iterrows():
-                            # Standar Baru: Barrel di atas 8% dan Avg Best Speed (Max EV) di atas 100 mph = Elit Power
-                            if row['Barrel%'] >= 8.0 and row['Max EV'] >= 100.0:
-                                p_name = row.get('Name', 'Unknown')
-                                hr_legs.append(f"🔥 **{p_name}** ({row['Team']}) To Hit HR *(Conn: {row.get('Conn_Score',0)})*")
+                # Info Box Ringkasan Matchup
+                st.info(f"⚔️ **{away_team}** menghadapi **{home_team}** | SP Lawan: {away_sp} ({away_sp_hand}) vs {home_sp} ({home_sp_hand})")
 
-                        if len(hr_legs) >= 2:
-                            for leg in hr_legs: 
-                                st.markdown(f"- {leg}")
-                            st.success("✅ SGP HR Valid (High Connection & Power)")
-                        else:
-                            st.caption("Kandidat HR di match ini kurang solid untuk dirangkai jadi SGP HR murni.")
+                # 3. SPLIT LAYAR: COL1 (AWAY) & COL2 (HOME)
+                col_away, col_home = st.columns(2)
+
+                # ==========================================
+                # KANAL TIM AWAY (Tamu)
+                # ==========================================
+                with col_away:
+                    st.subheader(f"🛡️ {away_team} (Away)")
+                    
+                    # A. Proyeksi SP Away vs Roster Home
+                    st.caption(f"📊 **Proyeksi SP: {away_sp}**")
+                    df_sp_away_data = df_p_lhb if away_sp_hand == "LHP (Kidal)" else df_p_rhb
+                    df_sp_a = df_sp_away_data[df_sp_away_data['player_name_std'] == away_sp]
+                    
+                    if not df_sp_a.empty:
+                        # Jalankan Math Engine Pitcher (Sesuai Standar Tab 10)
+                        expected_pa = 22.5
+                        ip_col = 'p_formatted_ip_Full' if 'p_formatted_ip_Full' in df_sp_a.columns else 'p_formatted_ip'
+                        pa_col = 'pa_Full' if 'pa_Full' in df_sp_a.columns else 'pa'
+                        era_col = 'p_era_Full' if 'p_era_Full' in df_sp_a.columns else 'p_era'
+                        
+                        df_sp_a['Outs'] = np.floor(df_sp_a[ip_col]) * 3 + np.round((df_sp_a[ip_col] - np.floor(df_sp_a[ip_col])) * 10)
+                        proj_outs = round(float((df_sp_a['Outs'] / df_sp_a[pa_col] * expected_pa).fillna(15).iloc[0]), 1)
+                        proj_so = round(float((((df_sp_a['k_percent_L60'] / 100) + (df_sp_a['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).iloc[0]), 2)
+                        proj_er = round(float(((df_sp_a[era_col].iloc[0] / 27) * proj_outs * (df_sp_a['xwoba_L60'].iloc[0] / df_sp_a['xwoba_Full'].iloc[0])), 2))
+                        
+                        st.metric(label=f"{away_sp} Projections", value=f"{proj_so} K's ┃ {proj_outs} Outs", delta=f"{proj_er} Expected ER", delta_color="inverse")
                     else:
-                        st.caption("Data statcast Barrel/EV tidak lengkap.")
+                        st.warning(f"Data statistik {away_sp} belum lengkap di Savant.")
 
-                with col2:
-                    st.markdown("#### 📐 2. SGP Sniper Engine")
-                    if not best_hitters.empty:
-                        top_hitter = best_hitters.iloc[0]
-                        target_team = top_hitter['Team']
-                        player_name = top_hitter.get('Name', 'Top Hitter')
-                        opp_pitcher = game.get('home_pitcher', 'TBD') if target_team == game['away_team'] else game.get('away_pitcher', 'TBD')
-
-                        st.markdown(f"**Target Alpha:** {player_name} (DNA: {top_hitter.get('Archetype', 'Solid')} | Conn: {top_hitter.get('Conn_Score', 0)})")
-                        st.markdown(f"- 🟢 **Leg 1:** {player_name} OVER 1.5 Total Bases")
-                        st.markdown(f"- 🟢 **Leg 2:** {player_name} OVER 0.5 Runs/RBI")
-                        st.markdown(f"- 🟢 **Leg 3:** {opp_pitcher} OVER 4.5 Hits Allowed")
-                        st.markdown(f"- 🟢 **Leg 4:** {opp_pitcher} UNDER 17.5 Outs Recorded")
-
-                st.divider()
-
-                # --- SGP PITCHER DUEL (UPGRADED & FIXED) ---
-                st.markdown("#### ⚾ 3. SGP Pitcher Duel Props")
-                p_away, p_home = game.get('away_pitcher', 'TBD'), game.get('home_pitcher', 'TBD')
-
-                # Tarik ERA dari data l45 yang benar (Bukan dari nama Tim lagi)
-                p_data_away = l30_pitchers_data.get(p_away, {}) if isinstance(l30_pitchers_data, dict) else {}
-                era_away = p_data_away.get('l45', {}).get('ERA', 4.15)
-                
-                p_data_home = l30_pitchers_data.get(p_home, {}) if isinstance(l30_pitchers_data, dict) else {}
-                era_home = p_data_home.get('l45', {}).get('ERA', 4.15)
-
-                col3, col4 = st.columns(2)
-                
-                def get_pitcher_props(era):
-                    if era < 3.60:
-                        return "- 🟢 OVER Strikeouts / 🟢 UNDER Earned Runs"
-                    elif 3.60 <= era <= 4.40:
-                        return "- 🟡 OVER 15.5 Outs / 🟡 FADE Strikeouts (Risiko Tinggi)"
+                    # B. Proyeksi Hitter Away vs Pitcher Home (Melihat Tangan Home SP)
+                    st.caption(f"🏏 **Hitter {away_team} vs {home_sp_hand}**")
+                    df_h_away_source = df_h_lhp if home_sp_hand == "LHP (Kidal)" else df_h_rhp
+                    df_h_a = df_h_away_source[df_h_away_source['Team'] == away_team].copy()
+                    
+                    if not df_h_a.empty:
+                        expected_pa_h = 4.25
+                        df_h_a['SweetSpot_Mod'] = 1 + ((df_h_a['sweet_spot_percent'] - 33) / 100)
+                        df_h_a['AirBall_Mod'] = 1 + (((df_h_a['flyballs_percent'] + df_h_a['linedrives_percent']) - 50) / 100)
+                        df_h_a['Power_Surge'] = np.where(df_h_a['hardhit_percent'] > df_h_a['hard_hit_percent'], 1.15, 1.0)
+                        
+                        df_h_a['Proj_Hit'] = ((df_h_a['hit']/df_h_a['pa_Full']) * (df_h_a['xba_L30']/df_h_a['xba_Full']) * df_h_a['SweetSpot_Mod'] * expected_pa_h).fillna(0).round(2)
+                        df_h_a['Proj_TB'] = ((df_h_a['b_total_bases']/df_h_a['pa_Full']) * (df_h_a['xslg_L30']/df_h_a['xslg_Full']) * df_h_a['AirBall_Mod'] * df_h_a['Power_Surge'] * expected_pa_h).fillna(0).round(2)
+                        df_h_a['Proj_HR%'] = ((df_h_a['home_run']/df_h_a['pa_Full']) * (df_h_a['xwoba_L30']/df_h_a['xwoba_Full']) * (1 + ((df_h_a['flyballs_percent'] - 23) / 100)) * df_h_a['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
+                        
+                        # Filter & Tampilkan data Hitter Away
+                        df_display_away = df_h_a[df_h_a['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_away.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
+                        st.dataframe(df_display_away, use_container_width=True, hide_index=True)
                     else:
-                        return "- 🔴 OVER 4.5 Hits / 🔴 OVER 2.5 Earned Runs"
+                        st.warning(f"Roster hitter {away_team} tidak ditemukan.")
 
-                with col3:
-                    st.markdown(f"**{game.get('away_team', 'AWAY')} SP: {p_away}** (ERA: {era_away:.2f})")
-                    st.write(get_pitcher_props(era_away))
-                
-                with col4:
-                    st.markdown(f"**{game.get('home_team', 'HOME')} SP: {p_home}** (ERA: {era_home:.2f})")
-                    st.write(get_pitcher_props(era_home))
+                # ==========================================
+                # KANAL TIM HOME (Tuan Rumah)
+                # ==========================================
+                with col_home:
+                    st.subheader(f"🏠 {home_team} (Home)")
+                    
+                    # A. Proyeksi SP Home vs Roster Away
+                    st.caption(f"📊 **Proyeksi SP: {home_sp}**")
+                    df_sp_home_data = df_p_lhb if home_sp_hand == "LHP (Kidal)" else df_p_rhb
+                    df_sp_h = df_sp_home_data[df_sp_home_data['player_name_std'] == home_sp]
+                    
+                    if not df_sp_h.empty:
+                        # Jalankan Math Engine Pitcher
+                        expected_pa = 22.5
+                        ip_col = 'p_formatted_ip_Full' if 'p_formatted_ip_Full' in df_sp_h.columns else 'p_formatted_ip'
+                        pa_col = 'pa_Full' if 'pa_Full' in df_sp_h.columns else 'pa'
+                        era_col = 'p_era_Full' if 'p_era_Full' in df_sp_h.columns else 'p_era'
+                        
+                        df_sp_h['Outs'] = np.floor(df_sp_h[ip_col]) * 3 + np.round((df_sp_h[ip_col] - np.floor(df_sp_h[ip_col])) * 10)
+                        proj_outs_h = round(float((df_sp_h['Outs'] / df_sp_h[pa_col] * expected_pa).fillna(15).iloc[0]), 1)
+                        proj_so_h = round(float((((df_sp_h['k_percent_L60'] / 100) + (df_sp_h['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).iloc[0]), 2)
+                        proj_er_h = round(float(((df_sp_h[era_col].iloc[0] / 27) * proj_outs_h * (df_sp_h['xwoba_L60'].iloc[0] / df_sp_h['xwoba_Full'].iloc[0])), 2))
+                        
+                        st.metric(label=f"{home_sp} Projections", value=f"{proj_so_h} K's ┃ {proj_outs_h} Outs", delta=f"{proj_er_h} Expected ER", delta_color="inverse")
+                    else:
+                        st.warning(f"Data statistik {home_sp} belum lengkap di Savant.")
+
+                    # B. Proyeksi Hitter Home vs Pitcher Away (Melihat Tangan Away SP)
+                    st.caption(f"🏏 **Hitter {home_team} vs {away_sp_hand}**")
+                    df_h_home_source = df_h_lhp if away_sp_hand == "LHP (Kidal)" else df_h_rhp
+                    df_h_h = df_h_home_source[df_h_home_source['Team'] == home_team].copy()
+                    
+                    if not df_h_h.empty:
+                        expected_pa_h = 4.25
+                        df_h_h['SweetSpot_Mod'] = 1 + ((df_h_h['sweet_spot_percent'] - 33) / 100)
+                        df_h_h['AirBall_Mod'] = 1 + (((df_h_h['flyballs_percent'] + df_h_h['linedrives_percent']) - 50) / 100)
+                        df_h_h['Power_Surge'] = np.where(df_h_h['hardhit_percent'] > df_h_h['hard_hit_percent'], 1.15, 1.0)
+                        
+                        df_h_h['Proj_Hit'] = ((df_h_h['hit']/df_h_h['pa_Full']) * (df_h_h['xba_L30']/df_h_h['xba_Full']) * df_h_h['SweetSpot_Mod'] * expected_pa_h).fillna(0).round(2)
+                        df_h_h['Proj_TB'] = ((df_h_h['b_total_bases']/df_h_h['pa_Full']) * (df_h_h['xslg_L30']/df_h_h['xslg_Full']) * df_h_h['AirBall_Mod'] * df_h_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
+                        df_h_h['Proj_HR%'] = ((df_h_h['home_run']/df_h_h['pa_Full']) * (df_h_h['xwoba_L30']/df_h_h['xwoba_Full']) * (1 + ((df_h_h['flyballs_percent'] - 23) / 100)) * df_h_h['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
+                        
+                        # Filter & Tampilkan data Hitter Home
+                        df_display_home = df_h_h[df_h_h['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_home.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
+                        st.dataframe(df_display_home, use_container_width=True, hide_index=True)
+                    else:
+                        st.warning(f"Roster hitter {home_team} tidak ditemukan.")
 
 with tabs[4]:
     st.header("🛡️ AI Auditor & Advanced ROI Tracker")
