@@ -1138,35 +1138,45 @@ with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
                 # 3. THE PITCHER MATH ENGINE
                 expected_pa = 22.5 # Rata-rata PA yang dihadapi Starting Pitcher per game
 
+                # [AUTO-DETECT KOLOM YANG BERMUTASI / TIDAK BERMUTASI]
+                ip_col = 'p_formatted_ip_Full' if 'p_formatted_ip_Full' in df_p.columns else 'p_formatted_ip'
+                pa_full_col = 'pa_Full' if 'pa_Full' in df_p.columns else 'pa'
+                hh_full_col = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_p.columns else 'hard_hit_percent'
+                era_col = 'p_era_Full' if 'p_era_Full' in df_p.columns else 'p_era'
+
                 # A. Konversi Inning Pitched (IP) ke Outs
-                # Contoh: 50.1 IP = 50 * 3 + 1 = 151 Outs
-                if 'p_formatted_ip_Full' in df_p.columns:
-                    df_p['Outs_Full'] = np.floor(df_p['p_formatted_ip_Full']) * 3 + np.round((df_p['p_formatted_ip_Full'] - np.floor(df_p['p_formatted_ip_Full'])) * 10)
+                if ip_col in df_p.columns:
+                    df_p['Outs_Full'] = np.floor(df_p[ip_col]) * 3 + np.round((df_p[ip_col] - np.floor(df_p[ip_col])) * 10)
                 else:
                     df_p['Outs_Full'] = 150 # Fallback
 
                 # Amankan dari pembagian dengan nol
-                for col in ['pa_Full', 'pa_L60', 'xwoba_Full']:
+                for col in [pa_full_col, 'pa_L60', 'xwoba_Full']:
                     if col in df_p.columns:
                         df_p[col] = df_p[col].replace(0, np.nan)
 
                 # B. Proyeksi Outs (Berapa lama dia bertahan di mound)
-                base_outs_rate = df_p['Outs_Full'] / df_p['pa_Full']
-                df_p['Proj_Outs'] = (base_outs_rate * expected_pa).fillna(15).round(1) # Rata-rata 15 outs (5 Inning)
+                base_outs_rate = df_p['Outs_Full'] / df_p[pa_full_col]
+                df_p['Proj_Outs'] = (base_outs_rate * expected_pa).fillna(15).round(1)
 
                 # C. Proyeksi Strikeout (SO)
-                # Pakai K% L60 disilang dengan persentase murni Whiff (ayunan meleset)
                 df_p['Proj_SO'] = (((df_p['k_percent_L60'] / 100) + (df_p['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).round(2)
 
                 # D. Proyeksi Hits Allowed
                 base_hit_rate = df_p['hits'] / df_p['pa_L60']
-                # Kalau HardHit L60 lebih tinggi dari HardHit Full Season, berarti lemparannya lagi gampang dipukul
-                power_surge_allowed = np.where(df_p['hardhit_percent'] > df_p['hard_hit_percent_Full'], 1.15, 0.90)
+                # Bandingkan HardHit form terkini dengan DNA Full Season
+                if hh_full_col in df_p.columns and 'hardhit_percent' in df_p.columns:
+                    power_surge_allowed = np.where(df_p['hardhit_percent'] > df_p[hh_full_col], 1.15, 0.90)
+                else:
+                    power_surge_allowed = 1.0
                 df_p['Proj_Hit_Allowed'] = (base_hit_rate * power_surge_allowed * expected_pa).fillna(0).round(2)
 
                 # E. Proyeksi Earned Runs (ER)
-                # ER per out musiman x Proyeksi Outs x Momentum xwOBA
-                er_per_out = df_p['p_era_Full'] / 27 
+                if era_col in df_p.columns:
+                    er_per_out = df_p[era_col] / 27 
+                else:
+                    er_per_out = 4.15 / 27 # Fallback rata-rata liga
+                    
                 xwoba_momentum = df_p['xwoba_L60'] / df_p['xwoba_Full']
                 df_p['Proj_ER'] = (er_per_out * df_p['Proj_Outs'] * xwoba_momentum).fillna(0).round(2)
 
