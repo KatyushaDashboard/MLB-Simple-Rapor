@@ -415,6 +415,72 @@ def init_daily_picks_log():
             json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
 
 # ==========================================
+# 5D. FUNGSI BARU: PITCHER PLATOON (LHB/RHB) ENGINE
+# ==========================================
+def bangun_database_pitcher():
+    print("🎯 [PITCHER ENGINE] Menjahit DNA Full Season & Form L60 vs LHB/RHB...")
+    headers = {"User-Agent": "Mozilla/5.0"}
+    
+    # --- 1. BIKIN KAMUS ROSTER TIM ---
+    print("   - Membangun Kamus Roster Tim untuk Pitcher...")
+    team_abbr_map = {133: "OAK", 134: "PIT", 135: "SD", 136: "SEA", 137: "SF", 138: "STL", 139: "TB", 140: "TEX", 141: "TOR", 142: "MIN", 143: "PHI", 144: "ATL", 145: "CWS", 146: "MIA", 147: "NYY", 158: "MIL", 108: "LAA", 109: "ARI", 110: "BAL", 111: "BOS", 112: "CHC", 113: "CIN", 114: "CLE", 115: "COL", 116: "DET", 117: "HOU", 118: "KC", 119: "LAD", 120: "WSH", 121: "NYM"}
+    player_to_team = {}
+    for team_id, team_abbr in team_abbr_map.items():
+        try:
+            roster = statsapi.get('team_roster', {'teamId': team_id})
+            for p in roster['roster']:
+                player_to_team[p['person']['fullName']] = team_abbr
+        except: continue
+
+    # --- 2. SETUP TANGGAL & URL ---
+    now = datetime.now()
+    today_str = now.strftime('%Y-%m-%d')
+    l60_awal = (now - timedelta(days=60)).strftime('%Y-%m-%d') # Otomatis mundur 60 hari
+
+    URL_DNA_P_FULL = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=pitcher&filter=&min=10&selections=p_formatted_ip%2Cpa%2Cstrikeout%2Cp_home_run%2Ck_percent%2Cbb_percent%2Cp_win%2Cp_loss%2Cp_era%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Csweet_spot_percent%2Cbarrel_batted_rate%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Cz_swing_miss_percent%2Coz_swing_miss_percent%2Cwhiff_percent%2Cswing_percent%2Cgroundballs_percent%2Cflyballs_percent%2Clinedrives_percent%2Cn&chart=false&x=p_formatted_ip&y=p_formatted_ip&r=no&chartType=beeswarm&sort=xwoba&sortDir=asc&csv=true"
+    
+    URL_L60_P_BASE = f"https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfPT=&hfAB=&hfGT=R%7C&hfPR=&hfZ=&hfStadium=&hfBBL=&hfNewZones=&hfPull=&hfC=&hfSea=2026%7C&hfSit=&player_type=pitcher&hfOuts=&home_road=&pitcher_throws=&hfSA=&hfEventOuts=&hfEventRuns=&hfABSFlag=&game_date_gt={l60_awal}&game_date_lt={today_str}&hfMo=&hfTeam=&hfOpponent=&hfRO=&position=&hfInfield=&hfOutfield=&hfInn=&hfBBT=&hfFlag=is%5C.%5C.bunt%5C.%5C.not%7Cis%5C.%5C.competitive%7C&metric_1=&group_by=name&min_pitches=0&min_results=0&min_pas=20&sort_col=swing_miss_percent&player_event_sort=api_p_release_speed&sort_order=desc&chk_stats_pa=on&chk_stats_hits=on&chk_stats_hrs=on&chk_stats_so=on&chk_stats_k_percent=on&chk_stats_bb=on&chk_stats_bb_percent=on&chk_stats_whiffs=on&chk_stats_xba=on&chk_stats_xbadiff=on&chk_stats_obp=on&chk_stats_slg=on&chk_stats_xslg=on&chk_stats_xslgdiff=on&chk_stats_woba=on&chk_stats_xwoba=on&chk_stats_wobadiff=on&chk_stats_barrels_total=on&chk_stats_swing_miss_percent=on&chk_stats_velocity=on&chk_stats_launch_speed=on&chk_stats_hyper_speed=on&chk_stats_hardhit_percent=on&chk_stats_barrels_per_bbe_percent=on&chk_stats_barrels_per_pa_percent=on&chk_stats_rate_ideal_attack_angle=on"
+
+    # --- 3. SEDOT DATA & MAPPING ---
+    try:
+        def clean_and_map_pitcher(df_temp):
+            name_c = None
+            for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name', 'player_name']:
+                if col in df_temp.columns: name_c = col; break
+            if name_c:
+                df_temp[name_c] = df_temp[name_c].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
+                df_temp.rename(columns={name_c: 'player_name_std'}, inplace=True)
+                df_temp['Team'] = df_temp['player_name_std'].map(player_to_team).fillna('TBD')
+            return df_temp
+
+        print("   - Sedot DNA Pitcher Full Season...")
+        resp_dna = requests.get(URL_DNA_P_FULL, headers=headers, timeout=20)
+        df_dna = pd.read_csv(io.StringIO(resp_dna.text))
+        df_dna = clean_and_map_pitcher(df_dna)
+
+        print("   - Sedot L60 vs Kidal (LHB)...") # Nambahin &batter_stands=L
+        url_lhb = URL_L60_P_BASE + "&batter_stands=L"
+        df_l60_lhb = pd.read_csv(io.StringIO(requests.get(url_lhb, headers=headers, timeout=20).text))
+        df_l60_lhb = clean_and_map_pitcher(df_l60_lhb)
+
+        print("   - Sedot L60 vs Kanan (RHB)...") # Nambahin &batter_stands=R
+        url_rhb = URL_L60_P_BASE + "&batter_stands=R"
+        df_l60_rhb = pd.read_csv(io.StringIO(requests.get(url_rhb, headers=headers, timeout=20).text))
+        df_l60_rhb = clean_and_map_pitcher(df_l60_rhb)
+
+        print("   - The Merge (Menggabungkan data)...")
+        # Gabung pakai how='inner' biar data yang kosong otomatis terbuang
+        df_final_lhb = pd.merge(df_dna, df_l60_lhb, how='inner', on='player_name_std', suffixes=('_Full', '_L60'))
+        df_final_rhb = pd.merge(df_dna, df_l60_rhb, how='inner', on='player_name_std', suffixes=('_Full', '_L60'))
+
+        print(f"✅ Database Pitcher Platoon (LHB: {len(df_final_lhb)} | RHB: {len(df_final_rhb)}) siap dengan Mapping Tim! 🔥")
+        return df_final_lhb, df_final_rhb
+
+    except Exception as e:
+        print(f"   ❌ Gagal Pitcher Platoon Engine: {e}")
+        return None, None
+
+# ==========================================
 # 6. EKSEKUSI UTAMA (MAIN RUNNER)
 # ==========================================
 if __name__ == "__main__":
@@ -434,6 +500,15 @@ if __name__ == "__main__":
         print("✅ BOOM! hitter_vs_lhp.csv & hitter_vs_rhp.csv berhasil di-save!")
     else:
         print("⚠️ Gagal update Database Hitter Platoon hari ini.")
+
+    # --- EKSEKUSI PITCHER PLATOON ---
+    df_p_lhb, df_p_rhb = bangun_database_pitcher()
+    if df_p_lhb is not None and not df_p_lhb.empty:
+        df_p_lhb.to_csv('pitcher_vs_lhb.csv', index=False)
+        df_p_rhb.to_csv('pitcher_vs_rhb.csv', index=False)
+        print("✅ BOOM! pitcher_vs_lhb.csv & pitcher_vs_rhb.csv berhasil di-save!")
+    else:
+        print("⚠️ Gagal update Database Pitcher Platoon hari ini.")
         
     init_daily_picks_log()
     print("🎯 Bot Updater Selesai Dieksekusi. Semua data riil siap di-deploy!")
