@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import json
 import requests
 import os
+import io
 
 # ==========================================
 # 1. SETUP TANGGAL (WAKTU SERVER / UTC)
@@ -14,6 +15,14 @@ yesterday = now - timedelta(days=1)
 yest_str = yesterday.strftime('%Y-%m-%d')
 
 print(f"🚀 Memulai Bot Updater - Tanggal: {today_str}")
+
+# --- INJECT VARIABEL URL MASTER HITTER PLATOON ---
+l30_awal = (now - timedelta(days=30)).strftime('%Y-%m-%d')
+
+URL_DNA_FULL = "https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=10&selections=player_age%2Cab%2Cpa%2Chit%2Chome_run%2Ck_percent%2Cbb_percent%2Cbatting_avg%2Cslg_percent%2Cb_rbi%2Cb_total_bases%2Cr_run%2Cxba%2Cxslg%2Cwoba%2Cxwoba%2Cxbadiff%2Cxslgdiff%2Cwobadiff%2Cfast_swing_rate%2Cideal_angle_rate%2Cexit_velocity_avg%2Csweet_spot_percent%2Cbarrel_batted_rate%2Chard_hit_percent%2Cavg_best_speed%2Cavg_hyper_speed%2Cz_swing_percent%2Coz_swing_percent%2Ciz_contact_percent%2Cin_zone_percent%2Cwhiff_percent%2Cswing_percent%2Cpull_percent%2Cgroundballs_percent%2Cflyballs_percent%2Clinedrives_percent&chart=false&x=player_age&y=player_age&r=no&chartType=beeswarm&sort=home_run&sortDir=desc&csv=true"
+
+URL_L30_BASE = f"https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfPT=&hfAB=&hfGT=R%7C&hfPR=&hfZ=&hfStadium=&hfBBL=&hfNewZones=&hfPull=&hfC=&hfSea=2026%7C&hfSit=&player_type=batter&hfOuts=&home_road=&batter_stands=&hfSA=&hfEventOuts=&hfEventRuns=&hfABSFlag=&game_date_gt={l30_awal}&game_date_lt={today_str}&hfMo=&hfTeam=&hfOpponent=&hfRO=&position=&hfInfield=&hfOutfield=&hfInn=&hfBBT=&hfFlag=is%5C.%5C.bunt%5C.%5C.not%7C&metric_1=&group_by=name&min_pitches=0&min_results=0&min_pas=20&sort_col=hyper_speed&player_event_sort=api_p_release_speed&sort_order=desc&chk_stats_pa=on&chk_stats_abs=on&chk_stats_hits=on&chk_stats_hrs=on&chk_stats_so=on&chk_stats_k_percent=on&chk_stats_bb_percent=on&chk_stats_whiffs=on&chk_stats_ba=on&chk_stats_xba=on&chk_stats_xbadiff=on&chk_stats_slg=on&chk_stats_xslg=on&chk_stats_xslgdiff=on&chk_stats_woba=on&chk_stats_xwoba=on&chk_stats_wobadiff=on&chk_stats_barrels_total=on&chk_stats_swing_miss_percent=on&chk_stats_launch_speed=on&chk_stats_hyper_speed=on&chk_stats_hardhit_percent=on&chk_stats_barrels_per_bbe_percent=on&chk_stats_barrels_per_pa_percent=on&chk_stats_sweetspot_speed_mph=on&chk_stats_rate_ideal_attack_angle=on"
+
 
 # ==========================================
 # 2. FUNGSI: THE AUDITOR (TARIK HASIL KEMARIN)
@@ -233,16 +242,11 @@ def update_advanced_metrics(games_list):
     print("✅ Sukses: 'l30_pitchers.json' berhasil dimigrasi ke Last 45 Days Engine!")
 
 # ==========================================
-# 5. FUNGSI BARU: AUTO-GENERATE HITTER CSV (BYPASS FANGRAPHS)
+# 5. FUNGSI: AUTO-GENERATE HITTER CSV (BYPASS FANGRAPHS)
 # ==========================================
 def generate_master_hitter_csv():
     print("🏏 Menyedot Data Hitter (Raw Savant) + Mapping Tim statsapi...")
     try:
-        import pandas as pd
-        import requests
-        import io
-        import statsapi
-
         # 1. BIKIN KAMUS TIM DARI MLB STATS-API
         print("⏳ Membangun Kamus Roster dari 30 Tim MLB...")
         team_abbr_map = {
@@ -271,9 +275,6 @@ def generate_master_hitter_csv():
         response = requests.get(savant_url, headers=headers, timeout=15)
         df = pd.read_csv(io.StringIO(response.text))
 
-        # 🛠️ DEBUG PRINT: Biar kita tahu isi asli kepalanya CSV kalau error lagi
-        print("🔍 Kolom yang didapat dari Savant:", df.columns.tolist())
-
         # 3. RADAR PENDETEKSI NAMA PEMAIN CERDAS
         name_col = None
         for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name']:
@@ -282,21 +283,14 @@ def generate_master_hitter_csv():
                 break
                 
         if name_col:
-            # Balik nama dari "Judge, Aaron" ke "Aaron Judge"
             df[name_col] = df[name_col].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
-            
-            # Mapping Tim berdasarkan nama
             df['Team'] = df[name_col].map(player_to_team).fillna('TBD')
-            
-            # Paksa namanya jadi 'player' biar app.py lu aman sentosa
             df.rename(columns={name_col: 'player'}, inplace=True)
         else:
-            print("⚠️ GAWAT: Nggak nemu kolom nama pemain di Savant!")
             df['Team'] = 'TBD'
             df['player'] = 'Unknown'
 
-        # 4. DATA DUMMY PENGAMAN (Agar Tab lain nggak ikut meledak)
-        # Gunakan if-else agar aman kalau xwoba huruf besar/kecil
+        # 4. DATA DUMMY PENGAMAN
         xwoba_col = 'xwoba' if 'xwoba' in df.columns else df.columns[df.columns.str.lower() == 'xwoba'][0] if any(df.columns.str.lower() == 'xwoba') else None
         
         if xwoba_col:
@@ -311,21 +305,12 @@ def generate_master_hitter_csv():
         df['PA_L14'] = df['pa'] if 'pa' in df.columns else 0
         df['Batting'] = 0
 
-        # Simpan
         df.to_csv('master_hitter_2026.csv', index=False)
         print("✅ BOOM! master_hitter_2026.csv sukses digenerate secara murni & ter-mapping!")
         
     except Exception as e:
         print(f"❌ Gagal nyedot Savant: {e}")
 
-# ==========================================
-# 5. INIT DAILY PICKS LOG
-# ==========================================
-def init_daily_picks_log():
-    if not os.path.exists('daily_picks_log.json'):
-        with open('daily_picks_log.json', 'w') as f:
-            json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
-        print("✅ Sukses: Inisialisasi 'daily_picks_log.json'")
 # ===============================
 # 5B. Update CSV Master Pitcher 
 # ===============================
@@ -345,12 +330,11 @@ def generate_master_pitcher_csv(games_list):
             if season_data and 'stats' in season_data and len(season_data['stats']) > 0:
                 p = season_data['stats'][0].get('stats', {})
 
-                # Parsing Innings Pitched dengan akurat (contoh: 4.1 jadi 4.333)
                 ip_str = str(p.get('inningsPitched', '0.0'))
                 ip_parts = ip_str.split('.')
                 ip = float(ip_parts[0]) + (float(ip_parts[1])/3.0 if len(ip_parts) > 1 else 0)
 
-                if ip == 0: return None # Hindari pembagian dengan nol
+                if ip == 0: return None
 
                 so = int(p.get('strikeOuts', 0))
                 bb = int(p.get('baseOnBalls', 0))
@@ -362,7 +346,7 @@ def generate_master_pitcher_csv(games_list):
                 return {
                     'Name': pitcher_name,
                     'Team': team_name,
-                    'GS': p.get('gamesStarted', 0), # Tambahin baris ini
+                    'GS': p.get('gamesStarted', 0),
                     'W': p.get('wins', 0),
                     'L': p.get('losses', 0),
                     'ERA': float(p.get('era', '4.15') if p.get('era') != '-.--' else 4.15),
@@ -379,7 +363,6 @@ def generate_master_pitcher_csv(games_list):
             print(f"⚠️ Error menarik metrik CSV untuk {pitcher_name}: {e}")
             return None
 
-    # Looping semua SP di jadwal hari ini
     for g in games_list:
         away_p = get_full_advanced_stats(g['away_pitcher'], g['away_team'])
         home_p = get_full_advanced_stats(g['home_pitcher'], g['home_team'])
@@ -387,11 +370,77 @@ def generate_master_pitcher_csv(games_list):
         if away_p: pitcher_rows.append(away_p)
         if home_p: pitcher_rows.append(home_p)
 
-    # Simpan/Timpa langsung jadi CSV
     if pitcher_rows:
         df = pd.DataFrame(pitcher_rows)
         df.to_csv('master_pitcher_2026.csv', index=False)
         print("✅ BOOM! master_pitcher_2026.csv berhasil di-update secara otomatis!")
+
+# ==========================================
+# 5C. FUNGSI BARU: HITTER PLATOON (LHP/RHP) ENGINE
+# ==========================================
+def bangun_database_hitter():
+    print("🧬 [NEW ENGINE] Menjahit DNA Full Season & Form L30 vs Kidal/Kanan...")
+    headers = {"User-Agent": "Mozilla/5.0"}
+    
+    try:
+        print("   - Sedot DNA Full Season...")
+        resp_dna = requests.get(URL_DNA_FULL, headers=headers, timeout=20)
+        df_dna = pd.read_csv(io.StringIO(resp_dna.text))
+    except Exception as e:
+        print(f"   ❌ Gagal sedot DNA: {e}")
+        return None, None
+
+    try:
+        print("   - Sedot Form L30 vs Kidal (LHP)...")
+        url_lhp = URL_L30_BASE + "&pitcher_throws=L"
+        resp_lhp = requests.get(url_lhp, headers=headers, timeout=20)
+        df_l30_lhp = pd.read_csv(io.StringIO(resp_lhp.text))
+    except:
+        df_l30_lhp = pd.DataFrame()
+
+    try:
+        print("   - Sedot Form L30 vs Kanan (RHP)...")
+        url_rhp = URL_L30_BASE + "&pitcher_throws=R"
+        resp_rhp = requests.get(url_rhp, headers=headers, timeout=20)
+        df_l30_rhp = pd.read_csv(io.StringIO(resp_rhp.text))
+    except:
+        df_l30_rhp = pd.DataFrame()
+
+    print("   - The Merge (Menggabungkan data)...")
+    # Bersihkan nama sebelum merge buat jaga-jaga
+    def clean_name(df_temp):
+        name_c = None
+        for col in ['player', 'Player', 'last_name, first_name', 'name', 'Name']:
+            if col in df_temp.columns:
+                name_c = col
+                break
+        if name_c:
+            df_temp[name_c] = df_temp[name_c].apply(lambda x: ' '.join(x.split(', ')[::-1]) if isinstance(x, str) and ', ' in x else x)
+            df_temp.rename(columns={name_c: 'player_name'}, inplace=True)
+        return df_temp
+
+    df_dna = clean_name(df_dna)
+    df_l30_lhp = clean_name(df_l30_lhp)
+    df_l30_rhp = clean_name(df_l30_rhp)
+
+    if not df_l30_lhp.empty and not df_dna.empty:
+        df_final_lhp = pd.merge(df_dna, df_l30_lhp, how='inner', on='player_name', suffixes=('_Full', '_L30'))
+    else:
+        df_final_lhp = pd.DataFrame()
+
+    if not df_l30_rhp.empty and not df_dna.empty:
+        df_final_rhp = pd.merge(df_dna, df_l30_rhp, how='inner', on='player_name', suffixes=('_Full', '_L30'))
+    else:
+        df_final_rhp = pd.DataFrame()
+
+    print("✅ Database Platoon (LHP & RHP) siap! 🔥")
+    return df_final_lhp, df_final_rhp
+
+def init_daily_picks_log():
+    if not os.path.exists('daily_picks_log.json'):
+        with open('daily_picks_log.json', 'w') as f:
+            json.dump({"date": today_str, "sgp_match": {}, "sgp_cross": {}}, f)
+        print("✅ Sukses: Inisialisasi 'daily_picks_log.json'")
 
 # ==========================================
 # 6. EKSEKUSI UTAMA (MAIN RUNNER)
@@ -399,9 +448,20 @@ def generate_master_pitcher_csv(games_list):
 if __name__ == "__main__":
     fetch_yesterday_results(yest_str)
     games = fetch_today_schedule(today_str)
+    
     if games:
         update_advanced_metrics(games)
         generate_master_pitcher_csv(games)
         generate_master_hitter_csv()
+    
+    # --- INJECT EKSEKUSI HITTER PLATOON ---
+    df_vs_kidal, df_vs_kanan = bangun_database_hitter()
+    if df_vs_kidal is not None and not df_vs_kidal.empty:
+        df_vs_kidal.to_csv('hitter_vs_lhp.csv', index=False)
+        df_vs_kanan.to_csv('hitter_vs_rhp.csv', index=False)
+        print(f"✅ BOOM! hitter_vs_lhp.csv ({len(df_vs_kidal)} baris) & hitter_vs_rhp.csv ({len(df_vs_kanan)} baris) berhasil di-save!")
+    else:
+        print("⚠️ Gagal update Database Hitter Platoon hari ini.")
+        
     init_daily_picks_log()
     print("🎯 Bot Updater Selesai Dieksekusi. Semua data riil siap di-deploy!")
