@@ -285,7 +285,7 @@ tabs = st.tabs([
     "🛡️ Tab 5: AI Auditor", 
     "🏪 Tab 6: Team Market", 
     "💸 Tab 7: Cross Parlay",
-    "🕸️ Tab 8: Overlap Network"
+    "🕸️ Tab 8: Overlap Network",
     "🏭 Tab 9 : Modelling Test"
 ])
 
@@ -970,6 +970,8 @@ with tabs[7]:
 # ===================================================================
 with tabs[8]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
         st.header("⚾ Tab 9: The Ultimate Hitter Matrix")
+        st.caption("Modelling Projected Hitter")
+    
         st.markdown("Proyeksi Presisi: **Hits, TB, HR, Run, RBI, & SO**")
 
         # 1. LOAD DATA (Tanpa Return, pakai Flagging)
