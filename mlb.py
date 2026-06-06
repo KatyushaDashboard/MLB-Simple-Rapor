@@ -524,7 +524,7 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                         df_sp_a['Outs'] = np.floor(df_sp_a[ip_col]) * 3 + np.round((df_sp_a[ip_col] - np.floor(df_sp_a[ip_col])) * 10)
                         proj_outs = round(float((df_sp_a['Outs'] / df_sp_a[pa_col] * expected_pa).fillna(15).iloc[0]), 1)
                         proj_so = round(float((((df_sp_a['k_percent_L60'] / 100) + (df_sp_a['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).iloc[0]), 2)
-                        proj_er = round(float(((df_sp_a[era_col].iloc[0] / 27) * proj_outs * (df_sp_a['xwoba_L60'].iloc[0] / df_sp_a['xwoba_Full'].iloc[0])), 2))
+                        proj_er = round(float((df_sp_a[era_col].iloc[0] / 27) * proj_outs * (df_sp_a['xwoba_L60'].iloc[0] / df_sp_a['xwoba_Full'].iloc[0])), 2)
                         
                         st.metric(label=f"{away_sp} Projections", value=f"{proj_so} K's ┃ {proj_outs} Outs", delta=f"{proj_er} Expected ER", delta_color="inverse")
                     else:
@@ -573,7 +573,7 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                         df_sp_h['Outs'] = np.floor(df_sp_h[ip_col]) * 3 + np.round((df_sp_h[ip_col] - np.floor(df_sp_h[ip_col])) * 10)
                         proj_outs_h = round(float((df_sp_h['Outs'] / df_sp_h[pa_col] * expected_pa).fillna(15).iloc[0]), 1)
                         proj_so_h = round(float((((df_sp_h['k_percent_L60'] / 100) + (df_sp_h['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).iloc[0]), 2)
-                        proj_er_h = round(float(((df_sp_h[era_col].iloc[0] / 27) * proj_outs_h * (df_sp_h['xwoba_L60'].iloc[0] / df_sp_h['xwoba_Full'].iloc[0])), 2))
+                        proj_er_h = round(float((df_sp_h[era_col].iloc[0] / 27) * proj_outs_h * (df_sp_h['xwoba_L60'].iloc[0] / df_sp_h['xwoba_Full'].iloc[0])), 2)
                         
                         st.metric(label=f"{home_sp} Projections", value=f"{proj_so_h} K's ┃ {proj_outs_h} Outs", delta=f"{proj_er_h} Expected ER", delta_color="inverse")
                     else:
