@@ -443,7 +443,7 @@ with tabs[3]:
 # ====================================================================
 # TAB 3: SAME GAME PARLAY (SGP) FACTORY (CONN_SCORE ADJUSTED)
 # ====================================================================
-with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
+with tabs[2]:
         st.header("🏟️ Tab 3: Today Matchup Matrix")
         st.markdown("Analisis Komparasi Langsung: **Hitter Projections vs Opposing Starting Pitcher**")
 
@@ -471,9 +471,23 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
             if not jadwal_hari_ini:
                 st.warning("Tidak ada jadwal pertandingan aktif untuk hari ini.")
             else:
+                # --- KAMUS PENERJEMAH NAMA LENGKAP KE SINGKATAN SAVANT ---
+                nama_ke_singkatan = {
+                    "Arizona Diamondbacks": "ARI", "Atlanta Braves": "ATL", "Baltimore Orioles": "BAL",
+                    "Boston Red Sox": "BOS", "Chicago Cubs": "CHC", "Chicago White Sox": "CWS",
+                    "Cincinnati Reds": "CIN", "Cleveland Guardians": "CLE", "Colorado Rockies": "COL",
+                    "Detroit Tigers": "DET", "Houston Astros": "HOU", "Kansas City Royals": "KC",
+                    "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
+                    "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
+                    "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
+                    "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
+                    "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB",
+                    "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"
+                }
+
                 # 2. DROPDOWN PILIHAN PERTANDINGAN
                 opsi_match = [f"{g['away_team']} @ {g['home_team']} (ID: {g['game_id']})" for g in jadwal_hari_ini]
-                pilihan_user = st.selectbox("🎯 Pilih Pertandingan Hari Ini untuk Dianslisis:", opsi_match, key="sb_match_t3")
+                pilihan_user = st.selectbox("🎯 Pilih Pertandingan Hari Ini untuk Dianalisis:", opsi_match, key="sb_match_t3")
                 
                 # Ambil data game yang dipilih
                 idx_match = opsi_match.index(pilihan_user)
@@ -482,23 +496,24 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                 away_team = game_terpilih['away_team']
                 home_team = game_terpilih['home_team']
                 away_sp = game_terpilih['away_pitcher']
-                home_sp = game_terpielder = game_terpilih['home_pitcher'] if 'home_pitcher' in game_terpilih else game_terpilih.get('home_pitcher', 'TBD')
                 home_sp = game_terpilih['home_pitcher']
 
+                # Terjemahkan nama tim ke singkatan untuk filter CSV
+                away_abbr = nama_ke_singkatan.get(away_team, away_team)
+                home_abbr = nama_ke_singkatan.get(home_team, home_team)
+
                 # --- FUNGSI DETEKSI TANGAN PITCHER (LHP/RHP) ---
-                # Mendeteksi otomatis tangan pitcher berdasarkan keberadaan namanya di database platoon pitcher
                 def deteksi_tangan_sp(nama_pitcher):
                     if nama_pitcher in df_p_lhb['player_name_std'].values:
                         return "LHP (Kidal)"
                     elif nama_pitcher in df_p_rhb['player_name_std'].values:
                         return "RHP (Kanan)"
-                    return "RHP (Kanan)" # Fallback standar jika data rookie/TBD
+                    return "RHP (Kanan)" # Fallback
 
                 away_sp_hand = deteksi_tangan_sp(away_sp)
                 home_sp_hand = deteksi_tangan_sp(home_sp)
 
-                # Info Box Ringkasan Matchup
-                st.info(f"⚔️ **{away_team}** menghadapi **{home_team}** | SP Lawan: {away_sp} ({away_sp_hand}) vs {home_sp} ({home_sp_hand})")
+                st.info(f"⚔️ **{away_team} ({away_abbr})** menghadapi **{home_team} ({home_abbr})** | SP: {away_sp} ({away_sp_hand}) vs {home_sp} ({home_sp_hand})")
 
                 # 3. SPLIT LAYAR: COL1 (AWAY) & COL2 (HOME)
                 col_away, col_home = st.columns(2)
@@ -515,7 +530,6 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     df_sp_a = df_sp_away_data[df_sp_away_data['player_name_std'] == away_sp]
                     
                     if not df_sp_a.empty:
-                        # Jalankan Math Engine Pitcher (Sesuai Standar Tab 10)
                         expected_pa = 22.5
                         ip_col = 'p_formatted_ip_Full' if 'p_formatted_ip_Full' in df_sp_a.columns else 'p_formatted_ip'
                         pa_col = 'pa_Full' if 'pa_Full' in df_sp_a.columns else 'pa'
@@ -534,18 +548,15 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     st.caption(f"🏏 **Hitter {away_team} vs {home_sp_hand}**")
                     df_h_away_source = df_h_lhp if home_sp_hand == "LHP (Kidal)" else df_h_rhp
                     
-                    # [AUTO-DETECT] Kolom Tim
                     team_col_a = 'Team_Full' if 'Team_Full' in df_h_away_source.columns else ('Team' if 'Team' in df_h_away_source.columns else None)
                     
                     if team_col_a:
-                        df_h_a = df_h_away_source[df_h_away_source[team_col_a] == away_team].copy()
+                        df_h_a = df_h_away_source[df_h_away_source[team_col_a] == away_abbr].copy()
                     else:
                         df_h_a = pd.DataFrame()
                     
                     if not df_h_a.empty:
                         expected_pa_h = 4.25
-                        
-                        # [AUTO-DETECT] Kolom HardHit Full Season
                         hh_full_col_a = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_h_a.columns else 'hard_hit_percent'
                         
                         df_h_a['SweetSpot_Mod'] = 1 + ((df_h_a['sweet_spot_percent'] - 33) / 100)
@@ -556,12 +567,11 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                         df_h_a['Proj_TB'] = ((df_h_a['b_total_bases']/df_h_a['pa_Full']) * (df_h_a['xslg_L30']/df_h_a['xslg_Full']) * df_h_a['AirBall_Mod'] * df_h_a['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_a['Proj_HR%'] = ((df_h_a['home_run']/df_h_a['pa_Full']) * (df_h_a['xwoba_L30']/df_h_a['xwoba_Full']) * (1 + ((df_h_a['flyballs_percent'] - 23) / 100)) * df_h_a['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        # Filter & Tampilkan data Hitter Away
                         df_display_away = df_h_a[df_h_a['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_away.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_away, use_container_width=True, hide_index=True)
                     else:
-                        st.warning(f"Roster hitter {away_team} tidak ditemukan.")
+                        st.warning(f"Roster hitter {away_team} tidak ditemukan di database.")
 
                 # ==========================================
                 # KANAL TIM HOME (Tuan Rumah)
@@ -575,7 +585,6 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     df_sp_h = df_sp_home_data[df_sp_home_data['player_name_std'] == home_sp]
                     
                     if not df_sp_h.empty:
-                        # Jalankan Math Engine Pitcher
                         expected_pa = 22.5
                         ip_col = 'p_formatted_ip_Full' if 'p_formatted_ip_Full' in df_sp_h.columns else 'p_formatted_ip'
                         pa_col = 'pa_Full' if 'pa_Full' in df_sp_h.columns else 'pa'
@@ -594,18 +603,15 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     st.caption(f"🏏 **Hitter {home_team} vs {away_sp_hand}**")
                     df_h_home_source = df_h_lhp if away_sp_hand == "LHP (Kidal)" else df_h_rhp
                     
-                    # [AUTO-DETECT] Kolom Tim
                     team_col_h = 'Team_Full' if 'Team_Full' in df_h_home_source.columns else ('Team' if 'Team' in df_h_home_source.columns else None)
                     
                     if team_col_h:
-                        df_h_h = df_h_home_source[df_h_home_source[team_col_h] == home_team].copy()
+                        df_h_h = df_h_home_source[df_h_home_source[team_col_h] == home_abbr].copy()
                     else:
                         df_h_h = pd.DataFrame()
                     
                     if not df_h_h.empty:
                         expected_pa_h = 4.25
-                        
-                        # [AUTO-DETECT] Kolom HardHit Full Season
                         hh_full_col_h = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_h_h.columns else 'hard_hit_percent'
                         
                         df_h_h['SweetSpot_Mod'] = 1 + ((df_h_h['sweet_spot_percent'] - 33) / 100)
@@ -616,12 +622,11 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                         df_h_h['Proj_TB'] = ((df_h_h['b_total_bases']/df_h_h['pa_Full']) * (df_h_h['xslg_L30']/df_h_h['xslg_Full']) * df_h_h['AirBall_Mod'] * df_h_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_h['Proj_HR%'] = ((df_h_h['home_run']/df_h_h['pa_Full']) * (df_h_h['xwoba_L30']/df_h_h['xwoba_Full']) * (1 + ((df_h_h['flyballs_percent'] - 23) / 100)) * df_h_h['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        # Filter & Tampilkan data Hitter Home
                         df_display_home = df_h_h[df_h_h['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_home.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_home, use_container_width=True, hide_index=True)
                     else:
-                        st.warning(f"Roster hitter {home_team} tidak ditemukan.")
+                        st.warning(f"Roster hitter {home_team} tidak ditemukan di database.")
 
 with tabs[4]:
     st.header("🛡️ AI Auditor & Advanced ROI Tracker")
