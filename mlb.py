@@ -286,6 +286,7 @@ tabs = st.tabs([
     "🏪 Tab 6: Team Market", 
     "💸 Tab 7: Cross Parlay",
     "🕸️ Tab 8: Overlap Network"
+    "🏭 Tab 9 : Modelling Test"
 ])
 
 # ====================================================================
@@ -963,3 +964,121 @@ with tabs[7]:
             st.caption("Tidak ada Environment Kings hari ini.")
     else:
         st.error("Data Matrix belum siap atau kosong.")
+        
+# ====================================================================
+# TAB 9: MODELLING TEST
+# ===================================================================
+with tabs[8]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
+        st.header("⚾ Tab 9: The Ultimate Hitter Matrix")
+        st.markdown("Proyeksi Presisi: **Hits, TB, HR, Run, RBI, & SO**")
+
+        # 1. LOAD DATA (Tanpa Return, pakai Flagging)
+        data_aman = True
+        try:
+            df_lhp = pd.read_csv("hitter_vs_lhp.csv")
+            df_rhp = pd.read_csv("hitter_vs_rhp.csv")
+        except Exception as e:
+            st.error(f"⚠️ Menunggu data bot_updater.py: {e}")
+            data_aman = False
+
+        if data_aman:
+            # 2. UI FILTERS
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                pitcher_hand = st.radio("Lawan Pitcher:", ["vs RHP (Kanan)", "vs LHP (Kidal)"], horizontal=True, key="radio_pitcher_t9")
+            
+            df = df_lhp if pitcher_hand == "vs LHP (Kidal)" else df_rhp
+
+            if df.empty:
+                st.warning("Data belum tersedia. Pastikan bot_updater.py sudah dieksekusi hari ini.")
+            else:
+                with col2:
+                    daftar_tim = ['Semua Tim'] + sorted([t for t in df['Team'].unique() if str(t) != 'nan' and str(t) != 'TBD'])
+                    pilih_tim = st.selectbox("🔍 Filter Tim Hitter:", daftar_tim, key="filter_tim_t9")
+
+                if pilih_tim != 'Semua Tim':
+                    df = df[df['Team'] == pilih_tim]
+
+                # 3. THE ADVANCED MATH ENGINE
+                expected_pa = 4.25 # Asumsi jatah PA per game
+
+                # Amankan dari pembagian dengan nol
+                kolom_wajib = ['pa_Full', 'xba_Full', 'xslg_Full', 'woba_Full', 'hard_hit_percent']
+                for col in kolom_wajib:
+                    if col in df.columns:
+                        df[col] = df[col].replace(0, np.nan)
+                        
+                # --- MODIFIER & MOMENTUM ---
+                df['SweetSpot_Mod'] = 1 + ((df['sweet_spot_percent'] - 33) / 100)
+                df['AirBall_Mod'] = 1 + (((df['flyballs_percent'] + df['linedrives_percent']) - 50) / 100)
+                
+                # Power Surge: Membandingkan L30 HardHit vs Full Season HardHit
+                df['Power_Surge'] = np.where(df['hardhit_percent'] > df['hard_hit_percent'], 1.15, 1.0)
+
+                # --- A. PROYEKSI HITS & TB ---
+                base_hit_rate = df['hit'] / df['pa_Full']
+                df['Proj_Hit'] = (base_hit_rate * (df['xba_L30'] / df['xba_Full']) * df['SweetSpot_Mod'] * expected_pa).fillna(0).round(2)
+
+                base_tb_rate = df['b_total_bases'] / df['pa_Full']
+                df['Proj_TB'] = (base_tb_rate * (df['xslg_L30'] / df['xslg_Full']) * df['AirBall_Mod'] * df['Power_Surge'] * expected_pa).fillna(0).round(2)
+
+                # --- B. PROBABILITAS HOME RUN ---
+                base_hr_rate = df['home_run'] / df['pa_Full']
+                fb_boost = 1 + ((df['flyballs_percent'] - 23) / 100)
+                df['Proj_HR_Pct'] = (base_hr_rate * (df['xwoba_L30'] / df['xwoba_Full']) * fb_boost * df['Power_Surge'] * expected_pa * 100).fillna(0).round(1)
+
+                # --- C. PROYEKSI RUN & RBI (PASARAN BARU) ---
+                base_run_rate = df['r_run'] / df['pa_Full']
+                obp_momentum = df['xobp'] / (df['batting_avg'] + (df['bb_percent_Full']/100)) 
+                df['Proj_Run'] = (base_run_rate * obp_momentum * expected_pa).fillna(0).round(2)
+
+                base_rbi_rate = df['b_rbi'] / df['pa_Full']
+                rbi_momentum = df['woba_L30'] / df['woba_Full']
+                df['Proj_RBI'] = (base_rbi_rate * rbi_momentum * df['Power_Surge'] * expected_pa).fillna(0).round(2)
+
+                # --- D. PROYEKSI STRIKEOUT ---
+                df['Proj_SO'] = (((df['k_percent_L30'] / 100) + (df['swing_miss_percent'] / 100)) / 2 * expected_pa * 1.5).fillna(0).round(2)
+
+                # 4. RECOMMENDATION ENGINE (Diurutkan Kiri ke Kanan)
+                def get_recommendation(row):
+                    picks = []
+                    
+                    # 1. Total Bases Edge (Prioritas SGP tertinggi)
+                    if row['Proj_TB'] >= 1.90: picks.append("🟢 O 1.5 TB")
+                    elif row['Proj_TB'] <= 1.10 and row['groundballs_percent'] > 45: picks.append("🔴 U 1.5 TB")
+                        
+                    # 2. Hits Edge
+                    if row['Proj_Hit'] >= 0.90: picks.append("🟢 O 0.5 Hit")
+                    
+                    # 3. Runs & RBI Edge
+                    if row['Proj_RBI'] >= 0.85: picks.append("🟢 O 0.5 RBI")
+                    if row['Proj_Run'] >= 0.85: picks.append("🟢 O 0.5 Run")
+                        
+                    # 4. Strikeout Edge
+                    if row['Proj_SO'] >= 1.35: picks.append("🔴 O 0.5 SO")
+                    elif row['Proj_SO'] <= 0.40: picks.append("🟢 U 0.5 SO")
+                        
+                    # 5. Hot Bat / SGP Bomb
+                    if row['Proj_HR_Pct'] >= 25.0: picks.append("💣 SGP HR!")
+                    elif row['Power_Surge'] == 1.15 and row['Proj_TB'] >= 1.5: picks.append("🔥 HOT BAT")
+                        
+                    return " ┃ ".join(picks) if picks else "🟡 Pass Semua"
+
+                df['🎯 Priority Picks (Kiri->Kanan)'] = df.apply(get_recommendation, axis=1)
+
+                # 5. RENDER TABEL FINAL
+                display_cols = [
+                    'player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR_Pct', 'Proj_RBI', 'Proj_Run', 'Proj_SO', 
+                    'hardhit_percent', '🎯 Priority Picks (Kiri->Kanan)'
+                ]
+                
+                # Filter pemain inti (PA > 50), urutkan dari probabilitas TB tertinggi
+                df_clean = df[df['pa_Full'] >= 50][display_cols].sort_values(by='Proj_TB', ascending=False)
+                
+                df_clean.rename(columns={
+                    'player_name_std': 'Hitter Name',
+                    'hardhit_percent': 'HardHit% (L30)',
+                    'Proj_HR_Pct': 'Proj HR (%)'
+                }, inplace=True)
+
+                st.data_editor(df_clean, use_container_width=True, hide_index=True, disabled=True)
