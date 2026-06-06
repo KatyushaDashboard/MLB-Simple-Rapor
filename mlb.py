@@ -287,7 +287,8 @@ tabs = st.tabs([
     "🏪 Tab 6: Team Market", 
     "💸 Tab 7: Cross Parlay",
     "🕸️ Tab 8: Overlap Network",
-    "🏭 Tab 9 : Modelling Test"
+    "🏭 Tab 9 : Modelling Test",
+    " Tab 10 : Pitcher Projection"
 ])
 
 # ====================================================================
@@ -1094,3 +1095,118 @@ with tabs[8]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                 }, inplace=True)
 
                 st.data_editor(df_clean, use_container_width=True, hide_index=True, disabled=True)
+
+with tab[10]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
+        st.header("🎯 Tab 10: Pitcher Platoon Matrix")
+        st.markdown("Proyeksi Spesifik vs Lineup Kanan/Kidal: **Outs, SO, Hits Allowed, & Earned Runs**")
+
+        # 1. LOAD DATA 
+        data_aman_p = True
+        try:
+            df_p_lhb = pd.read_csv("pitcher_vs_lhb.csv")
+            df_p_rhb = pd.read_csv("pitcher_vs_rhb.csv")
+        except Exception as e:
+            st.error(f"⚠️ Menunggu data bot_updater.py: {e}")
+            data_aman_p = False
+
+        if data_aman_p:
+            # 2. UI FILTERS
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                # Karena Pitcher menghadapi lineup campuran, filter ini ibarat "Fokus Analisa Melawan Dominasi Lineup"
+                lineup_lawan = st.radio("Dominasi Lineup Lawan:", ["vs LHB (Kidal)", "vs RHB (Kanan)"], horizontal=True, key="radio_lineup_t10")
+            
+            df_p = df_p_lhb if lineup_lawan == "vs LHB (Kidal)" else df_p_rhb
+
+            if df_p.empty:
+                st.warning("Data belum tersedia. Pastikan bot_updater.py sudah dieksekusi hari ini.")
+            else:
+                with col2:
+                    # Deteksi otomatis nama kolom tim
+                    kolom_tim = 'Team_Full' if 'Team_Full' in df_p.columns else ('Team' if 'Team' in df_p.columns else None)
+                    
+                    if kolom_tim:
+                        daftar_tim = ['Semua Tim'] + sorted([t for t in df_p[kolom_tim].unique() if str(t) != 'nan' and str(t) != 'TBD'])
+                        pilih_tim = st.selectbox("🔍 Filter Tim Pitcher:", daftar_tim, key="filter_tim_t10")
+                    else:
+                        st.info("⚠️ Kolom Tim tidak ditemukan di CSV.")
+                        pilih_tim = 'Semua Tim'
+
+                if pilih_tim != 'Semua Tim' and kolom_tim:
+                    df_p = df_p[df_p[kolom_tim] == pilih_tim]
+
+                # 3. THE PITCHER MATH ENGINE
+                expected_pa = 22.5 # Rata-rata PA yang dihadapi Starting Pitcher per game
+
+                # A. Konversi Inning Pitched (IP) ke Outs
+                # Contoh: 50.1 IP = 50 * 3 + 1 = 151 Outs
+                if 'p_formatted_ip_Full' in df_p.columns:
+                    df_p['Outs_Full'] = np.floor(df_p['p_formatted_ip_Full']) * 3 + np.round((df_p['p_formatted_ip_Full'] - np.floor(df_p['p_formatted_ip_Full'])) * 10)
+                else:
+                    df_p['Outs_Full'] = 150 # Fallback
+
+                # Amankan dari pembagian dengan nol
+                for col in ['pa_Full', 'pa_L60', 'xwoba_Full']:
+                    if col in df_p.columns:
+                        df_p[col] = df_p[col].replace(0, np.nan)
+
+                # B. Proyeksi Outs (Berapa lama dia bertahan di mound)
+                base_outs_rate = df_p['Outs_Full'] / df_p['pa_Full']
+                df_p['Proj_Outs'] = (base_outs_rate * expected_pa).fillna(15).round(1) # Rata-rata 15 outs (5 Inning)
+
+                # C. Proyeksi Strikeout (SO)
+                # Pakai K% L60 disilang dengan persentase murni Whiff (ayunan meleset)
+                df_p['Proj_SO'] = (((df_p['k_percent_L60'] / 100) + (df_p['swing_miss_percent'] / 100)) / 2 * expected_pa).fillna(0).round(2)
+
+                # D. Proyeksi Hits Allowed
+                base_hit_rate = df_p['hits'] / df_p['pa_L60']
+                # Kalau HardHit L60 lebih tinggi dari HardHit Full Season, berarti lemparannya lagi gampang dipukul
+                power_surge_allowed = np.where(df_p['hardhit_percent'] > df_p['hard_hit_percent_Full'], 1.15, 0.90)
+                df_p['Proj_Hit_Allowed'] = (base_hit_rate * power_surge_allowed * expected_pa).fillna(0).round(2)
+
+                # E. Proyeksi Earned Runs (ER)
+                # ER per out musiman x Proyeksi Outs x Momentum xwOBA
+                er_per_out = df_p['p_era_Full'] / 27 
+                xwoba_momentum = df_p['xwoba_L60'] / df_p['xwoba_Full']
+                df_p['Proj_ER'] = (er_per_out * df_p['Proj_Outs'] * xwoba_momentum).fillna(0).round(2)
+
+                # 4. RECOMMENDATION ENGINE (Prioritas Kiri -> Kanan)
+                def get_pitcher_recommendation(row):
+                    picks = []
+                    
+                    # 1. Outs Edge (Garis pasaran biasanya 17.5 atau 15.5)
+                    if row['Proj_Outs'] >= 18.0: picks.append("🟢 O 17.5 Outs")
+                    elif row['Proj_Outs'] <= 14.0: picks.append("🔴 U 15.5 Outs")
+                        
+                    # 2. Strikeout Edge (Garis pasaran 4.5 s/d 6.5)
+                    if row['Proj_SO'] >= 6.8: picks.append("🟢 O 5.5 SO")
+                    elif row['Proj_SO'] <= 3.5: picks.append("🔴 U 4.5 SO")
+                        
+                    # 3. Hits Allowed (Target FADE)
+                    if row['Proj_Hit_Allowed'] >= 6.5: picks.append("🔴 O 5.5 Hits")
+                    elif row['Proj_Hit_Allowed'] <= 3.5: picks.append("🟢 U 4.5 Hits")
+                        
+                    # 4. Earned Runs (Target FADE)
+                    if row['Proj_ER'] >= 3.5: picks.append("🔴 O 2.5 ER (FADE!)")
+                    elif row['Proj_ER'] <= 1.5: picks.append("🛡️ U 2.5 ER (ACE)")
+                        
+                    return " ┃ ".join(picks) if picks else "🟡 Pass Semua"
+
+                df_p['🎯 Priority Picks (Kiri->Kanan)'] = df_p.apply(get_pitcher_recommendation, axis=1)
+
+                # 5. RENDER TABEL FINAL
+                display_cols = [
+                    'player_name_std', 'Proj_Outs', 'Proj_SO', 'Proj_Hit_Allowed', 'Proj_ER', 
+                    'xwoba_L60', 'hardhit_percent', '🎯 Priority Picks (Kiri->Kanan)'
+                ]
+                
+                # Filter agar yang tampil hanya pitcher aktif (PA > 50), urutkan dari SO tertinggi
+                df_clean_p = df_p[df_p['pa_Full'] >= 50][display_cols].sort_values(by='Proj_SO', ascending=False)
+                
+                df_clean_p.rename(columns={
+                    'player_name_std': 'Pitcher Name',
+                    'xwoba_L60': 'xwOBA Allw (L60)',
+                    'hardhit_percent': 'HardHit% Allw'
+                }, inplace=True)
+
+                st.data_editor(df_clean_p, use_container_width=True, hide_index=True, disabled=True)
