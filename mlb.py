@@ -1096,7 +1096,7 @@ with tabs[8]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
 
                 st.data_editor(df_clean, use_container_width=True, hide_index=True, disabled=True)
 
-with tab[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
+with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
         st.header("🎯 Tab 10: Pitcher Platoon Matrix")
         st.markdown("Proyeksi Spesifik vs Lineup Kanan/Kidal: **Outs, SO, Hits Allowed, & Earned Runs**")
 
