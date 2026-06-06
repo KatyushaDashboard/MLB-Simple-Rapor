@@ -533,13 +533,24 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     # B. Proyeksi Hitter Away vs Pitcher Home (Melihat Tangan Home SP)
                     st.caption(f"🏏 **Hitter {away_team} vs {home_sp_hand}**")
                     df_h_away_source = df_h_lhp if home_sp_hand == "LHP (Kidal)" else df_h_rhp
-                    df_h_a = df_h_away_source[df_h_away_source['Team'] == away_team].copy()
+                    
+                    # [AUTO-DETECT] Kolom Tim
+                    team_col_a = 'Team_Full' if 'Team_Full' in df_h_away_source.columns else ('Team' if 'Team' in df_h_away_source.columns else None)
+                    
+                    if team_col_a:
+                        df_h_a = df_h_away_source[df_h_away_source[team_col_a] == away_team].copy()
+                    else:
+                        df_h_a = pd.DataFrame()
                     
                     if not df_h_a.empty:
                         expected_pa_h = 4.25
+                        
+                        # [AUTO-DETECT] Kolom HardHit Full Season
+                        hh_full_col_a = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_h_a.columns else 'hard_hit_percent'
+                        
                         df_h_a['SweetSpot_Mod'] = 1 + ((df_h_a['sweet_spot_percent'] - 33) / 100)
                         df_h_a['AirBall_Mod'] = 1 + (((df_h_a['flyballs_percent'] + df_h_a['linedrives_percent']) - 50) / 100)
-                        df_h_a['Power_Surge'] = np.where(df_h_a['hardhit_percent'] > df_h_a['hard_hit_percent'], 1.15, 1.0)
+                        df_h_a['Power_Surge'] = np.where(df_h_a['hardhit_percent'] > df_h_a[hh_full_col_a], 1.15, 1.0)
                         
                         df_h_a['Proj_Hit'] = ((df_h_a['hit']/df_h_a['pa_Full']) * (df_h_a['xba_L30']/df_h_a['xba_Full']) * df_h_a['SweetSpot_Mod'] * expected_pa_h).fillna(0).round(2)
                         df_h_a['Proj_TB'] = ((df_h_a['b_total_bases']/df_h_a['pa_Full']) * (df_h_a['xslg_L30']/df_h_a['xslg_Full']) * df_h_a['AirBall_Mod'] * df_h_a['Power_Surge'] * expected_pa_h).fillna(0).round(2)
@@ -582,13 +593,24 @@ with tabs[2]: # Merombak SGP Factory menjadi Today Matchup Matrix
                     # B. Proyeksi Hitter Home vs Pitcher Away (Melihat Tangan Away SP)
                     st.caption(f"🏏 **Hitter {home_team} vs {away_sp_hand}**")
                     df_h_home_source = df_h_lhp if away_sp_hand == "LHP (Kidal)" else df_h_rhp
-                    df_h_h = df_h_home_source[df_h_home_source['Team'] == home_team].copy()
+                    
+                    # [AUTO-DETECT] Kolom Tim
+                    team_col_h = 'Team_Full' if 'Team_Full' in df_h_home_source.columns else ('Team' if 'Team' in df_h_home_source.columns else None)
+                    
+                    if team_col_h:
+                        df_h_h = df_h_home_source[df_h_home_source[team_col_h] == home_team].copy()
+                    else:
+                        df_h_h = pd.DataFrame()
                     
                     if not df_h_h.empty:
                         expected_pa_h = 4.25
+                        
+                        # [AUTO-DETECT] Kolom HardHit Full Season
+                        hh_full_col_h = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_h_h.columns else 'hard_hit_percent'
+                        
                         df_h_h['SweetSpot_Mod'] = 1 + ((df_h_h['sweet_spot_percent'] - 33) / 100)
                         df_h_h['AirBall_Mod'] = 1 + (((df_h_h['flyballs_percent'] + df_h_h['linedrives_percent']) - 50) / 100)
-                        df_h_h['Power_Surge'] = np.where(df_h_h['hardhit_percent'] > df_h_h['hard_hit_percent'], 1.15, 1.0)
+                        df_h_h['Power_Surge'] = np.where(df_h_h['hardhit_percent'] > df_h_h[hh_full_col_h], 1.15, 1.0)
                         
                         df_h_h['Proj_Hit'] = ((df_h_h['hit']/df_h_h['pa_Full']) * (df_h_h['xba_L30']/df_h_h['xba_Full']) * df_h_h['SweetSpot_Mod'] * expected_pa_h).fillna(0).round(2)
                         df_h_h['Proj_TB'] = ((df_h_h['b_total_bases']/df_h_h['pa_Full']) * (df_h_h['xslg_L30']/df_h_h['xslg_Full']) * df_h_h['AirBall_Mod'] * df_h_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
