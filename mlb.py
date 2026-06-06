@@ -995,11 +995,20 @@ with tabs[8]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                 st.warning("Data belum tersedia. Pastikan bot_updater.py sudah dieksekusi hari ini.")
             else:
                 with col2:
-                    daftar_tim = ['Semua Tim'] + sorted([t for t in df['Team'].unique() if str(t) != 'nan' and str(t) != 'TBD'])
-                    pilih_tim = st.selectbox("🔍 Filter Tim Hitter:", daftar_tim, key="filter_tim_t9")
+                    # Deteksi otomatis nama kolom tim yang habis bermutasi
+                    kolom_tim = 'Team_Full' if 'Team_Full' in df.columns else ('Team' if 'Team' in df.columns else None)
+                    
+                    if kolom_tim:
+                        # Panggil daftar tim dari kolom_tim
+                        daftar_tim = ['Semua Tim'] + sorted([t for t in df[kolom_tim].unique() if str(t) != 'nan' and str(t) != 'TBD'])
+                        pilih_tim = st.selectbox("🔍 Filter Tim Hitter:", daftar_tim, key="filter_tim_t9")
+                    else:
+                        st.info("⚠️ Kolom Tim tidak ditemukan di CSV.")
+                        pilih_tim = 'Semua Tim'
 
-                if pilih_tim != 'Semua Tim':
-                    df = df[df['Team'] == pilih_tim]
+                if pilih_tim != 'Semua Tim' and kolom_tim:
+                    # Filter dataframe berdasarkan pilihan
+                    df = df[df[kolom_tim] == pilih_tim]
 
                 # 3. THE ADVANCED MATH ENGINE
                 expected_pa = 4.25 # Asumsi jatah PA per game
