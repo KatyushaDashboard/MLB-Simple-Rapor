@@ -5,7 +5,7 @@
         "home_team": "Atlanta Braves",
         "away_pitcher": "Bubba Chandler",
         "home_pitcher": "Bryce Elder",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823453,
@@ -13,7 +13,7 @@
         "home_team": "Philadelphia Phillies",
         "away_pitcher": "Tyler Gilbert",
         "home_pitcher": "Aaron Nola",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823537,
@@ -21,7 +21,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Ranger Suarez",
         "home_pitcher": "Cam Schlittler",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822807,
@@ -37,7 +37,7 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Luis Castillo",
         "home_pitcher": "Jack Flaherty",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823857,
@@ -69,7 +69,7 @@
         "home_team": "St. Louis Cardinals",
         "away_pitcher": "Rhett Lowder",
         "home_pitcher": "Michael McGreevy",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822890,
