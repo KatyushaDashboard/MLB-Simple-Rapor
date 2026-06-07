@@ -629,35 +629,215 @@ with tabs[2]:
                         st.warning(f"Roster hitter {home_team} tidak ditemukan di database.")
 
 with tabs[4]:
-    st.header("🛡️ AI Auditor & Advanced ROI Tracker")
-    history = load_betting_history()
-    win_rate = (history['wins'] / history['total_bets'] * 100) if history['total_bets'] > 0 else 0
-    profit_loss = history['total_returned'] - history['total_staked']
-    roi = (profit_loss / history['total_staked'] * 100) if history['total_staked'] > 0 else 0
+        st.header("🕵️ Tab 8: The Auditor (Slip Tracker & Auto-Grader)")
+        st.markdown("Rekam jejak dan koreksi otomatis hasil gacha portofolio lu langsung dari *MLB Box Score API*.")
 
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric(label="🎯 Win Rate", value=f"{win_rate:.1f}%")
-    m2.metric(label=f"💸 Profit/Loss", value=f"Rp {profit_loss:,}")
-    m3.metric(label="📊 ROI", value=f"{roi:.1f}%")
-    m4.metric(label="🎫 Total Slip", value=f"{history['total_bets']} Tiket")
-    st.divider()
+        import os
+        import pandas as pd
+        import re
+        from datetime import datetime, timedelta
 
-    st.subheader("📋 Kunci Jawaban & Log Boxscore H-1")
-    if not yesterday_results:
-        st.info("Menunggu data pertandingan H-1 disinkronkan.")
-    elif isinstance(yesterday_results, dict):
-        for g_id, g_data in yesterday_results.items():
-            if not isinstance(g_data, dict): continue
-            with st.container():
-                st.markdown(f"### 📋 {g_data.get('matchup', 'Match')}")
-                st.markdown(f"**Skor Akhir:** {g_data.get('away_runs', 0)} - {g_data.get('home_runs', 0)}")
-                with st.expander("🔎 Buka Log Statistik"):
-                    for p_name, p_stat in g_data.get('players', {}).items():
-                        if 'tb' in p_stat and p_stat['tb'] > 0: 
-                            st.write(f"⚾ **{p_name}**: Hits: {p_stat['hits']} | TB: {p_stat['tb']} | HR: {p_stat['hr']}")
-                        elif 'strikeouts_pitcher' in p_stat:
-                            st.write(f"🔥 **{p_name} (SP)**: K: {p_stat['strikeouts_pitcher']}")
+        file_auditor = 'auditor_slips.csv'
+        file_hasil_audit = 'auditor_graded.csv'
+        
+        if os.path.exists(file_auditor):
+            df_audit = pd.read_csv(file_auditor)
+            
+            # Memuat database hasil audit lama agar status data yang sudah dinilai tetap permanen
+            if os.path.exists(file_hasil_audit):
+                df_graded = pd.read_csv(file_hasil_audit)
+                # Bersihkan duplikat sebelum merge demi menghindari pembengkakan baris
+                df_graded = df_graded.drop_duplicates(subset=['Saved_At', 'Category', 'Leg_Bet'])
+                df_audit = df_audit.merge(df_graded, on=['Saved_At', 'Category', 'Leg_Bet'], how='left')
+            else:
+                df_audit['Status'] = "⏳ Pending"
+                
+            # Mengatasi nilai NaN pasca-merge otomatis dikembalikan ke Pending
+            df_audit['Status'] = df_audit['Status'].fillna("⏳ Pending")
+            
+            if not df_audit.empty:
+                # Membuat layout kontrol atas
+                col_kiri, col_kanan = st.columns([2, 1])
+                
+                daftar_batch = df_audit['Saved_At'].unique().tolist()
+                daftar_batch.sort(reverse=True) # Menempatkan batch terbaru di posisi teratas dropdown
+                
+                with col_kiri:
+                    pilihan_batch = st.selectbox("📂 Pilih Batch Gacha (Timestamp):", daftar_batch)
+                
+                with col_kanan:
+                    st.write("") # Spacer penyelarasan vertikal tombol
+                    st.write("")
+                    btn_auto_grade = st.button("🤖 Auto-Grade Batch Ini", type="primary")
+                
                 st.divider()
+                st.subheader(f"📊 Menampilkan Batch: {pilihan_batch}")
+                
+                # Filter data murni milik batch terpilih saja
+                df_batch_terpilih = df_audit[df_audit['Saved_At'] == pilihan_batch]
+                kategori_slips = df_batch_terpilih['Category'].unique()
+
+                # ==============================================================================
+                # ENGINE AUTO-GRADER (BERJALAN SENYAP SAAT TOMBOL DIKLIK)
+                # ==============================================================================
+                if btn_auto_grade:
+                    import statsapi
+                    with st.spinner("Menyedot Box Score dan mengoreksi keakuratan slip lu..."):
+                        hasil_koreksi_baru = []
+                        
+                        # --- KALIBRASI KEBORINGAN WAKTU (Auto-Sync WIB ke ET US) ---
+                        try:
+                            waktu_simpan_wib = datetime.strptime(pilihan_batch, '%Y-%m-%d %H:%M:%S')
+                            # Kurangi 15 jam agar selaras persis dengan batas cutoff 04:00 AM ET kalender resmi MLB
+                            waktu_mlb = waktu_simpan_wib - timedelta(hours=15)
+                            tgl_api = waktu_mlb.strftime('%m/%d/%Y')
+                            
+                            # Tarik seluruh master schedule MLB di tanggal tersebut
+                            jadwal_api = statsapi.schedule(date=tgl_api)
+                        except Exception as e:
+                            st.error(f"❌ Gagal sinkronisasi tanggal API: {e}")
+                            jadwal_api = []
+
+                        # Looping membedah slip satu per satu
+                        for kat in kategori_slips:
+                            legs = df_batch_terpilih[df_batch_terpilih['Category'] == kat]['Leg_Bet'].tolist()
+                            
+                            for leg in legs:
+                                status_akhir = "⏳ Pending"
+                                
+                                try:
+                                    # 1. PARSER STRING ENGINE (Pembersih Ornamen Teks)
+                                    # Mengambil bagian kiri sebelum pembatas ' - '
+                                    sisi_kiri = leg.split(' - ')[0]
+                                    # Membersihkan segala bentuk Emoji dan Tag Braket seperti [SGP-4L], [SGP 2-LEG]
+                                    nama_pemain = re.sub(r'⚾|🎯|💥|🏏|\[.*?\]', '', sisi_kiri).strip()
+                                    # Memotong inisial tim di ekor nama, misal "Aaron Judge (NYY)" -> "Aaron Judge"
+                                    if '(' in nama_pemain:
+                                        nama_pemain = nama_pemain.split('(')[0].strip()
+                                        
+                                    # 2. DETEKSI JENIS PASARAN TARUHAN (Props Target Type)
+                                    if "Home Runs" in leg or "HR" in leg: stat_tipe = "HR"
+                                    elif "Hits Allowed" in leg: stat_tipe = "Hits_Allowed"
+                                    elif "Hits" in leg: stat_tipe = "Hits"
+                                    elif "Total Bases" in leg or "TB" in leg: stat_tipe = "TB"
+                                    elif "RBI" in leg: stat_tipe = "RBI"
+                                    elif "Runs" in leg or "Run" in leg: stat_tipe = "Runs"
+                                    elif "SO" in leg: stat_tipe = "SO"
+                                    elif "ER" in leg: stat_tipe = "ER"
+                                    else: stat_tipe = "Unknown"
+                                    
+                                    # 3. EKSTRAKSI IDENTITAS PERTANDINGAN (Match Tracker)
+                                    match_str = leg.split('┃')[-1].strip() if '┃' in leg else ""
+                                    
+                                    # 4. KUNCI GAME ID MLB STATSAPI
+                                    game_id = None
+                                    status_game = ""
+                                    for game in jadwal_api:
+                                        # Mencocokkan substring nama tim pendek (Abbr) ke dalam string label match
+                                        if game['away_name'].split()[-1] in match_str or game['home_name'].split()[-1] in match_str:
+                                            game_id = game['game_id']
+                                            status_game = game['status']
+                                            break
+                                            
+                                    # 5. EKSTRAKSI AKTUAL STATS DARI BOX SCORE RESMI
+                                    if game_id and status_game in ['Final', 'Game Over']:
+                                        box = statsapi.boxscore_data(game_id)
+                                        # Penggabungan seluruh entitas pemain lapangan ke dalam satu repositori pencarian
+                                        all_players = {**box['awayBatters'], **box['homeBatters'], **box['awayPitchers'], **box['homePitchers']}
+                                        
+                                        stat_real = 0
+                                        pemain_ketemu = False
+                                        
+                                        for pid, pdata in all_players.items():
+                                            if nama_pemain.lower() in pdata['namefield'].lower():
+                                                pemain_ketemu = True
+                                                if stat_tipe == "HR": stat_real = int(pdata.get('hr', 0))
+                                                elif stat_tipe == "Hits": stat_real = int(pdata.get('h', 0))
+                                                elif stat_tipe == "RBI": stat_real = int(pdata.get('rbi', 0))
+                                                elif stat_tipe == "Runs": stat_real = int(pdata.get('r', 0))
+                                                elif stat_tipe == "TB": stat_real = int(pdata.get('h', 0)) + (int(pdata.get('d', 0))*2) + (int(pdata.get('t', 0))*3) + (int(pdata.get('hr', 0))*4)
+                                                elif stat_tipe == "SO": stat_real = int(pdata.get('so', 0))
+                                                elif stat_tipe == "ER": stat_real = int(pdata.get('er', 0))
+                                                elif stat_tipe == "Hits_Allowed": stat_real = int(pdata.get('h', 0))
+                                                break
+                                                
+                                        # 6. GRADING LOGIC COMPARATOR (Penentu Hit vs Miss)
+                                        if pemain_ketemu:
+                                            # Mencari pola penanda Over/Under beserta nilai desimal line-nya
+                                            line_match = re.search(r'(O|U)\s+(\d+\.\d+)', leg)
+                                            if line_match:
+                                                ou_tipe = line_match.group(1)
+                                                line_angka = float(line_match.group(2))
+                                                
+                                                if ou_tipe == "O":
+                                                    status_akhir = "✅ Hit" if stat_real > line_angka else "❌ Miss"
+                                                else:
+                                                    status_akhir = "✅ Hit" if stat_real < line_angka else "❌ Miss"
+                                            else:
+                                                # Fallback otomatis jika format line desimal gagal diekstrak
+                                                status_akhir = "✅ Hit" if stat_real > 0 else "❌ Miss"
+                                        else:
+                                            status_akhir = "⚠️ Player DNP/Not Found"
+                                            
+                                    elif status_game in ['In Progress', 'Scheduled', 'Pre-Game']:
+                                        status_akhir = "⏳ Pending (Game Running/Wait)"
+                                        
+                                except Exception as e:
+                                    status_akhir = "⚠️ Error Parsing"
+
+                                # Menyimpan hasil kalkulasi objek tunggal ke list penampung
+                                hasil_koreksi_baru.append({
+                                    "Saved_At": pilihan_batch,
+                                    "Category": kat,
+                                    "Leg_Bet": leg,
+                                    "Status": status_akhir
+                                })
+                        
+                        # Pengamanan kompilasi ke database eksternal `auditor_graded.csv`
+                        df_baru = pd.DataFrame(hasil_koreksi_baru)
+                        if os.path.exists(file_hasil_audit):
+                            df_lama = pd.read_csv(file_hasil_audit)
+                            # Membersihkan catatan batch lama agar tidak terjadi penumpukan baris ganda
+                            df_lama = df_lama[df_lama['Saved_At'] != pilihan_batch]
+                            df_final = pd.concat([df_lama, df_baru])
+                        else:
+                            df_final = df_baru
+                            
+                        df_final.to_csv(file_hasil_audit, index=False)
+                        st.success("🎯 Auto-Grade Selesai! Seluruh data Box Score berhasil dikoreksi silang.")
+                        st.rerun()
+
+                # ==============================================================================
+                # RENDER DISPLAY UI AUDITOR GRID (LURUS, KONSISTEN & BERWARNA)
+                # ==============================================================================
+                for kat in kategori_slips:
+                    # Mengelompokkan list leg ke dalam Expander Dropdown per Judul Slip
+                    with st.expander(f"🧾 Slip: {kat.upper()}", expanded=True):
+                        df_legs = df_batch_terpilih[df_batch_terpilih['Category'] == kat]
+                        
+                        for idx, row in df_legs.reset_index().iterrows():
+                            leg_teks = row['Leg_Bet']
+                            status_val = row['Status']
+                            
+                            col_teks, col_status = st.columns([3, 1])
+                            
+                            with col_teks:
+                                st.write(f"{idx+1}. {leg_teks}")
+                            
+                            with col_status:
+                                # Skema pewarnaan visual dinamis berdasarkan nilai status
+                                if "Hit" in str(status_val):
+                                    st.success(f"**{status_val}**")
+                                elif "Miss" in str(status_val):
+                                    st.error(f"**{status_val}**")
+                                elif "Error" in str(status_val) or "DNP" in str(status_val):
+                                    st.warning(f"**{status_val}**")
+                                else:
+                                    st.info(f"**{status_val}**")
+            else:
+                st.warning("Data di `auditor_slips.csv` masih kosong. Coba generate dan simpan slip di Tab 7 dulu!")
+        else:
+            st.warning("⚠️ File `auditor_slips.csv` belum ditemukan. Silakan ke Tab 7 untuk mulai merekam slip gacha lu!")
 
 # ====================================================================
 # TAB 6: MATCH & TEAM MARKET TERMINAL (PYTHAGOREAN ENGINE)
