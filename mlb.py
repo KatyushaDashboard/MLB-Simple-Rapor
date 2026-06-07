@@ -1083,19 +1083,20 @@ with tabs[6]:
 
             # --- RENDER DISPLAY SLIP DARI MEMORY SESSION STATE ---
             if 'last_gacha_data' in st.session_state and st.session_state['last_gacha_data']:
-                df_display = pd.DataFrame(st.session_state['last_gacha_data'])
-                
-                # Pengelompokkan visual agar enak dibaca per Kategori
-                for kat in df_display['Kategori'].unique():
-                    st.subheader(f"🔮 {kat}")
-                    sub_df = df_display[df_display['Kategori'] == kat]
-                    for idx, row in enumerate(sub_df.to_dict(orient='records')):
-                        meta_info = ""
+                        df_display = pd.DataFrame(st.session_state['last_gacha_data'])
+                        
+                        for kat in df_display['Kategori'].unique():
+                            st.subheader(f"🔮 {kat}")
+                            sub_df = df_display[df_display['Kategori'] == kat]
+                            
+                            for idx, row in enumerate(sub_df.to_dict(orient='records')):
+                                meta_info = ""
                                 if 'Rank' in row and row['Rank']:
                                     meta_info = f" (Rank {row['Rank']}, Proj: {row['Proj']}%)"
                                 
                                 st.write(f"{idx+1}. {row['Pick']}{meta_info} ┃ *{row['Match']}*")
-                    st.divider()
+                            
+                            st.divider()
 # ====================================================================
 # TAB 8: THE OVERLAP NETWORK (PLAYER CLUSTERS)
 # ====================================================================
