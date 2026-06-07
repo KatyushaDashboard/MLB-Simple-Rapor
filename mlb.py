@@ -839,6 +839,21 @@ with tabs[4]:
                 st.warning("Data di `auditor_slips.csv` masih kosong. Coba generate dan simpan slip di Tab 7 dulu!")
         else:
             st.warning("⚠️ File `auditor_slips.csv` belum ditemukan. Silakan ke Tab 7 untuk mulai merekam slip gacha lu!")
+            # ==========================================
+        # ⚙️ DANGER ZONE: TOMBOL RESET DATABASE AULI
+        # ==========================================
+        st.divider()
+        with st.expander("⚙️ Danger Zone (Developer Mode)"):
+            st.warning("Tombol ini akan menghapus seluruh file CSV Auditor yang nyangkut di server Streamlit Cloud lu.")
+            if st.button("🗑️ Reset & Hapus Database Auditor", type="primary"):
+                try:
+                    if os.path.exists('auditor_slips.csv'):
+                        os.remove('auditor_slips.csv')
+                    if os.path.exists('auditor_graded.csv'):
+                        os.remove('auditor_graded.csv')
+                    st.success("✅ File CSV gaib berhasil dihancurkan! Silakan refresh webnya, lalu masuk ke Tab 7 buat Generate & Save file baru.")
+                except Exception as e:
+                    st.error(f"Gagal menghapus file: {e}")
 
 # ====================================================================
 # TAB 6: MATCH & TEAM MARKET TERMINAL (PYTHAGOREAN ENGINE)
