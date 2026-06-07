@@ -859,6 +859,8 @@ with tabs[6]:
             import json
             import numpy as np
             import random
+            import os
+            from datetime import datetime
             
             with open('today_schedule.json', 'r') as f:
                 jadwal_hari_ini = json.load(f)
@@ -872,7 +874,11 @@ with tabs[6]:
             data_siap_t7 = False
 
         if data_siap_t7 and jadwal_hari_ini:
-            if st.button("🎲 Generate Slip Portofolio Hari Ini", type="primary"):
+            # Kolom tombol aksi utama
+            col_gacha, col_simpan = st.columns(2)
+            
+            # --- ENGINE GENERATOR SLIP ---
+            if col_gacha.button("🎲 Generate Slip Portofolio Hari Ini", type="primary"):
                 with st.spinner("Mengekstrak data Matchup seluruh liga..."):
                     nama_ke_singkatan = {
                         "Arizona Diamondbacks": "ARI", "Atlanta Braves": "ATL", "Baltimore Orioles": "BAL",
@@ -894,13 +900,9 @@ with tabs[6]:
 
                     semua_hitter = []
                     semua_pitcher = []
-                    match_list = []
-
-                    # --- ENGINE PENGUMPUL DATA MATCHUP SELURUH LIGA ---
+                    
                     for g in jadwal_hari_ini:
                         match_name = f"{g['away_team']} @ {g['home_team']}"
-                        match_list.append(match_name)
-                        
                         away_team, home_team = g['away_team'], g['home_team']
                         away_abbr = nama_ke_singkatan.get(away_team, away_team)
                         home_abbr = nama_ke_singkatan.get(home_team, home_team)
@@ -927,7 +929,7 @@ with tabs[6]:
                                 proj_hits = round((hits_l60 / pa_l60_p * expected_pa), 2)
                                 pick_hits = f"O 5.5 Hits Allowed" if proj_hits >= 5.5 else f"U 5.5 Hits Allowed"
                                 
-                                era_full_p = df_sp[era_col].iloc[0] if era_col in df_sp.columns else 4.15
+                                era_full_p = df_sp[era_full_p].iloc[0] if era_col in df_sp.columns else 4.15
                                 xwoba_l60_p = df_sp['xwoba_L60'].iloc[0] if 'xwoba_L60' in df_sp.columns else 0.320
                                 xwoba_full_p = df_sp['xwoba_Full'].iloc[0] if 'xwoba_Full' in df_sp.columns else 0.320
                                 proj_er = round((era_full_p / 27 * 15 * (xwoba_l60_p / xwoba_full_p)), 2)
@@ -979,156 +981,117 @@ with tabs[6]:
                     df_all_hitters = pd.DataFrame(semua_hitter)
                     df_all_pitchers = pd.DataFrame(semua_pitcher)
 
-                    def tampilkan_slip(judul, kaki_slip):
-                        st.markdown(f"**{judul}**")
-                        for i, leg in enumerate(kaki_slip):
-                            st.write(f"{i+1}. {leg}")
-                        st.divider()
+                    # --- PROSES MERACIK LIST SLIP UNTUK MEMORY SESSION STATE ---
+                    current_gacha_list = []
 
-                    # ==============================================================
-                    # BAGIAN 1: 2 Slip (Masing-masing 2 Leg dari Top 1 HR Beda Match)
-                    # ==============================================================
-                    st.subheader("🔥 Bagian 1: The Elite Sniper (Top 1 HR)")
+                    # 1. Bagian 1
                     top1_hr = df_all_hitters[df_all_hitters['Rank_HR'] == 1].sort_values(by='Proj_HR', ascending=False)
-                    available_matches = top1_hr['Match'].unique().tolist()
-                    
+                    avail_m = top1_hr['Match'].unique().tolist()
                     for i in range(2):
-                        if len(available_matches) >= 2:
-                            dipilih = random.sample(available_matches, 2)
-                            slip = []
+                        if len(avail_m) >= 2:
+                            dipilih = random.sample(avail_m, 2)
                             for m in dipilih:
                                 p = top1_hr[top1_hr['Match'] == m].iloc[0]
-                                slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Proj: {p['Proj_HR']}%) ┃ {m}")
-                            tampilkan_slip(f"Slip 1.{i+1} (2-Leg Cross Game)", slip)
-                            available_matches = [m for m in available_matches if m not in dipilih]
+                                current_gacha_list.append({"Kategori": f"Bagian 1.{i+1}", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
+                            avail_m = [m for m in avail_m if m not in dipilih]
 
-                    # ==============================================================
-                    # BAGIAN 2: 1 Slip (3 Leg Random Top 1-3 HR Beda Match)
-                    # ==============================================================
-                    st.subheader("🎯 Bagian 2: The Triangle Threat (Top 1-3 HR)")
+                    # 2. Bagian 2
                     top1_3_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(1, 3)]
                     avail_m = top1_3_hr['Match'].unique().tolist()
-                    
                     if len(avail_m) >= 3:
-                        dipilih = random.sample(avail_m, 3)
-                        slip = []
-                        for m in dipilih:
-                            roster_m = top1_3_hr[top1_3_hr['Match'] == m]
-                            p = roster_m.sample(1).iloc[0]
-                            slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Rank {p['Rank_HR']}) ┃ {m}")
-                        tampilkan_slip("Slip 2.1 (3-Leg Variasi Elit)", slip)
+                        for m in random.sample(avail_m, 3):
+                            p = top1_3_hr[top1_3_hr['Match'] == m].sample(1).iloc[0]
+                            current_gacha_list.append({"Kategori": "Bagian 2.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
 
-                    # ==============================================================
-                    # BAGIAN 3: 1 Slip (5 Leg Random Top 3-5 HR Beda Match)
-                    # ==============================================================
-                    st.subheader("💣 Bagian 3: The Pitcher's Nightmare (Top 3-5 HR)")
+                    # 3. Bagian 3
                     top3_5_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(3, 5)]
                     avail_m = top3_5_hr['Match'].unique().tolist()
-                    
                     if len(avail_m) >= 5:
-                        dipilih = random.sample(avail_m, 5)
-                        slip = []
-                        for m in dipilih:
-                            roster_m = top3_5_hr[top3_5_hr['Match'] == m]
-                            p = roster_m.sample(1).iloc[0]
-                            slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Rank {p['Rank_HR']}) ┃ {m}")
-                        tampilkan_slip("Slip 3.1 (5-Leg Lotto / Kuda Hitam)", slip)
+                        for m in random.sample(avail_m, 5):
+                            p = top3_5_hr[top3_5_hr['Match'] == m].sample(1).iloc[0]
+                            current_gacha_list.append({"Kategori": "Bagian 3.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
 
-                    # ==============================================================
-                    # BAGIAN 4: 3 Slip SGPx (Pitcher SO, 4B Semi-Lotto, & 4C Lotto SP)
-                    # ==============================================================
-                    st.subheader("🌪️ Bagian 4: The SGPx Monsters")
-                    
-                    # 4A: 6 SP dari 3 Match
+                    # 4. Bagian 4A
                     avail_p_m = df_all_pitchers['Match'].unique().tolist()
                     if len(avail_p_m) >= 3:
-                        dipilih_p = random.sample(avail_p_m, 3)
-                        slip_p = []
-                        for m in dipilih_p:
-                            sps = df_all_pitchers[df_all_pitchers['Match'] == m]
-                            for _, p in sps.iterrows():
-                                slip_p.append(f"🎯 {p['Pitcher']} - {p['Pick_SO']} (Proj: {p['Proj_SO']}) ┃ {m}")
-                        tampilkan_slip("Slip 4A (6-Leg Starting Pitchers O/U K's)", slip_p)
+                        for m in random.sample(avail_p_m, 3):
+                            for _, p in df_all_pitchers[df_all_pitchers['Match'] == m].iterrows():
+                                current_gacha_list.append({"Kategori": "Bagian 4A", "Match": m, "Pick": f"🎯 {p['Pitcher']} - {p['Pick_SO']}"})
 
-                    # [FIXED 100%] 4B: 3-Game SGPx Home Runs (3 Match, TIAP Match isi SGP 2-Leg dari Top 5 HR)
+                    # 5. Bagian 4B
                     top1_5_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(1, 5)]
                     avail_m = top1_5_hr['Match'].unique().tolist()
-                    
                     if len(avail_m) >= 3:
-                        dipilih_hr = random.sample(avail_m, 3)
-                        slip_4b = []
-                        
-                        for m in dipilih_hr:
+                        for m in random.sample(avail_m, 3):
                             roster_m = top1_5_hr[top1_5_hr['Match'] == m]
                             if len(roster_m) >= 2:
-                                p_duo = roster_m.sample(2)
-                                for _, p in p_duo.iterrows():
-                                    slip_4b.append(f"⚾ [SGP 2-LEG] {p['Player']} ({p['Team']}) - O 0.5 Home Runs ┃ {m}")
-                        
-                        tampilkan_slip("Slip 4B (3-Game SGPx Home Runs - Total 6-Leg Duplex Matrix)", slip_4b)
+                                for _, p in roster_m.sample(2).iterrows():
+                                    current_gacha_list.append({"Kategori": "Bagian 4B (SGP)", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
 
-                    # [FIXED 100%] 4C: Lotto Pelempar (5 Match, TIAP Match isi SGP 4-Leg dari 2 SP Saling Berhadapan)
+                    # 6. Bagian 4C
                     if len(avail_p_m) >= 5:
-                        dipilih_4c = random.sample(avail_p_m, 5)
-                        slip_4c = []
-                        
-                        for m in dipilih_4c:
+                        for m in random.sample(avail_p_m, 5):
                             sps_m = df_all_pitchers[df_all_pitchers['Match'] == m]
                             if len(sps_m) >= 2:
-                                sp1 = sps_m.iloc[0]
-                                sp2 = sps_m.iloc[1]
-                                # Menjebloskan 4 leg props pelempar ke dalam satu match tunggal (SGP)
-                                slip_4c.append(f"🎯 [SGP 4-LEG SP] {sp1['Pitcher']} - {sp1['Pick_SO']} ┃ {m}")
-                                slip_4c.append(f"🎯 [SGP 4-LEG SP] {sp1['Pitcher']} - {sp1['Pick_ER']} ┃ {m}")
-                                slip_4c.append(f"🎯 [SGP 4-LEG SP] {sp2['Pitcher']} - {sp2['Pick_SO']} ┃ {m}")
-                                slip_4c.append(f"🎯 [SGP 4-LEG SP] {sp2['Pitcher']} - {sp2['Pick_Hits']} ┃ {m}")
-                            
-                        tampilkan_slip("Slip 4C (5-Game SGPx Lotto Pelempar - Total 20-Leg Absolute Megalodon)", slip_4c)
+                                sp1, sp2 = sps_m.iloc[0], sps_m.iloc[1]
+                                current_gacha_list.append({"Kategori": "Bagian 4C (SGP SP)", "Match": m, "Pick": f"🎯 {sp1['Pitcher']} - {sp1['Pick_SO']}"})
+                                current_gacha_list.append({"Kategori": "Bagian 4C (SGP SP)", "Match": m, "Pick": f"🎯 {sp1['Pitcher']} - {sp1['Pick_ER']}"})
+                                current_gacha_list.append({"Kategori": "Bagian 4C (SGP SP)", "Match": m, "Pick": f"🎯 {sp2['Pitcher']} - {sp2['Pick_SO']}"})
+                                current_gacha_list.append({"Kategori": "Bagian 4C (SGP SP)", "Match": m, "Pick": f"🎯 {sp2['Pitcher']} - {sp2['Pick_Hits']}"})
 
-                    # ==============================================================
-                    # BAGIAN 5: 2 Slip (5 Leg Random Props dari Top 5 Hit/TB/RBI/Run)
-                    # ==============================================================
-                    st.subheader("🧩 Bagian 5: The Action Props (Hit / TB / RBI / Run)")
+                    # 7. Bagian 5
                     props_pool = ["O 0.5 Hits", "O 1.5 Total Bases", "O 0.5 RBI", "O 0.5 Runs"]
-                    
+                    avail_m = df_all_hitters['Match'].unique().tolist()
                     for i in range(2):
-                        avail_m = df_all_hitters['Match'].unique().tolist()
                         if len(avail_m) >= 5:
-                            dipilih = random.sample(avail_m, 5)
-                            slip = []
-                            for m in dipilih:
-                                roster_m = df_all_hitters[df_all_hitters['Match'] == m]
-                                p = roster_m.sort_values(by='Proj_TB', ascending=False).head(5).sample(1).iloc[0]
-                                prop_pilihan = random.choice(props_pool)
-                                slip.append(f"🏏 {p['Player']} ({p['Team']}) - {prop_pilihan} ┃ {m}")
-                            tampilkan_slip(f"Slip 5.{i+1} (5-Leg Mixed Props)", slip)
+                            for m in random.sample(avail_m, 5):
+                                p = df_all_hitters[df_all_hitters['Match'] == m].sort_values(by='Proj_TB', ascending=False).head(5).sample(1).iloc[0]
+                                current_gacha_list.append({"Kategori": f"Bagian 5.{i+1}", "Match": m, "Pick": f"🏏 {p['Player']} ({p['Team']}) - {random.choice(props_pool)}"})
 
-                    # ==============================================================
-                    # BAGIAN 6: 2 Slip SGPx Megalodon (4 Match x 4-Leg SGP = 16-Leg)
-                    # ==============================================================
-                    st.subheader("🎰 Bagian 6: The 16-Leg Megalodon Lotto (Hit/TB/Run/RBI)")
-                    st.caption("Tiket jackpot murni. SGP 4-Leg dengan korelasi positif (Random dari Top 5 Hitter).")
-                    
+                    # 8. Bagian 6
+                    avail_m = df_all_hitters['Match'].unique().tolist()
                     for i in range(2):
-                        avail_m = df_all_hitters['Match'].unique().tolist()
                         if len(avail_m) >= 4:
-                            dipilih_6 = random.sample(avail_m, 4)
-                            slip_6 = []
-                            
-                            for m in dipilih_6:
+                            for m in random.sample(avail_m, 4):
                                 roster_m = df_all_hitters[df_all_hitters['Match'] == m].sort_values(by='Proj_TB', ascending=False)
-                                
                                 if len(roster_m) >= 2:
-                                    p_duo = roster_m.head(5).sample(2) 
-                                    p1 = p_duo.iloc[0]
-                                    p2 = p_duo.iloc[1]
-                                    
-                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 0.5 Hits (Proj: {p1['Proj_Hit']}) ┃ {m}")
-                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 1.5 Total Bases (Proj: {p1['Proj_TB']}) ┃ {m}")
-                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 0.5 Runs (Proj: {p1['Proj_Run']}) ┃ {m}")
-                                    slip_6.append(f"💥 [SGP-4L] {p2['Player']} ({p2['Team']}) - O 0.5 RBI (Proj: {p2['Proj_RBI']}) ┃ {m}")
-                                    
-                            tampilkan_slip(f"Slip 6.{i+1} (16-Leg Megalodon SGPx Lotto)", slip_6)
+                                    p_duo = roster_m.head(5).sample(2)
+                                    p1, p2 = p_duo.iloc[0], p_duo.iloc[1]
+                                    current_gacha_list.append({"Kategori": f"Bagian 6.{i+1} (SGP)", "Match": m, "Pick": f"💥 {p1['Player']} - O 0.5 Hits"})
+                                    current_gacha_list.append({"Kategori": f"Bagian 6.{i+1} (SGP)", "Match": m, "Pick": f"💥 {p1['Player']} - O 1.5 TB"})
+                                    current_gacha_list.append({"Kategori": f"Bagian 6.{i+1} (SGP)", "Match": m, "Pick": f"💥 {p1['Player']} - O 0.5 Run"})
+                                    current_gacha_list.append({"Kategori": f"Bagian 6.{i+1} (SGP)", "Match": m, "Pick": f"💥 {p2['Player']} - O 0.5 RBI"})
+
+                    # Lempar hasil kocokan terkini ke dalam ingatan Session State
+                    st.session_state['last_gacha_data'] = current_gacha_list
+                    st.success("🎲 Gacha Berhasil Di-Roll!")
+
+            # --- ENGINE PENYIMPAN DATABASE AUDITOR ---
+            if col_simpan.button("💾 Amankan Batch Slip Ini ke Auditor", type="secondary"):
+                if 'last_gacha_data' in st.session_state and st.session_state['last_gacha_data']:
+                    # Beri penanda jam / unique batch ID agar auditor tahu ini roll keberapa
+                    batch_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    df_to_save = pd.DataFrame(st.session_state['last_gacha_data'])
+                    df_to_save['Saved_At'] = batch_timestamp
+                    
+                    # Simpan akumulatif (Append Mode 'a')
+                    file_exists = os.path.exists('auditor_slips.csv')
+                    df_to_save.to_csv('auditor_slips.csv', mode='a', index=False, header=not file_exists)
+                    st.success(f"✅ Sukses menimbun {len(df_to_save)} leg slip ke dalam file `auditor_slips.csv` pada {batch_timestamp}!")
+                else:
+                    st.warning("⚠️ Roll gacha dulu baru bisa disimpan, Wak!")
+
+            # --- RENDER DISPLAY SLIP DARI MEMORY SESSION STATE ---
+            if 'last_gacha_data' in st.session_state and st.session_state['last_gacha_data']:
+                df_display = pd.DataFrame(st.session_state['last_gacha_data'])
+                
+                # Pengelompokkan visual agar enak dibaca per Kategori
+                for kat in df_display['Kategori'].unique():
+                    st.subheader(f"🔮 {kat}")
+                    sub_df = df_display[df_display['Kategori'] == kat]
+                    for idx, row in enumerate(sub_df.to_dict(orient='records')):
+                        st.write(f"{idx+1}. {row['Pick']} ┃ *{row['Match']}*")
+                    st.divider()
 # ====================================================================
 # TAB 8: THE OVERLAP NETWORK (PLAYER CLUSTERS)
 # ====================================================================
