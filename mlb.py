@@ -659,7 +659,8 @@ with tabs[4]:
                 # Membuat layout kontrol atas
                 col_kiri, col_kanan = st.columns([2, 1])
                 
-                daftar_batch = df_audit['Saved_At'].unique().tolist()
+                # [KODE BARU: ANTI-ERROR & ANTI-NAN]
+                daftar_batch = df_audit['Saved_At'].dropna().astype(str).unique().tolist()
                 daftar_batch.sort(reverse=True) # Menempatkan batch terbaru di posisi teratas dropdown
                 
                 with col_kiri:
