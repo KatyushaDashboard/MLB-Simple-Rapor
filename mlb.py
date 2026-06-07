@@ -992,7 +992,7 @@ with tabs[6]:
                             dipilih = random.sample(avail_m, 2)
                             for m in dipilih:
                                 p = top1_hr[top1_hr['Match'] == m].iloc[0]
-                                current_gacha_list.append({"Kategori": f"Bagian 1.{i+1}", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
+                                current_gacha_list.append({"Kategori": f"Bagian 1.{i+1}", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR","Rank": p['Rank_HR'], "Proj": p['Proj_HR']})
                             avail_m = [m for m in avail_m if m not in dipilih]
 
                     # 2. Bagian 2
@@ -1001,7 +1001,7 @@ with tabs[6]:
                     if len(avail_m) >= 3:
                         for m in random.sample(avail_m, 3):
                             p = top1_3_hr[top1_3_hr['Match'] == m].sample(1).iloc[0]
-                            current_gacha_list.append({"Kategori": "Bagian 2.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
+                            current_gacha_list.append({"Kategori": "Bagian 2.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR","Rank": p['Rank_HR'], "Proj": p['Proj_HR']})
 
                     # 3. Bagian 3
                     top3_5_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(3, 5)]
@@ -1009,7 +1009,7 @@ with tabs[6]:
                     if len(avail_m) >= 5:
                         for m in random.sample(avail_m, 5):
                             p = top3_5_hr[top3_5_hr['Match'] == m].sample(1).iloc[0]
-                            current_gacha_list.append({"Kategori": "Bagian 3.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
+                            current_gacha_list.append({"Kategori": "Bagian 3.1", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR","Rank": p['Rank_HR'], "Proj": p['Proj_HR']})
 
                     # 4. Bagian 4A
                     avail_p_m = df_all_pitchers['Match'].unique().tolist()
@@ -1026,7 +1026,7 @@ with tabs[6]:
                             roster_m = top1_5_hr[top1_5_hr['Match'] == m]
                             if len(roster_m) >= 2:
                                 for _, p in roster_m.sample(2).iterrows():
-                                    current_gacha_list.append({"Kategori": "Bagian 4B (SGP)", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR"})
+                                    current_gacha_list.append({"Kategori": "Bagian 4B (SGP)", "Match": m, "Pick": f"⚾ {p['Player']} ({p['Team']}) - O 0.5 HR","Rank": p['Rank_HR'], "Proj": p['Proj_HR']})
 
                     # 6. Bagian 4C
                     if len(avail_p_m) >= 5:
