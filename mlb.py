@@ -929,7 +929,7 @@ with tabs[6]:
                                 proj_hits = round((hits_l60 / pa_l60_p * expected_pa), 2)
                                 pick_hits = f"O 5.5 Hits Allowed" if proj_hits >= 5.5 else f"U 5.5 Hits Allowed"
                                 
-                                era_full_p = df_sp[era_full_p].iloc[0] if era_col in df_sp.columns else 4.15
+                                era_full_p = df_sp[era_col].iloc[0] if era_col in df_sp.columns else 4.15
                                 xwoba_l60_p = df_sp['xwoba_L60'].iloc[0] if 'xwoba_L60' in df_sp.columns else 0.320
                                 xwoba_full_p = df_sp['xwoba_Full'].iloc[0] if 'xwoba_Full' in df_sp.columns else 0.320
                                 proj_er = round((era_full_p / 27 * 15 * (xwoba_l60_p / xwoba_full_p)), 2)
