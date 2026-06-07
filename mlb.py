@@ -567,7 +567,7 @@ with tabs[2]:
                         df_h_a['Proj_TB'] = ((df_h_a['b_total_bases']/df_h_a['pa_Full']) * (df_h_a['xslg_L30']/df_h_a['xslg_Full']) * df_h_a['AirBall_Mod'] * df_h_a['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_a['Proj_HR%'] = ((df_h_a['home_run']/df_h_a['pa_Full']) * (df_h_a['xwoba_L30']/df_h_a['xwoba_Full']) * (1 + ((df_h_a['flyballs_percent'] - 23) / 100)) * df_h_a['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        df_display_away = df_h_a[df_h_a['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_away = df_h_a[df_h_a['pa_Full'] >= 5][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_away.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_away, use_container_width=True, hide_index=True)
                     else:
@@ -622,7 +622,7 @@ with tabs[2]:
                         df_h_h['Proj_TB'] = ((df_h_h['b_total_bases']/df_h_h['pa_Full']) * (df_h_h['xslg_L30']/df_h_h['xslg_Full']) * df_h_h['AirBall_Mod'] * df_h_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_h['Proj_HR%'] = ((df_h_h['home_run']/df_h_h['pa_Full']) * (df_h_h['xwoba_L30']/df_h_h['xwoba_Full']) * (1 + ((df_h_h['flyballs_percent'] - 23) / 100)) * df_h_h['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        df_display_home = df_h_h[df_h_h['pa_Full'] >= 30][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_home = df_h_h[df_h_h['pa_Full'] >= 5][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_home.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_home, use_container_width=True, hide_index=True)
                     else:
@@ -751,273 +751,296 @@ with tabs[5]:
 # TAB 7: CROSS-GAME PARLAY & MASTER SLIPS (THE ULTIMATE BOMB SQUAD)
 # ====================================================================
 with tabs[6]:
-    st.header("💸 Cross-Game Parlay & Master Slips")
-    st.caption("SOP: Eksekusi tiket raksasa Lintas Pertandingan, Pitcher Matrix, dan Kombinasi Bertingkat Anti-Overlap.")
+        st.header("🎟️ Tab 7: The SGP & Cross-Game Factory")
+        st.markdown("Mesin pencetak slip otomatis berdasarkan **Today Matchup Matrix**.")
 
-    if len(today_schedule) < 2:
-        st.info("Butuh minimal 2 laga berjalan hari ini untuk menyusun tiket Cross-Game.")
-    elif not df_matrix_global.empty:
-
-        # Penampung global untuk mencegah overlap pemain antar-slip VIP
-        taken_vip_players = []
-
-        # ====================================================================
-        # 🎫 SLIP 1: VIP ULXRARE PAIRING (2-LEGS)
-        # ====================================================================
-        st.markdown("### 🎫 SLIP 1: VIP ULXRARE PAIRING (2-LEGS)")
-        st.caption("Poros utama parlay hari ini. 2 Pemain terbaik dengan kombinasi Connection + Diversity tertinggi.")
-
-        survivors_s1 = df_matrix_global[df_matrix_global['Conn_Score'] >= 3].to_dict('records')
-
-        best_pair, max_ulx_score = None, -1
-        if len(survivors_s1) >= 2:
-            for p1, p2 in itertools.combinations(survivors_s1, 2):
-                div_score = 0
-                if p1['Team'] != p2['Team']: div_score += 1
-                if p1.get('Home_Park', '') != p2.get('Home_Park', ''): div_score += 1
-                if p1.get('Archetype', '') != p2.get('Archetype', ''): div_score += 2
-                if (p1.get('PF_Multiplier', 1.0) > 1.0) != (p2.get('PF_Multiplier', 1.0) > 1.0): div_score += 1
-
-                ulx_score = (p1['Conn_Score'] + p2['Conn_Score']) * div_score
-                if ulx_score > max_ulx_score and div_score >= 3:
-                    max_ulx_score = ulx_score
-                    best_pair = (p1, p2, div_score)
-
-            if best_pair:
-                leg1, leg2, d_score = best_pair
-                taken_vip_players.extend([leg1['Name'], leg2['Name']]) # Cekal pemain ini
-
-                st.success(f"🔥 **VIP 2-LEGS FOUND** (Score: {max_ulx_score} | Diversity: {d_score}/5)")
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.error(f"**LEG 1: {leg1['Name']}** ({leg1['Team']}) ➔ *{leg1['Archetype']}*")
-                with c2:
-                    st.info(f"**LEG 2: {leg2['Name']}** ({leg2['Team']}) ➔ *{leg2['Archetype']}*")
-            else: st.caption("Tidak ada kombinasi 2-Leg yang memenuhi syarat aman.")
-        else: st.caption("Kandidat Hitter terlalu sedikit.")
-
-        st.divider()
-
-        # ====================================================================
-        # 🎫 SLIP 1B: LOTTO ULXRARE PAIRING (3-LEGS - NO OVERLAP)
-        # ====================================================================
-        st.markdown("### 🎫 SLIP 1B: LOTTO ULXRARE PAIRING (3-LEGS)")
-        st.caption("Tiket sekunder berisiko menengah. Menggunakan pemain alternatif yang bersih dari Slip 1.")
-
-        # Filter: Buang pemain yang sudah diambil di Slip 1
-        survivors_s1b = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].head(20).to_dict('records')
-
-        best_trio, max_ulx_s1b = None, -1
-        if len(survivors_s1b) >= 3:
-            for p1, p2, p3 in itertools.combinations(survivors_s1b, 3):
-                # Hitung akumulasi keberagaman berpasangan (Pairwise Diversity)
-                div_score = 0
-                for combo in itertools.combinations([p1, p2, p3], 2):
-                    if combo[0]['Team'] != combo[1]['Team']: div_score += 1
-                    if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
-                    if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
-
-                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score']
-                ulx_score = total_conn * div_score
-
-                if ulx_score > max_ulx_s1b:
-                    max_ulx_s1b = ulx_score
-                    best_trio = (p1, p2, p3, div_score)
-
-            if best_trio:
-                l1, l2, l3, d_score_s1b = best_trio
-                taken_vip_players.extend([l1['Name'], l2['Name'], l3['Name']]) # Tambah ke daftar cekal
-
-                st.success(f"☄️ **LOTTO 3-LEGS FOUND** (Score: {max_ulx_s1b} | Pairwise Diversity Index: {d_score_s1b})")
-                c1, c2, c3 = st.columns(3)
-                with c1: st.error(f"**LEG 1: {l1['Name']}** ({l1['Team']})")
-                with c2: st.info(f"**LEG 2: {l2['Name']}** ({l2['Team']})")
-                with c3: st.warning(f"**LEG 3: {l3['Name']}** ({l3['Team']})")
-            else: st.caption("Tidak ada kombinasi 3-Leg yang ideal.")
-        else: st.caption("Sisa pemain tidak cukup untuk diracik menjadi 3-Leg Lotto.")
-
-        st.divider()
-
-        # ====================================================================
-        # 🎫 SLIP 1C: MEGA LOTTO ULTRA PROPS (4-LEGS - NO OVERLAP)
-        # ====================================================================
-        st.markdown("### 💣 SLIP 1C: MEGA LOTTO ULXRARE (4-LEGS)")
-        st.caption("Tiket High-Risk High-Reward (Boomer Slip). Pemain murni diambil dari sisa database yang belum terjamah.")
-        
-        # Filter: Buang semua pemain yang sudah dipakai di Slip 1 dan Slip 1B
-        survivors_s1c = df_matrix_global[(df_matrix_global['Conn_Score'] >= 2) & (~df_matrix_global['Name'].isin(taken_vip_players))].head(20).to_dict('records')
-        
-        best_quad, max_ulx_s1c = None, -1
-        if len(survivors_s1c) >= 4:
-            for p1, p2, p3, p4 in itertools.combinations(survivors_s1c, 4):
-                div_score = 0
-                for combo in itertools.combinations([p1, p2, p3, p4], 2):
-                    if combo[0]['Team'] != combo[1]['Team']: div_score += 1
-                    if combo[0].get('Home_Park', '') != combo[1].get('Home_Park', ''): div_score += 1
-                    if combo[0].get('Archetype', '') != combo[1].get('Archetype', ''): div_score += 1
+        # 1. LOAD BAHAN BAKU
+        data_siap_t7 = True
+        try:
+            import json
+            import numpy as np
+            import random
+            
+            with open('today_schedule.json', 'r') as f:
+                jadwal_hari_ini = json.load(f)
                 
-                total_conn = p1['Conn_Score'] + p2['Conn_Score'] + p3['Conn_Score'] + p4['Conn_Score']
-                ulx_score = total_conn * div_score
-                
-                if ulx_score > max_ulx_s1c:
-                    max_ulx_s1c = ulx_score
-                    best_quad = (p1, p2, p3, p4, div_score)
+            df_h_lhp = pd.read_csv("hitter_vs_lhp.csv")
+            df_h_rhp = pd.read_csv("hitter_vs_rhp.csv")
+            df_p_lhb = pd.read_csv("pitcher_vs_lhb.csv")
+            df_p_rhb = pd.read_csv("pitcher_vs_rhb.csv")
+        except:
+            st.error("⚠️ Gagal memuat data. Pastikan bot updater sudah jalan.")
+            data_siap_t7 = False
+
+        if data_siap_t7 and jadwal_hari_ini:
+            if st.button("🎲 Generate Slip Portofolio Hari Ini", type="primary"):
+                with st.spinner("Mengekstrak data Matchup seluruh liga..."):
+                    nama_ke_singkatan = {
+                        "Arizona Diamondbacks": "ARI", "Atlanta Braves": "ATL", "Baltimore Orioles": "BAL",
+                        "Boston Red Sox": "BOS", "Chicago Cubs": "CHC", "Chicago White Sox": "CWS",
+                        "Cincinnati Reds": "CIN", "Cleveland Guardians": "CLE", "Colorado Rockies": "COL",
+                        "Detroit Tigers": "DET", "Houston Astros": "HOU", "Kansas City Royals": "KC",
+                        "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
+                        "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
+                        "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
+                        "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
+                        "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB",
+                        "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"
+                    }
+
+                    def deteksi_tangan_sp(nama_pitcher):
+                        if nama_pitcher in df_p_lhb['player_name_std'].values: return "LHP (Kidal)"
+                        elif nama_pitcher in df_p_rhb['player_name_std'].values: return "RHP (Kanan)"
+                        return "RHP (Kanan)"
+
+                    semua_hitter = []
+                    semua_pitcher = []
+                    match_list = []
+
+                    # --- ENGINE PENGUMPUL DATA MATCHUP SELURUH LIGA ---
+                    for g in jadwal_hari_ini:
+                        match_name = f"{g['away_team']} @ {g['home_team']}"
+                        match_list.append(match_name)
+                        
+                        away_team, home_team = g['away_team'], g['home_team']
+                        away_abbr = nama_ke_singkatan.get(away_team, away_team)
+                        home_abbr = nama_ke_singkatan.get(home_team, home_team)
+                        away_sp, home_sp = g['away_pitcher'], g['home_pitcher']
+                        
+                        away_sp_hand = deteksi_tangan_sp(away_sp)
+                        home_sp_hand = deteksi_tangan_sp(home_sp)
+
+                        # Evaluasi Pitcher
+                        expected_pa = 22.5
+                        era_col = 'p_era_Full' if 'p_era_Full' in df_p_lhb.columns else 'p_era'
+                        
+                        for sp, tim_lawan, sp_hand, sp_data_source in [(away_sp, home_team, away_sp_hand, df_p_lhb if away_sp_hand == "LHP (Kidal)" else df_p_rhb), 
+                                                                       (home_sp, away_team, home_sp_hand, df_p_lhb if home_sp_hand == "LHP (Kidal)" else df_p_rhb)]:
+                            df_sp = sp_data_source[sp_data_source['player_name_std'] == sp].copy()
+                            if not df_sp.empty:
+                                k_l60 = df_sp['k_percent_L60'].iloc[0] if 'k_percent_L60' in df_sp.columns else 20.0
+                                whiff = df_sp['swing_miss_percent'].iloc[0] if 'swing_miss_percent' in df_sp.columns else 20.0
+                                proj_so = round((((k_l60 / 100) + (whiff / 100)) / 2 * expected_pa), 2)
+                                pick_so = f"O 5.5 SO" if proj_so >= 5.5 else f"U 4.5 SO"
+                                
+                                hits_l60 = df_sp['hits'].iloc[0] if 'hits' in df_sp.columns else 5.0
+                                pa_l60_p = df_sp['pa_L60'].iloc[0] if 'pa_L60' in df_sp.columns else 22.5
+                                proj_hits = round((hits_l60 / pa_l60_p * expected_pa), 2)
+                                pick_hits = f"O 5.5 Hits Allowed" if proj_hits >= 5.5 else f"U 5.5 Hits Allowed"
+                                
+                                era_full_p = df_sp[era_col].iloc[0] if era_col in df_sp.columns else 4.15
+                                xwoba_l60_p = df_sp['xwoba_L60'].iloc[0] if 'xwoba_L60' in df_sp.columns else 0.320
+                                xwoba_full_p = df_sp['xwoba_Full'].iloc[0] if 'xwoba_Full' in df_sp.columns else 0.320
+                                proj_er = round((era_full_p / 27 * 15 * (xwoba_l60_p / xwoba_full_p)), 2)
+                                pick_er = f"O 2.5 ER" if proj_er >= 2.5 else f"U 2.5 ER"
+
+                                semua_pitcher.append({
+                                    'Match': match_name, 'Pitcher': sp, 
+                                    'Proj_SO': proj_so, 'Pick_SO': pick_so,
+                                    'Proj_Hits': proj_hits, 'Pick_Hits': pick_hits,
+                                    'Proj_ER': proj_er, 'Pick_ER': pick_er
+                                })
+
+                        # Evaluasi Hitter
+                        expected_pa_h = 4.25
+                        for tim_abbr, sp_lawan_hand in [(away_abbr, home_sp_hand), (home_abbr, away_sp_hand)]:
+                            df_h_source = df_h_lhp if sp_lawan_hand == "LHP (Kidal)" else df_h_rhp
+                            team_col = 'Team_Full' if 'Team_Full' in df_h_source.columns else ('Team' if 'Team' in df_h_source.columns else None)
+                            
+                            if team_col:
+                                df_h = df_h_source[df_h_source[team_col] == tim_abbr].copy()
+                                if not df_h.empty:
+                                    hh_col = 'hard_hit_percent_Full' if 'hard_hit_percent_Full' in df_h.columns else 'hard_hit_percent'
+                                    rbi_col = 'b_rbi_Full' if 'b_rbi_Full' in df_h.columns else ('b_rbi' if 'b_rbi' in df_h.columns else None)
+                                    run_col = 'r_run_Full' if 'r_run_Full' in df_h.columns else ('r_run' if 'r_run' in df_h.columns else None)
+
+                                    df_h['SweetSpot_Mod'] = 1 + ((df_h['sweet_spot_percent'] - 33) / 100)
+                                    df_h['AirBall_Mod'] = 1 + (((df_h['flyballs_percent'] + df_h['linedrives_percent']) - 50) / 100)
+                                    df_h['Power_Surge'] = np.where(df_h['hardhit_percent'] > df_h[hh_col], 1.15, 1.0)
+                                    
+                                    df_h['Proj_Hit'] = ((df_h['hit']/df_h['pa_Full']) * (df_h['xba_L30']/df_h['xba_Full']) * df_h['SweetSpot_Mod'] * expected_pa_h).fillna(0).round(2)
+                                    df_h['Proj_TB'] = ((df_h['b_total_bases']/df_h['pa_Full']) * (df_h['xslg_L30']/df_h['xslg_Full']) * df_h['AirBall_Mod'] * df_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
+                                    df_h['Proj_HR%'] = ((df_h['home_run']/df_h['pa_Full']) * (df_h['xwoba_L30']/df_h['xwoba_Full']) * (1 + ((df_h['flyballs_percent'] - 23) / 100)) * df_h['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
+                                    
+                                    if rbi_col: df_h['Proj_RBI'] = ((df_h[rbi_col]/df_h['pa_Full']) * expected_pa_h).fillna(0).round(2)
+                                    else: df_h['Proj_RBI'] = (df_h['Proj_TB'] * 0.15).round(2)
+                                    
+                                    if run_col: df_h['Proj_Run'] = ((df_h[run_col]/df_h['pa_Full']) * expected_pa_h).fillna(0).round(2)
+                                    else: df_h['Proj_Run'] = (df_h['Proj_Hit'] * 0.4).round(2)
+
+                                    df_h_valid = df_h[df_h['pa_Full'] >= 20].sort_values(by='Proj_HR%', ascending=False).reset_index()
+                                    
+                                    for idx, row in df_h_valid.iterrows():
+                                        semua_hitter.append({
+                                            'Match': match_name, 'Team': tim_abbr, 'Player': row['player_name_std'],
+                                            'Rank_HR': idx + 1, 'Proj_HR': row['Proj_HR%'], 'Proj_Hit': row['Proj_Hit'],
+                                            'Proj_TB': row['Proj_TB'], 'Proj_RBI': row['Proj_RBI'], 'Proj_Run': row['Proj_Run']
+                                        })
+
+                    df_all_hitters = pd.DataFrame(semua_hitter)
+                    df_all_pitchers = pd.DataFrame(semua_pitcher)
+
+                    def tampilkan_slip(judul, kaki_slip):
+                        st.markdown(f"**{judul}**")
+                        for i, leg in enumerate(kaki_slip):
+                            st.write(f"{i+1}. {leg}")
+                        st.divider()
+
+                    # ==============================================================
+                    # BAGIAN 1: 2 Slip (Masing-masing 2 Leg dari Top 1 HR Beda Match)
+                    # ==============================================================
+                    st.subheader("🔥 Bagian 1: The Elite Sniper (Top 1 HR)")
+                    top1_hr = df_all_hitters[df_all_hitters['Rank_HR'] == 1].sort_values(by='Proj_HR', ascending=False)
+                    available_matches = top1_hr['Match'].unique().tolist()
                     
-            if best_quad:
-                q1, q2, q3, q4, d_score_s1c = best_quad
-                
-                st.success(f"🚀 **MEGA LOTTO 4-LEGS DEPLOYED** (Score: {max_ulx_s1c} | Pairwise Diversity Index: {d_score_s1c})")
-                c1, c2, c3, c4 = st.columns(4)
-                with c1: st.error(f"**LEG 1: {q1['Name']}** ({q1['Team']})")
-                with c2: st.info(f"**LEG 2: {q2['Name']}** ({q2['Team']})")
-                with c3: st.warning(f"**LEG 3: {q3['Name']}** ({q3['Team']})")
-                with c4: st.success(f"**LEG 4: {q4['Name']}** ({q4['Team']})")
-            else: st.caption("Tidak ada kombinasi 4-Leg yang ideal.")
-        else: st.caption("Sisa pool data terlalu kritis, tidak aman dipaksakan bikin 4-Leg.")
+                    for i in range(2):
+                        if len(available_matches) >= 2:
+                            dipilih = random.sample(available_matches, 2)
+                            slip = []
+                            for m in dipilih:
+                                p = top1_hr[top1_hr['Match'] == m].iloc[0]
+                                slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Proj: {p['Proj_HR']}%) ┃ {m}")
+                            tampilkan_slip(f"Slip 1.{i+1} (2-Leg Cross Game)", slip)
+                            available_matches = [m for m in available_matches if m not in dipilih]
 
-        st.divider()
+                    # ==============================================================
+                    # BAGIAN 2: 1 Slip (3 Leg Random Top 1-3 HR Beda Match)
+                    # ==============================================================
+                    st.subheader("🎯 Bagian 2: The Triangle Threat (Top 1-3 HR)")
+                    top1_3_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(1, 3)]
+                    avail_m = top1_3_hr['Match'].unique().tolist()
+                    
+                    if len(avail_m) >= 3:
+                        dipilih = random.sample(avail_m, 3)
+                        slip = []
+                        for m in dipilih:
+                            roster_m = top1_3_hr[top1_3_hr['Match'] == m]
+                            p = roster_m.sample(1).iloc[0]
+                            slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Rank {p['Rank_HR']}) ┃ {m}")
+                        tampilkan_slip("Slip 2.1 (3-Leg Variasi Elit)", slip)
 
-        # ====================================================================
-        # 2. SLIP KEMBALI: MONSTER SGPx HR (2-3 Legs Lintas Match)
-        # ====================================================================
-        st.markdown("### 💣 SLIP 2: MONSTER SGPx HR (Lintas Match)")
-        st.caption("Mengawinkan kandidat HR terbaik dari dua laga pertama di jadwal.")
+                    # ==============================================================
+                    # BAGIAN 3: 1 Slip (5 Leg Random Top 3-5 HR Beda Match)
+                    # ==============================================================
+                    st.subheader("💣 Bagian 3: The Pitcher's Nightmare (Top 3-5 HR)")
+                    top3_5_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(3, 5)]
+                    avail_m = top3_5_hr['Match'].unique().tolist()
+                    
+                    if len(avail_m) >= 5:
+                        dipilih = random.sample(avail_m, 5)
+                        slip = []
+                        for m in dipilih:
+                            roster_m = top3_5_hr[top3_5_hr['Match'] == m]
+                            p = roster_m.sample(1).iloc[0]
+                            slip.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs (Rank {p['Rank_HR']}) ┃ {m}")
+                        tampilkan_slip("Slip 3.1 (5-Leg Lotto / Kuda Hitam)", slip)
 
-        match1 = today_schedule[0]
-        match2 = today_schedule[1]
+                    # ==============================================================
+                    # BAGIAN 4: 3 Slip SGPx (Pitcher SO, Upgraded 4B HR, & 4C Lotto SP)
+                    # ==============================================================
+                    st.subheader("🌪️ Bagian 4: The SGPx Monsters")
+                    
+                    # 4A: 6 SP dari 3 Match
+                    avail_p_m = df_all_pitchers['Match'].unique().tolist()
+                    if len(avail_p_m) >= 3:
+                        dipilih_p = random.sample(avail_p_m, 3)
+                        slip_p = []
+                        for m in dipilih_p:
+                            sps = df_all_pitchers[df_all_pitchers['Match'] == m]
+                            for _, p in sps.iterrows():
+                                slip_p.append(f"🎯 {p['Pitcher']} - {p['Pick_SO']} (Proj: {p['Proj_SO']}) ┃ {m}")
+                        tampilkan_slip("Slip 4A (6-Leg Starting Pitchers O/U K's)", slip_p)
 
-        # Tarik dari matrix yang udah ada Conn_Score
-        top_m1 = df_matrix_global[df_matrix_global['Team'].isin([match1['away_team'], match1['home_team']])].sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(2)
-        top_m2 = df_matrix_global[df_matrix_global['Team'].isin([match2['away_team'], match2['home_team']])].sort_values(by=['Conn_Score', 'Adj_Barrel'], ascending=[False, False]).head(2)
+                    # [UPDATED] 4B: 3-Game SGPx Home Runs (1 Match isi 2 Leg Random Top 5, 2 Match isi 1 Leg)
+                    top1_5_hr = df_all_hitters[df_all_hitters['Rank_HR'].between(1, 5)]
+                    avail_m = top1_5_hr['Match'].unique().tolist()
+                    
+                    if len(avail_m) >= 3:
+                        dipilih_hr = random.sample(avail_m, 3)
+                        slip_4b = []
+                        
+                        # Match 1: Isi 2 Leg SGP (Random Top 5)
+                        roster_m1 = top1_5_hr[top1_5_hr['Match'] == dipilih_hr[0]]
+                        if len(roster_m1) >= 2:
+                            p_duo = roster_m1.sample(2)
+                            for _, p in p_duo.iterrows():
+                                slip_4b.append(f"⚾ [SGP DUPLEX] {p['Player']} ({p['Team']}) - O 0.5 Home Runs ┃ {dipilih_hr[0]}")
+                        
+                        # Match 2 & 3: Masing-masing isi 1 Leg
+                        for m in dipilih_hr[1:]:
+                            p = top1_5_hr[top1_5_hr['Match'] == m].sample(1).iloc[0]
+                            slip_4b.append(f"⚾ {p['Player']} ({p['Team']}) - O 0.5 Home Runs ┃ {m}")
+                        tampilkan_slip("Slip 4B (3-Game SGPx Home Runs - Total 4-Leg)", slip_4b)
 
-        col_hr1, col_hr2 = st.columns(2)
-        with col_hr1:
-            st.error(f"🔥 **MATCH 1:** {match1['away_team']} vs {match1['home_team']}")
-            if not top_m1.empty:
-                for i, (_, row) in enumerate(top_m1.iterrows(), 1):
-                    p_name = row.get('Name', 'Top Hitter') 
-                    st.markdown(f"**{i}. {p_name}** ({row['Team']})")
-                    st.write(f"↳ *To Hit HR (Conn: {row.get('Conn_Score',0)} | Barrel: {row.get('Adj_Barrel',0):.1f}%)*")
-            else: st.write("Data hitter tidak tersedia.")
+                    # [NEW] 4C: Lotto Pitcher SGPx (5 Match, 1 Match SGP 4-Leg dari 2 SP, 4 Match isi 1 Leg)
+                    if len(avail_p_m) >= 5:
+                        dipilih_4c = random.sample(avail_p_m, 5)
+                        slip_4c = []
+                        
+                        # Match 1: Kombinasi Brutal 4-Leg SGP dari 2 SP Saling Berhadapan
+                        sps_m1 = df_all_pitchers[df_all_pitchers['Match'] == dipilih_4c[0]]
+                        if len(sps_m1) >= 2:
+                            sp1 = sps_m1.iloc[0]
+                            sp2 = sps_m1.iloc[1]
+                            slip_4c.append(f"🎯 [DUAL SP SGP] {sp1['Pitcher']} - {sp1['Pick_SO']} ┃ {dipilih_4c[0]}")
+                            slip_4c.append(f"🎯 [DUAL SP SGP] {sp1['Pitcher']} - {sp1['Pick_ER']} ┃ {dipilih_4c[0]}")
+                            slip_4c.append(f"🎯 [DUAL SP SGP] {sp2['Pitcher']} - {sp2['Pick_SO']} ┃ {dipilih_4c[0]}")
+                            slip_4c.append(f"🎯 [DUAL SP SGP] {sp2['Pitcher']} - {sp2['Pick_Hits']} ┃ {dipilih_4c[0]}")
+                        
+                        # Match 2 s/d 5: Ambil 1 Leg Acak Props Pitcher
+                        for m in dipilih_4c[1:]:
+                            p = df_all_pitchers[df_all_pitchers['Match'] == m].sample(1).iloc[0]
+                            prop_pilih = random.choice([('Pick_SO', 'SO'), ('Pick_Hits', 'Hits Allw'), ('Pick_ER', 'ER')])
+                            slip_4c.append(f"🎯 {p['Pitcher']} - {p[prop_pilih[0]]} ┃ {m}")
+                            
+                        tampilkan_slip("Slip 4C (5-Game SGPx Lotto Pitcher - Total 8-Leg Matrix)", slip_4c)
 
-        with col_hr2:
-            st.info(f"🔥 **MATCH 2:** {match2['away_team']} vs {match2['home_team']}")
-            if not top_m2.empty:
-                for i, (_, row) in enumerate(top_m2.iterrows(), 1):
-                    p_name = row.get('Name', 'Top Hitter')
-                    st.markdown(f"**{i}. {p_name}** ({row['Team']})")
-                    st.write(f"↳ *To Hit HR (Conn: {row.get('Conn_Score',0)} | Barrel: {row.get('Adj_Barrel',0):.1f}%)*")
-            else: st.write("Data hitter tidak tersedia.")
+                    # ==============================================================
+                    # BAGIAN 5: 2 Slip (5 Leg Random Props dari Top 5 Hit/TB/RBI/Run)
+                    # ==============================================================
+                    st.subheader("🧩 Bagian 5: The Action Props (Hit / TB / RBI / Run)")
+                    props_pool = ["O 0.5 Hits", "O 1.5 Total Bases", "O 0.5 RBI", "O 0.5 Runs"]
+                    
+                    for i in range(2):
+                        avail_m = df_all_hitters['Match'].unique().tolist()
+                        if len(avail_m) >= 5:
+                            dipilih = random.sample(avail_m, 5)
+                            slip = []
+                            for m in dipilih:
+                                roster_m = df_all_hitters[df_all_hitters['Match'] == m]
+                                p = roster_m.sort_values(by='Proj_TB', ascending=False).head(5).sample(1).iloc[0]
+                                prop_pilihan = random.choice(props_pool)
+                                slip.append(f"🏏 {p['Player']} ({p['Team']}) - {prop_pilihan} ┃ {m}")
+                            tampilkan_slip(f"Slip 5.{i+1} (5-Leg Mixed Props)", slip)
 
-        st.divider()
-
-        # ====================================================================
-        # 3. FITUR BARU: THE PITCHER MATRIX (SLIP 3 - L45 DAYS OPTIMIZED)
-        # ====================================================================
-        st.markdown("### ⚾ SLIP 3: THE PITCHER MATRIX PARLAY (45-DAYS FORM)")
-        st.caption("Sistem klaster otomatis pelempar berdasarkan tren kalender LAST 45 DAYS, Park Factor, dan Proyeksi Musuh.")
-
-        assassins, workhorses, gas_cans = [], [], []
-
-        for game in today_schedule:
-            home_t = game['home_team']
-            away_t = game['away_team']
-            park_mult = PARK_FACTORS.get(home_t, 1.00)
-            
-            p_away = game.get('away_pitcher', 'TBD')
-            p_home = game.get('home_pitcher', 'TBD')
-
-            # 🔥 TRACKING FORM BERDASARKAN OBJEK .get('l45')
-            p_data_away = l30_pitchers_data.get(p_away, {}) if isinstance(l30_pitchers_data, dict) else {}
-            p_data_home = l30_pitchers_data.get(p_home, {}) if isinstance(l30_pitchers_data, dict) else {}
-            
-            # Ganti pancingan kuncinya ke 'l45'
-            era_away = p_data_away.get('l45', {}).get('ERA', 4.15)
-            starts_away = p_data_away.get('l45', {}).get('Starts', 0)
-            
-            era_home = p_data_home.get('l45', {}).get('ERA', 4.15)
-            starts_home = p_data_home.get('l45', {}).get('Starts', 0)
-            
-            proj_runs_away = team_totals_data.get(away_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
-            proj_runs_home = team_totals_data.get(home_t, 4.0) if isinstance(team_totals_data, dict) else 4.0
-            
-            # Evaluasi Form Terkini Away Pitcher
-            if p_away != "TBD":
-                label_a = f"{p_away} (ERA: {era_away:.2f} | L45: {starts_away}G)"
-                
-                # UPGRADE: Toleransi Proyeksi dinaikkan ke 4.3, Park Factor dilonggarkan ke 1.05
-                if era_away < 3.60 and park_mult <= 1.05 and proj_runs_home <= 4.3 and starts_away >= 3:
-                    assassins.append((label_a, away_t, "OVER Strikeouts (Form: Hot 🔥)"))
-                elif era_away <= 4.30 and starts_away >= 3:
-                    workhorses.append((label_a, away_t, "OVER Outs Recorded"))
-                elif (era_away > 4.50 or starts_away < 3) and proj_runs_home >= 4.2:
-                    # UPGRADE: Park Factor dihapus saringannya. Pitcher busuk ketemu musuh jago = Auto Fade.
-                    reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_away >= 3 else "FADE (Unstable/Sample Kurang)"
-                    gas_cans.append((label_a, away_t, reason))
-
-            # Evaluasi Form Terkini Home Pitcher
-            if p_home != "TBD":
-                label_h = f"{p_home} (ERA: {era_home:.2f} | L45: {starts_home}G)"
-                
-                if era_home < 3.60 and park_mult <= 1.05 and proj_runs_away <= 4.3 and starts_home >= 3:
-                    assassins.append((label_h, home_t, "OVER Strikeouts (Form: Hot 🔥)"))
-                elif era_home <= 4.30 and starts_home >= 3:
-                    workhorses.append((label_h, home_t, "OVER Outs Recorded"))
-                elif (era_home > 4.50 or starts_home < 3) and proj_runs_away >= 4.2:
-                    reason = "OVER Hits Allowed (Form: Cold ❄️)" if starts_home >= 3 else "FADE (Unstable/Sample Kurang)"
-                    gas_cans.append((label_h, home_t, reason))
-
-        col_p1, col_p2, col_p3 = st.columns(3)
-        with col_p1:
-            st.success("👑 **THE ASSASSINS (Form 45d Hot)**")
-            for p, t, rec in assassins[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
-            if not assassins: st.caption("Kosong.")
-        with col_p2:
-            st.info("🛡️ **WORKHORSES (Innings Eater)**")
-            for p, t, rec in workhorses[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
-            if not workhorses: st.caption("Kosong.")
-        with col_p3:
-            st.error("🩸 **GAS CANS (Fade Target 45d)**")
-            for p, t, rec in gas_cans[:3]: st.write(f"- **{p}** ({t})\n  ↳ *{rec}*")
-            if not gas_cans: st.caption("Kosong.")
-
-        st.divider()
-
-        # ====================================================================
-        # 4. THE BOMB SQUAD (SLIP 4, 5, 6)
-        # ====================================================================
-        st.markdown("### 🚀 THE BOMB SQUAD (CROSS-GAME HR PARLAY)")
-
-        col_b1, col_b2 = st.columns(2)
-        taken_players = []
-        with col_b1:
-            st.error("🎯 **SLIP 4: SNIPER HR (2-3 Legs)**")
-            # Ambil 3 Alpha tertinggi
-            sniper_picks = df_matrix_global.head(3)
-            for _, row in sniper_picks.iterrows():
-                p_name = row.get('Name', 'Unknown')
-                taken_players.append(p_name)
-                st.markdown(f"🔥 **{p_name}** ({row['Team']})")
-                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
-
-        with col_b2:
-            st.info("☄️ **SLIP 5: LOTTO / LONGSHOT HR (5 Legs)**")
-            # Ambil klaster Longshot
-            lotto_pool = df_matrix_global[df_matrix_global['Archetype'] == "☄️ LONGSHOT (Boom/Bust)"]
-            lotto_picks = lotto_pool.head(5) if not lotto_pool.empty else df_matrix_global.iloc[3:8]
-            for _, row in lotto_picks.iterrows():
-                p_name = row.get('Name', 'Unknown')
-                taken_players.append(p_name)
-                st.markdown(f"☄️ **{p_name}** ({row['Team']})")
-                st.write(f"↳ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
-
-        st.divider()
-        st.markdown("### 🔥 SLIP 6: HOT HAND HR (3-5 LEGS)")
-        hot_hand_pool = df_matrix_global[~df_matrix_global['Name'].isin(taken_players)]
-        if not hot_hand_pool.empty:
-            hot_hand_candidates = hot_hand_pool.sort_values(by=['Adj_xwOBA', 'Adj_Barrel'], ascending=[False, False]).head(4)
-            for _, row in hot_hand_candidates.iterrows():
-                st.markdown(f"⚡ **{row.get('Name', 'Unknown')}** ({row['Team']}) ➔ *Adj Barrel: {row.get('Adj_Barrel',0):.1f}% | Conn: {row.get('Conn_Score',0)}*")
+                    # ==============================================================
+                    # [NEW] BAGIAN 6: 2 Slip SGPx Megalodon (4 Match x 4-Leg SGP = 16-Leg)
+                    # ==============================================================
+                    st.subheader("🎰 Bagian 6: The 16-Leg Megalodon Lotto (Hit/TB/Run/RBI)")
+                    st.caption("Tiket jackpot murni. SGP 4-Leg dengan korelasi positif (Random dari Top 5 Hitter).")
+                    
+                    for i in range(2):
+                        avail_m = df_all_hitters['Match'].unique().tolist()
+                        if len(avail_m) >= 4:
+                            dipilih_6 = random.sample(avail_m, 4)
+                            slip_6 = []
+                            
+                            for m in dipilih_6:
+                                roster_m = df_all_hitters[df_all_hitters['Match'] == m].sort_values(by='Proj_TB', ascending=False)
+                                
+                                # [FIX] Ambil RANDOM 2 Hitter dari Top 5 terbaik di match itu
+                                if len(roster_m) >= 2:
+                                    # Ambil maksimal 5 teratas, lalu kocok dan pilih 2
+                                    p_duo = roster_m.head(5).sample(2) 
+                                    p1 = p_duo.iloc[0]
+                                    p2 = p_duo.iloc[1]
+                                    
+                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 0.5 Hits (Proj: {p1['Proj_Hit']}) ┃ {m}")
+                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 1.5 Total Bases (Proj: {p1['Proj_TB']}) ┃ {m}")
+                                    slip_6.append(f"💥 [SGP-4L] {p1['Player']} ({p1['Team']}) - O 0.5 Runs (Proj: {p1['Proj_Run']}) ┃ {m}")
+                                    slip_6.append(f"💥 [SGP-4L] {p2['Player']} ({p2['Team']}) - O 0.5 RBI (Proj: {p2['Proj_RBI']}) ┃ {m}")
+                                    
+                            tampilkan_slip(f"Slip 6.{i+1} (16-Leg Megalodon SGPx Lotto)", slip_6)
 
 # ====================================================================
 # TAB 8: THE OVERLAP NETWORK (PLAYER CLUSTERS)
