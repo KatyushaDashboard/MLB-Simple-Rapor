@@ -777,6 +777,8 @@ with tabs[4]:
                                                     p_outs = p_stats.get('outs', 0)
                                                     real_stats_str = f"📊 Real Stats: SO: {p_so} | Hit Allowed: {p_ha} | ER: {p_er} | Outs: {p_outs}"
                                                 else:
+                                                    h_pa = b_stats.get('plateAppearances', 0) # Tarik data PA
+                                                    h_ab = b_stats.get('atBats', 0)           # Tarik data AB
                                                     h_tb = b_stats.get('totalBases', 0)
                                                     h_hit = b_stats.get('hits', 0)
                                                     h_run = b_stats.get('runs', 0)
@@ -784,7 +786,7 @@ with tabs[4]:
                                                     h_hr = b_stats.get('homeRuns', 0)
                                                     h_bb = b_stats.get('baseOnBalls', 0) # Tarik data Walk
                                                     h_so = b_stats.get('strikeOuts', 0)  # Tarik data Strikeout Hitter
-                                                    real_stats_str = f"📊 Real Stats: TB: {h_tb} | Hit: {h_hit} | Run: {h_run} | RBI: {h_rbi} | HR: {h_hr} | BB: {h_bb} | SO: {h_so}"
+                                                    real_stats_str = f"📊 Real Stats: PA: {h_pa} | AB: {h_ab} | TB: {h_tb} | Hit: {h_hit} | Run: {h_run} | RBI: {h_rbi} | HR: {h_hr} | BB: {h_bb} | SO: {h_so}"
                                                 
                                                 break
                                                 
