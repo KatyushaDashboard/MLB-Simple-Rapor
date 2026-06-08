@@ -651,15 +651,18 @@ with tabs[4]:
                 df_audit = df_audit.merge(df_graded, on=['Saved_At', 'Category', 'Leg_Bet'], how='left')
             else:
                 df_audit['Status'] = "⏳ Pending"
+                df_audit['Real_Stats'] = ""
                 
-            # Mengatasi nilai NaN pasca-merge otomatis dikembalikan ke Pending
+            # Mengatasi nilai NaN pasca-merge otomatis dikembalikan ke default
             df_audit['Status'] = df_audit['Status'].fillna("⏳ Pending")
+            if 'Real_Stats' not in df_audit.columns:
+                df_audit['Real_Stats'] = ""
+            df_audit['Real_Stats'] = df_audit['Real_Stats'].fillna("")
             
             if not df_audit.empty:
                 # Membuat layout kontrol atas
                 col_kiri, col_kanan = st.columns([2, 1])
                 
-                # [KODE BARU: ANTI-ERROR & ANTI-NAN]
                 daftar_batch = df_audit['Saved_At'].dropna().astype(str).unique().tolist()
                 daftar_batch.sort(reverse=True) # Menempatkan batch terbaru di posisi teratas dropdown
                 
@@ -705,14 +708,12 @@ with tabs[4]:
                             
                             for leg in legs:
                                 status_akhir = "⏳ Pending"
+                                real_stats_str = "" # Default teks statistik tambahan
                                 
                                 try:
                                     # 1. PARSER STRING ENGINE (Pembersih Ornamen Teks)
-                                    # Mengambil bagian kiri sebelum pembatas ' - '
                                     sisi_kiri = leg.split(' - ')[0]
-                                    # Membersihkan segala bentuk Emoji dan Tag Braket seperti [SGP-4L], [SGP 2-LEG]
                                     nama_pemain = re.sub(r'⚾|🎯|💥|🏏|\[.*?\]', '', sisi_kiri).strip()
-                                    # Memotong inisial tim di ekor nama, misal "Aaron Judge (NYY)" -> "Aaron Judge"
                                     if '(' in nama_pemain:
                                         nama_pemain = nama_pemain.split('(')[0].strip()
                                         
@@ -734,48 +735,59 @@ with tabs[4]:
                                     game_id = None
                                     status_game = ""
                                     for game in jadwal_api:
-                                        # Mencocokkan substring nama tim pendek (Abbr) ke dalam string label match
                                         if game['away_name'].split()[-1] in match_str or game['home_name'].split()[-1] in match_str:
                                             game_id = game['game_id']
                                             status_game = game['status']
                                             break
                                             
-                                    # 5. EKSTRAKSI AKTUAL STATS DARI BOX SCORE RESMI
+                                    # 5. EKSTRAKSI AKTUAL STATS DARI RAW BOX SCORE MLB (The Ultimate Fix)
                                     if game_id and status_game in ['Final', 'Game Over']:
-                                        box = statsapi.boxscore_data(game_id)
+                                        box_raw = statsapi.get('game_boxscore', {'gamePk': game_id})
                                         
-                                        # [PERBAIKAN ERROR LIST] Langsung sedot kamar 'playerInfo' yang isinya udah Dictionary valid 100%
-                                        all_players = box.get('playerInfo', {})
+                                        away_players = box_raw.get('teams', {}).get('away', {}).get('players', {})
+                                        home_players = box_raw.get('teams', {}).get('home', {}).get('players', {})
+                                        all_players = {**away_players, **home_players}
                                         
-                                        # FUNGSI PENJINAK API: Mencegah crash jika API mengirim string kosong "" atau "-"
-                                        def aman_int(val):
-                                            try:
-                                                return int(float(val))
-                                            except (ValueError, TypeError):
-                                                return 0
-
                                         stat_real = 0
                                         pemain_ketemu = False
                                         
-                                        for pid, pdata in all_players.items():
-                                            # Ambil nama pemain (Tembak 3 kunci sekalian biar ga bisa lolos)
-                                            nama_api = pdata.get('fullName', pdata.get('namefield', pdata.get('name', '')))
+                                        for pid_key, pdata in all_players.items():
+                                            nama_api = pdata.get('person', {}).get('fullName', '')
                                             
                                             if nama_pemain.lower() in nama_api.lower():
                                                 pemain_ketemu = True
-                                                if stat_tipe == "HR": stat_real = aman_int(pdata.get('hr', 0))
-                                                elif stat_tipe == "Hits": stat_real = aman_int(pdata.get('h', 0))
-                                                elif stat_tipe == "RBI": stat_real = aman_int(pdata.get('rbi', 0))
-                                                elif stat_tipe == "Runs": stat_real = aman_int(pdata.get('r', 0))
-                                                elif stat_tipe == "TB": stat_real = aman_int(pdata.get('h', 0)) + (aman_int(pdata.get('d', 0))*2) + (aman_int(pdata.get('t', 0))*3) + (aman_int(pdata.get('hr', 0))*4)
-                                                elif stat_tipe == "SO": stat_real = aman_int(pdata.get('so', 0))
-                                                elif stat_tipe == "ER": stat_real = aman_int(pdata.get('er', 0))
-                                                elif stat_tipe == "Hits_Allowed": stat_real = aman_int(pdata.get('h', 0))
+                                                
+                                                b_stats = pdata.get('stats', {}).get('batting', {})
+                                                p_stats = pdata.get('stats', {}).get('pitching', {})
+                                                
+                                                if stat_tipe == "HR": stat_real = b_stats.get('homeRuns', 0)
+                                                elif stat_tipe == "Hits": stat_real = b_stats.get('hits', 0)
+                                                elif stat_tipe == "RBI": stat_real = b_stats.get('rbi', 0)
+                                                elif stat_tipe == "Runs": stat_real = b_stats.get('runs', 0)
+                                                elif stat_tipe == "TB": stat_real = b_stats.get('totalBases', 0)
+                                                elif stat_tipe == "SO": stat_real = p_stats.get('strikeOuts', 0)
+                                                elif stat_tipe == "ER": stat_real = p_stats.get('earnedRuns', 0)
+                                                elif stat_tipe == "Hits_Allowed": stat_real = p_stats.get('hits', 0)
+                                                
+                                                # --- FITUR BARU: GENERATE TEKS REAL STATS ---
+                                                if stat_tipe in ["SO", "ER", "Hits_Allowed"]:
+                                                    p_so = p_stats.get('strikeOuts', 0)
+                                                    p_ha = p_stats.get('hits', 0)
+                                                    p_er = p_stats.get('earnedRuns', 0)
+                                                    p_outs = p_stats.get('outs', 0)
+                                                    real_stats_str = f"📊 Real Stats: SO: {p_so} | Hit Allowed: {p_ha} | ER: {p_er} | Outs: {p_outs}"
+                                                else:
+                                                    h_tb = b_stats.get('totalBases', 0)
+                                                    h_hit = b_stats.get('hits', 0)
+                                                    h_run = b_stats.get('runs', 0)
+                                                    h_rbi = b_stats.get('rbi', 0)
+                                                    h_hr = b_stats.get('homeRuns', 0)
+                                                    real_stats_str = f"📊 Real Stats: TB: {h_tb} | Hit: {h_hit} | Run: {h_run} | RBI: {h_rbi} | HR: {h_hr}"
+                                                
                                                 break
                                                 
                                         # 6. GRADING LOGIC COMPARATOR (Penentu Hit vs Miss)
                                         if pemain_ketemu:
-                                            # Mencari pola penanda Over/Under beserta nilai desimal line-nya
                                             line_match = re.search(r'(O|U)\s+(\d+\.\d+)', leg)
                                             if line_match:
                                                 ou_tipe = line_match.group(1)
@@ -786,24 +798,25 @@ with tabs[4]:
                                                 else:
                                                     status_akhir = "✅ Hit" if stat_real < line_angka else "❌ Miss"
                                             else:
-                                                # Fallback otomatis jika format line desimal gagal diekstrak
                                                 status_akhir = "✅ Hit" if stat_real > 0 else "❌ Miss"
                                         else:
                                             status_akhir = "⚠️ Player DNP/Not Found"
+                                            real_stats_str = "DNP / No Stats Available"
                                             
                                     elif status_game in ['In Progress', 'Scheduled', 'Pre-Game']:
                                         status_akhir = "⏳ Pending (Game Running/Wait)"
                                         
                                 except Exception as e:
-                                    # Menampilkan wujud asli error-nya ke layar biar gampang di-track!
                                     status_akhir = f"⚠️ Error Parsing: {str(e)}"
+                                    real_stats_str = "Error Retrieving Stats"
 
                                 # Menyimpan hasil kalkulasi objek tunggal ke list penampung
                                 hasil_koreksi_baru.append({
                                     "Saved_At": pilihan_batch,
                                     "Category": kat,
                                     "Leg_Bet": leg,
-                                    "Status": status_akhir
+                                    "Status": status_akhir,
+                                    "Real_Stats": real_stats_str
                                 })
                         
                         # Pengamanan kompilasi ke database eksternal `auditor_graded.csv`
@@ -812,7 +825,7 @@ with tabs[4]:
                             df_lama = pd.read_csv(file_hasil_audit)
                             # Membersihkan catatan batch lama agar tidak terjadi penumpukan baris ganda
                             df_lama = df_lama[df_lama['Saved_At'] != pilihan_batch]
-                            df_final = pd.concat([df_lama, df_baru])
+                            df_final = pd.concat([df_lama, df_baru], ignore_index=True)
                         else:
                             df_final = df_baru
                             
@@ -824,18 +837,21 @@ with tabs[4]:
                 # RENDER DISPLAY UI AUDITOR GRID (LURUS, KONSISTEN & BERWARNA)
                 # ==============================================================================
                 for kat in kategori_slips:
-                    # Mengelompokkan list leg ke dalam Expander Dropdown per Judul Slip
                     with st.expander(f"🧾 Slip: {kat.upper()}", expanded=True):
                         df_legs = df_batch_terpilih[df_batch_terpilih['Category'] == kat]
                         
                         for idx, row in df_legs.reset_index().iterrows():
                             leg_teks = row['Leg_Bet']
                             status_val = row['Status']
+                            stats_teks = row['Real_Stats'] if 'Real_Stats' in row and pd.notna(row['Real_Stats']) else ""
                             
                             col_teks, col_status = st.columns([3, 1])
                             
                             with col_teks:
                                 st.write(f"{idx+1}. {leg_teks}")
+                                # Memunculkan Real Stats di bawah nama pemain jika sudah di-grade
+                                if stats_teks:
+                                    st.caption(f"_{stats_teks}_")
                             
                             with col_status:
                                 # Skema pewarnaan visual dinamis berdasarkan nilai status
@@ -851,8 +867,9 @@ with tabs[4]:
                 st.warning("Data di `auditor_slips.csv` masih kosong. Coba generate dan simpan slip di Tab 7 dulu!")
         else:
             st.warning("⚠️ File `auditor_slips.csv` belum ditemukan. Silakan ke Tab 7 untuk mulai merekam slip gacha lu!")
-            # ==========================================
-        # ⚙️ DANGER ZONE: TOMBOL RESET DATABASE AULI
+            
+        # ==========================================
+        # ⚙️ DANGER ZONE: TOMBOL RESET DATABASE
         # ==========================================
         st.divider()
         with st.expander("⚙️ Danger Zone (Developer Mode)"):
