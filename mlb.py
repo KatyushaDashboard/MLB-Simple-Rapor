@@ -743,8 +743,9 @@ with tabs[4]:
                                     # 5. EKSTRAKSI AKTUAL STATS DARI BOX SCORE RESMI
                                     if game_id and status_game in ['Final', 'Game Over']:
                                         box = statsapi.boxscore_data(game_id)
-                                        # Penggabungan seluruh entitas pemain lapangan ke dalam satu repositori pencarian
-                                        all_players = {**box['awayBatters'], **box['homeBatters'], **box['awayPitchers'], **box['homePitchers']}
+                                        
+                                        # [PERBAIKAN ERROR LIST] Langsung sedot kamar 'playerInfo' yang isinya udah Dictionary valid 100%
+                                        all_players = box.get('playerInfo', {})
                                         
                                         # FUNGSI PENJINAK API: Mencegah crash jika API mengirim string kosong "" atau "-"
                                         def aman_int(val):
@@ -757,7 +758,10 @@ with tabs[4]:
                                         pemain_ketemu = False
                                         
                                         for pid, pdata in all_players.items():
-                                            if nama_pemain.lower() in pdata['namefield'].lower():
+                                            # Ambil nama pemain (Tembak 3 kunci sekalian biar ga bisa lolos)
+                                            nama_api = pdata.get('fullName', pdata.get('namefield', pdata.get('name', '')))
+                                            
+                                            if nama_pemain.lower() in nama_api.lower():
                                                 pemain_ketemu = True
                                                 if stat_tipe == "HR": stat_real = aman_int(pdata.get('hr', 0))
                                                 elif stat_tipe == "Hits": stat_real = aman_int(pdata.get('h', 0))
