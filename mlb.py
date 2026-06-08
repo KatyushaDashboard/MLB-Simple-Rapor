@@ -782,7 +782,9 @@ with tabs[4]:
                                                     h_run = b_stats.get('runs', 0)
                                                     h_rbi = b_stats.get('rbi', 0)
                                                     h_hr = b_stats.get('homeRuns', 0)
-                                                    real_stats_str = f"📊 Real Stats: TB: {h_tb} | Hit: {h_hit} | Run: {h_run} | RBI: {h_rbi} | HR: {h_hr}"
+                                                    h_bb = b_stats.get('baseOnBalls', 0) # Tarik data Walk
+                                                    h_so = b_stats.get('strikeOuts', 0)  # Tarik data Strikeout Hitter
+                                                    real_stats_str = f"📊 Real Stats: TB: {h_tb} | Hit: {h_hit} | Run: {h_run} | RBI: {h_rbi} | HR: {h_hr} | BB: {h_bb} | SO: {h_so}"
                                                 
                                                 break
                                                 
