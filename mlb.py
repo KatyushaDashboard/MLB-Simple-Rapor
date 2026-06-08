@@ -746,20 +746,27 @@ with tabs[4]:
                                         # Penggabungan seluruh entitas pemain lapangan ke dalam satu repositori pencarian
                                         all_players = {**box['awayBatters'], **box['homeBatters'], **box['awayPitchers'], **box['homePitchers']}
                                         
+                                        # FUNGSI PENJINAK API: Mencegah crash jika API mengirim string kosong "" atau "-"
+                                        def aman_int(val):
+                                            try:
+                                                return int(float(val))
+                                            except (ValueError, TypeError):
+                                                return 0
+
                                         stat_real = 0
                                         pemain_ketemu = False
                                         
                                         for pid, pdata in all_players.items():
                                             if nama_pemain.lower() in pdata['namefield'].lower():
                                                 pemain_ketemu = True
-                                                if stat_tipe == "HR": stat_real = int(pdata.get('hr', 0))
-                                                elif stat_tipe == "Hits": stat_real = int(pdata.get('h', 0))
-                                                elif stat_tipe == "RBI": stat_real = int(pdata.get('rbi', 0))
-                                                elif stat_tipe == "Runs": stat_real = int(pdata.get('r', 0))
-                                                elif stat_tipe == "TB": stat_real = int(pdata.get('h', 0)) + (int(pdata.get('d', 0))*2) + (int(pdata.get('t', 0))*3) + (int(pdata.get('hr', 0))*4)
-                                                elif stat_tipe == "SO": stat_real = int(pdata.get('so', 0))
-                                                elif stat_tipe == "ER": stat_real = int(pdata.get('er', 0))
-                                                elif stat_tipe == "Hits_Allowed": stat_real = int(pdata.get('h', 0))
+                                                if stat_tipe == "HR": stat_real = aman_int(pdata.get('hr', 0))
+                                                elif stat_tipe == "Hits": stat_real = aman_int(pdata.get('h', 0))
+                                                elif stat_tipe == "RBI": stat_real = aman_int(pdata.get('rbi', 0))
+                                                elif stat_tipe == "Runs": stat_real = aman_int(pdata.get('r', 0))
+                                                elif stat_tipe == "TB": stat_real = aman_int(pdata.get('h', 0)) + (aman_int(pdata.get('d', 0))*2) + (aman_int(pdata.get('t', 0))*3) + (aman_int(pdata.get('hr', 0))*4)
+                                                elif stat_tipe == "SO": stat_real = aman_int(pdata.get('so', 0))
+                                                elif stat_tipe == "ER": stat_real = aman_int(pdata.get('er', 0))
+                                                elif stat_tipe == "Hits_Allowed": stat_real = aman_int(pdata.get('h', 0))
                                                 break
                                                 
                                         # 6. GRADING LOGIC COMPARATOR (Penentu Hit vs Miss)
@@ -784,7 +791,8 @@ with tabs[4]:
                                         status_akhir = "⏳ Pending (Game Running/Wait)"
                                         
                                 except Exception as e:
-                                    status_akhir = "⚠️ Error Parsing"
+                                    # Menampilkan wujud asli error-nya ke layar biar gampang di-track!
+                                    status_akhir = f"⚠️ Error Parsing: {str(e)}"
 
                                 # Menyimpan hasil kalkulasi objek tunggal ke list penampung
                                 hasil_koreksi_baru.append({
