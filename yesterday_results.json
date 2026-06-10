@@ -4828,9 +4828,9 @@
         "home_runs": 3,
         "players": {
             "CJ Abrams": {
-                "hits": 0,
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
+                "tb": 1,
                 "rbi": 0,
                 "strikeouts_batter": 1
             },

@@ -5,7 +5,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Jake Bennett",
         "home_pitcher": "Drew Rasmussen",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824428,
@@ -13,7 +13,7 @@
         "home_team": "Cleveland Guardians",
         "away_pitcher": "Carlos Rod\u00f3n",
         "home_pitcher": "Parker Messick",
-        "status": "Scheduled"
+        "status": "Warmup"
     },
     {
         "game_id": 823215,
@@ -29,7 +29,7 @@
         "home_team": "San Diego Padres",
         "away_pitcher": "Brady Singer",
         "home_pitcher": "Michael King",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824831,
