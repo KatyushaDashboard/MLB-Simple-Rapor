@@ -1,54 +1,54 @@
 {
     "Jake Bennett": {
         "season": {
-            "ERA": 4.35,
-            "HR/9": 0.87,
-            "FB%": 30.4,
+            "ERA": 4.05,
+            "HR/9": 0.67,
+            "FB%": 34.5,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.35,
-            "HR/9": 0.87,
-            "Starts": 2
+            "ERA": 4.05,
+            "HR/9": 0.68,
+            "Starts": 3
         }
     },
     "Drew Rasmussen": {
         "season": {
-            "ERA": 3.0,
-            "HR/9": 1.09,
-            "FB%": 42.4,
+            "ERA": 2.87,
+            "HR/9": 1.04,
+            "FB%": 43.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.0,
-            "HR/9": 1.09,
-            "Starts": 12
+            "ERA": 2.87,
+            "HR/9": 1.04,
+            "Starts": 13
         }
     },
     "Carlos Rod\u00f3n": {
         "season": {
-            "ERA": 2.88,
-            "HR/9": 0.36,
-            "FB%": 52.2,
+            "ERA": 3.04,
+            "HR/9": 0.67,
+            "FB%": 56.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.88,
-            "HR/9": 0.36,
-            "Starts": 5
+            "ERA": 3.04,
+            "HR/9": 0.67,
+            "Starts": 6
         }
     },
     "Parker Messick": {
         "season": {
-            "ERA": 2.4,
-            "HR/9": 0.96,
-            "FB%": 55.1,
+            "ERA": 2.57,
+            "HR/9": 0.94,
+            "FB%": 54.2,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.4,
-            "HR/9": 0.96,
-            "Starts": 13
+            "ERA": 2.57,
+            "HR/9": 0.94,
+            "Starts": 14
         }
     },
     "Foster Griffin": {

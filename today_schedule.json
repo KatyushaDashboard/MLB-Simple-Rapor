@@ -5,7 +5,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Jake Bennett",
         "home_pitcher": "Drew Rasmussen",
-        "status": "Pre-Game"
+        "status": "In Progress"
     },
     {
         "game_id": 824428,
@@ -13,7 +13,7 @@
         "home_team": "Cleveland Guardians",
         "away_pitcher": "Carlos Rod\u00f3n",
         "home_pitcher": "Parker Messick",
-        "status": "Warmup"
+        "status": "In Progress"
     },
     {
         "game_id": 823215,
@@ -21,7 +21,7 @@
         "home_team": "San Francisco Giants",
         "away_pitcher": "Foster Griffin",
         "home_pitcher": "Robbie Ray",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823287,
@@ -61,7 +61,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Ryne Nelson",
         "home_pitcher": "Ryan Gusto",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822804,
