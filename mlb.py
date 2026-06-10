@@ -567,7 +567,7 @@ with tabs[2]:
                         df_h_a['Proj_TB'] = ((df_h_a['b_total_bases']/df_h_a['pa_Full']) * (df_h_a['xslg_L30']/df_h_a['xslg_Full']) * df_h_a['AirBall_Mod'] * df_h_a['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_a['Proj_HR%'] = ((df_h_a['home_run']/df_h_a['pa_Full']) * (df_h_a['xwoba_L30']/df_h_a['xwoba_Full']) * (1 + ((df_h_a['flyballs_percent'] - 23) / 100)) * df_h_a['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        df_display_away = df_h_a[df_h_a['pa_Full'] >= 5][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_away = df_h_a[df_h_a['pa_Full'] >= 1][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_away.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_away, use_container_width=True, hide_index=True)
                     else:
@@ -622,7 +622,7 @@ with tabs[2]:
                         df_h_h['Proj_TB'] = ((df_h_h['b_total_bases']/df_h_h['pa_Full']) * (df_h_h['xslg_L30']/df_h_h['xslg_Full']) * df_h_h['AirBall_Mod'] * df_h_h['Power_Surge'] * expected_pa_h).fillna(0).round(2)
                         df_h_h['Proj_HR%'] = ((df_h_h['home_run']/df_h_h['pa_Full']) * (df_h_h['xwoba_L30']/df_h_h['xwoba_Full']) * (1 + ((df_h_h['flyballs_percent'] - 23) / 100)) * df_h_h['Power_Surge'] * expected_pa_h * 100).fillna(0).round(1)
                         
-                        df_display_home = df_h_h[df_h_h['pa_Full'] >= 5][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
+                        df_display_home = df_h_h[df_h_h['pa_Full'] >= 1][['player_name_std', 'Proj_Hit', 'Proj_TB', 'Proj_HR%']].sort_values(by='Proj_TB', ascending=False)
                         df_display_home.rename(columns={'player_name_std': 'Hitter Name', 'Proj_HR%': 'HR %'}, inplace=True)
                         st.dataframe(df_display_home, use_container_width=True, hide_index=True)
                     else:
@@ -964,7 +964,7 @@ with tabs[5]:
                                 if run_col: df_h['Proj_Run'] = ((df_h[run_col]/df_h['pa_Full']) * expected_pa_h).fillna(0)
                                 else: df_h['Proj_Run'] = (df_h['Proj_Hit'] * 0.4)
 
-                                top_9_hitters = df_h[df_h['pa_Full'] >= 20].sort_values(by='Proj_Run', ascending=False).head(9)
+                                top_9_hitters = df_h[df_h['pa_Full'] >= 5].sort_values(by='Proj_Run', ascending=False).head(9)
                                 offense_runs = top_9_hitters['Proj_Run'].sum()
 
                         sp_data_source = df_p_lhb if sp_lawan_hand == "LHP (Kidal)" else df_p_rhb
@@ -1204,7 +1204,7 @@ with tabs[6]:
                                     if run_col: df_h['Proj_Run'] = ((df_h[run_col]/df_h['pa_Full']) * expected_pa_h).fillna(0).round(2)
                                     else: df_h['Proj_Run'] = (df_h['Proj_Hit'] * 0.4).round(2)
 
-                                    df_h_valid = df_h[df_h['pa_Full'] >= 20].sort_values(by='Proj_HR%', ascending=False).reset_index()
+                                    df_h_valid = df_h[df_h['pa_Full'] >= 1].sort_values(by='Proj_HR%', ascending=False).reset_index()
                                     
                                     for idx, row in df_h_valid.iterrows():
                                         semua_hitter.append({
