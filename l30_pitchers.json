@@ -1,158 +1,197 @@
 {
-    "Jake Bennett": {
+    "Hunter Dobbins": {
         "season": {
-            "ERA": 4.05,
-            "HR/9": 0.67,
-            "FB%": 34.5,
+            "ERA": 4.2,
+            "HR/9": 1.8,
+            "FB%": 36.0,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.05,
-            "HR/9": 0.68,
-            "Starts": 3
+            "ERA": 4.2,
+            "HR/9": 1.8,
+            "Starts": 4
         }
     },
-    "Drew Rasmussen": {
+    "Christian Scott": {
         "season": {
-            "ERA": 2.87,
-            "HR/9": 1.04,
-            "FB%": 43.0,
+            "ERA": 3.32,
+            "HR/9": 0.95,
+            "FB%": 64.2,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.87,
-            "HR/9": 1.04,
-            "Starts": 13
-        }
-    },
-    "Carlos Rod\u00f3n": {
-        "season": {
-            "ERA": 3.04,
-            "HR/9": 0.67,
-            "FB%": 56.0,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.04,
-            "HR/9": 0.67,
-            "Starts": 6
-        }
-    },
-    "Parker Messick": {
-        "season": {
-            "ERA": 2.57,
-            "HR/9": 0.94,
-            "FB%": 54.2,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.57,
-            "HR/9": 0.94,
-            "Starts": 14
-        }
-    },
-    "Foster Griffin": {
-        "season": {
-            "ERA": 3.63,
-            "HR/9": 1.75,
-            "FB%": 51.0,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.62,
-            "HR/9": 1.75,
-            "Starts": 13
-        }
-    },
-    "Robbie Ray": {
-        "season": {
-            "ERA": 4.12,
-            "HR/9": 1.73,
-            "FB%": 63.6,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.12,
-            "HR/9": 1.73,
-            "Starts": 13
-        }
-    },
-    "Brady Singer": {
-        "season": {
-            "ERA": 5.89,
-            "HR/9": 2.78,
-            "FB%": 54.2,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 5.89,
-            "HR/9": 2.78,
-            "Starts": 12
-        }
-    },
-    "Michael King": {
-        "season": {
-            "ERA": 3.41,
-            "HR/9": 0.97,
-            "FB%": 45.7,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.41,
-            "HR/9": 0.97,
-            "Starts": 13
-        }
-    },
-    "George Kirby": {
-        "season": {
-            "ERA": 4.04,
-            "HR/9": 0.81,
-            "FB%": 40.8,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.04,
-            "HR/9": 0.81,
-            "Starts": 13
-        }
-    },
-    "Brandon Young": {
-        "season": {
-            "ERA": 3.47,
-            "HR/9": 1.09,
-            "FB%": 58.7,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.47,
-            "HR/9": 1.09,
+            "ERA": 3.23,
+            "HR/9": 0.92,
             "Starts": 9
         }
     },
-    "Shohei Ohtani": {
+    "Zebby Matthews": {
         "season": {
-            "ERA": 0.74,
-            "HR/9": 0.3,
-            "FB%": 46.5,
-            "Status": "Elite"
+            "ERA": 4.05,
+            "HR/9": 1.35,
+            "FB%": 60.9,
+            "Status": "Average"
         },
         "l45": {
-            "ERA": 0.74,
-            "HR/9": 0.3,
-            "Starts": 10
+            "ERA": 4.05,
+            "HR/9": 1.35,
+            "Starts": 6
         }
     },
-    "Jared Jones": {
+    "Keider Montero": {
         "season": {
-            "ERA": 4.82,
-            "HR/9": 1.93,
-            "FB%": 70.6,
+            "ERA": 3.76,
+            "HR/9": 1.04,
+            "FB%": 63.7,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.75,
+            "HR/9": 1.03,
+            "Starts": 13
+        }
+    },
+    "Merrill Kelly": {
+        "season": {
+            "ERA": 5.58,
+            "HR/9": 1.91,
+            "FB%": 58.6,
             "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.82,
-            "HR/9": 1.93,
-            "Starts": 2
+            "ERA": 5.58,
+            "HR/9": 1.91,
+            "Starts": 11
+        }
+    },
+    "Tyler Phillips": {
+        "season": {
+            "ERA": 1.94,
+            "HR/9": 0.39,
+            "FB%": 44.8,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 1.93,
+            "HR/9": 0.39,
+            "Starts": 19
+        }
+    },
+    "Kumar Rocker": {
+        "season": {
+            "ERA": 3.54,
+            "HR/9": 0.89,
+            "FB%": 48.5,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.54,
+            "HR/9": 0.89,
+            "Starts": 12
+        }
+    },
+    "Michael Wacha": {
+        "season": {
+            "ERA": 3.44,
+            "HR/9": 1.0,
+            "FB%": 58.8,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.44,
+            "HR/9": 1.0,
+            "Starts": 13
+        }
+    },
+    "Edward Cabrera": {
+        "season": {
+            "ERA": 4.99,
+            "HR/9": 1.72,
+            "FB%": 46.4,
+            "Status": "Vulnerable"
+        },
+        "l45": {
+            "ERA": 4.99,
+            "HR/9": 1.72,
+            "Starts": 11
+        }
+    },
+    "Ryan Feltner": {
+        "season": {
+            "ERA": 4.22,
+            "HR/9": 1.41,
+            "FB%": 47.8,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.22,
+            "HR/9": 1.41,
+            "Starts": 7
+        }
+    },
+    "Justin Wrobleski": {
+        "season": {
+            "ERA": 2.62,
+            "HR/9": 0.52,
+            "FB%": 61.0,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.62,
+            "HR/9": 0.52,
+            "Starts": 11
+        }
+    },
+    "Mitch Keller": {
+        "season": {
+            "ERA": 4.81,
+            "HR/9": 0.62,
+            "FB%": 53.2,
+            "Status": "Vulnerable"
+        },
+        "l45": {
+            "ERA": 4.81,
+            "HR/9": 0.62,
+            "Starts": 13
+        }
+    },
+    "Bryan Woo": {
+        "season": {
+            "ERA": 3.74,
+            "HR/9": 0.82,
+            "FB%": 63.2,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.74,
+            "HR/9": 0.82,
+            "Starts": 13
+        }
+    },
+    "Kyle Bradish": {
+        "season": {
+            "ERA": 3.89,
+            "HR/9": 1.04,
+            "FB%": 40.6,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.89,
+            "HR/9": 1.04,
+            "Starts": 13
+        }
+    },
+    "Mart\u00edn P\u00e9rez": {
+        "season": {
+            "ERA": 3.02,
+            "HR/9": 0.95,
+            "FB%": 49.1,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.02,
+            "HR/9": 0.95,
+            "Starts": 13
         }
     },
     "": {
@@ -166,214 +205,6 @@
             "ERA": 4.15,
             "HR/9": 1.0,
             "Starts": 0
-        }
-    },
-    "Framber Valdez": {
-        "season": {
-            "ERA": 4.21,
-            "HR/9": 0.87,
-            "FB%": 46.2,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.21,
-            "HR/9": 0.87,
-            "Starts": 13
-        }
-    },
-    "Ryne Nelson": {
-        "season": {
-            "ERA": 4.6,
-            "HR/9": 1.87,
-            "FB%": 67.1,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 4.6,
-            "HR/9": 1.87,
-            "Starts": 13
-        }
-    },
-    "Ryan Gusto": {
-        "season": {
-            "ERA": 10.8,
-            "HR/9": 0.0,
-            "FB%": 30.0,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 10.8,
-            "HR/9": 0.0,
-            "Starts": 3
-        }
-    },
-    "Jes\u00fas Luzardo": {
-        "season": {
-            "ERA": 4.56,
-            "HR/9": 0.99,
-            "FB%": 40.0,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 4.56,
-            "HR/9": 0.99,
-            "Starts": 13
-        }
-    },
-    "Max Scherzer": {
-        "season": {
-            "ERA": 9.64,
-            "HR/9": 3.38,
-            "FB%": 69.8,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 9.64,
-            "HR/9": 3.38,
-            "Starts": 5
-        }
-    },
-    "Andre Pallante": {
-        "season": {
-            "ERA": 3.96,
-            "HR/9": 1.13,
-            "FB%": 43.4,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.96,
-            "HR/9": 1.13,
-            "Starts": 12
-        }
-    },
-    "Austin Warren": {
-        "season": {
-            "ERA": 2.01,
-            "HR/9": 0.81,
-            "FB%": 57.1,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.01,
-            "HR/9": 0.81,
-            "Starts": 16
-        }
-    },
-    "MacKenzie Gore": {
-        "season": {
-            "ERA": 4.23,
-            "HR/9": 0.82,
-            "FB%": 58.7,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.23,
-            "HR/9": 0.82,
-            "Starts": 13
-        }
-    },
-    "Seth Lugo": {
-        "season": {
-            "ERA": 3.91,
-            "HR/9": 0.83,
-            "FB%": 56.9,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.91,
-            "HR/9": 0.83,
-            "Starts": 13
-        }
-    },
-    "Chris Sale": {
-        "season": {
-            "ERA": 2.23,
-            "HR/9": 0.74,
-            "FB%": 51.6,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.23,
-            "HR/9": 0.74,
-            "Starts": 12
-        }
-    },
-    "Shota Imanaga": {
-        "season": {
-            "ERA": 4.74,
-            "HR/9": 2.01,
-            "FB%": 55.7,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 4.74,
-            "HR/9": 2.01,
-            "Starts": 13
-        }
-    },
-    "Michael Lorenzen": {
-        "season": {
-            "ERA": 8.01,
-            "HR/9": 1.63,
-            "FB%": 47.3,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 8.01,
-            "HR/9": 1.63,
-            "Starts": 14
-        }
-    },
-    "Brandon Sproat": {
-        "season": {
-            "ERA": 6.17,
-            "HR/9": 1.83,
-            "FB%": 50.5,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 6.17,
-            "HR/9": 1.83,
-            "Starts": 12
-        }
-    },
-    "Jack Perkins": {
-        "season": {
-            "ERA": 6.19,
-            "HR/9": 0.56,
-            "FB%": 55.2,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 6.19,
-            "HR/9": 0.56,
-            "Starts": 18
-        }
-    },
-    "Peter Lambert": {
-        "season": {
-            "ERA": 3.55,
-            "HR/9": 0.53,
-            "FB%": 54.5,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.55,
-            "HR/9": 0.53,
-            "Starts": 9
-        }
-    },
-    "Reid Detmers": {
-        "season": {
-            "ERA": 4.26,
-            "HR/9": 0.73,
-            "FB%": 61.4,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.26,
-            "HR/9": 0.73,
-            "Starts": 13
         }
     }
 }
