@@ -1,15 +1,15 @@
 {
-    "": {
+    "Sean Newcomb": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 2.76,
+            "HR/9": 0.21,
+            "FB%": 39.5,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 2.76,
+            "HR/9": 0.21,
+            "Starts": 28
         }
     },
     "Troy Melton": {
@@ -90,17 +90,17 @@
             "Starts": 14
         }
     },
-    "Nathan Eovaldi": {
+    "MacKenzie Gore": {
         "season": {
-            "ERA": 4.23,
-            "HR/9": 1.75,
-            "FB%": 44.8,
+            "ERA": 4.27,
+            "HR/9": 0.92,
+            "FB%": 60.3,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.23,
-            "HR/9": 1.75,
-            "Starts": 14
+            "ERA": 4.27,
+            "HR/9": 0.92,
+            "Starts": 15
         }
     },
     "Cade Cavalli": {

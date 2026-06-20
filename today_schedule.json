@@ -3,9 +3,9 @@
         "game_id": 824263,
         "away_team": "Chicago White Sox",
         "home_team": "Detroit Tigers",
-        "away_pitcher": "",
+        "away_pitcher": "Sean Newcomb",
         "home_pitcher": "Troy Melton",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823532,
@@ -13,7 +13,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Andrew Abbott",
         "home_pitcher": "Will Warren",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824665,
@@ -21,15 +21,15 @@
         "home_team": "Chicago Cubs",
         "away_pitcher": "Patrick Corbin",
         "home_pitcher": "Colin Rea",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822885,
         "away_team": "San Diego Padres",
         "home_team": "Texas Rangers",
         "away_pitcher": "Walker Buehler",
-        "home_pitcher": "Nathan Eovaldi",
-        "status": "Scheduled"
+        "home_pitcher": "MacKenzie Gore",
+        "status": "Pre-Game"
     },
     {
         "game_id": 822967,
@@ -37,7 +37,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Cade Cavalli",
         "home_pitcher": "Ian Seymour",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823854,
@@ -45,7 +45,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Trevor McDonald",
         "home_pitcher": "Max Meyer",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824909,
