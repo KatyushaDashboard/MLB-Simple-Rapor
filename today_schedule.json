@@ -5,7 +5,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Chase Burns",
         "home_pitcher": "Elmer Rodr\u00edguez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824908,
@@ -13,7 +13,7 @@
         "home_team": "Atlanta Braves",
         "away_pitcher": "Robert Gasser",
         "home_pitcher": "Bryce Elder",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822968,
@@ -21,7 +21,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Andrew Alvarez",
         "home_pitcher": "Nick Martinez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824260,
@@ -29,7 +29,7 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Davis Martin",
         "home_pitcher": "Keider Montero",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823852,
@@ -37,7 +37,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Logan Webb",
         "home_pitcher": "Ryan Gusto",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824177,
@@ -45,7 +45,7 @@
         "home_team": "Houston Astros",
         "away_pitcher": "Slade Cecconi",
         "home_pitcher": "Kai-Wei Teng",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824095,
@@ -53,7 +53,7 @@
         "home_team": "Kansas City Royals",
         "away_pitcher": "Dustin May",
         "home_pitcher": "Stephen Kolek",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824664,
@@ -61,13 +61,13 @@
         "home_team": "Chicago Cubs",
         "away_pitcher": "Dylan Cease",
         "home_pitcher": "Shota Imanaga",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822883,
         "away_team": "San Diego Padres",
         "home_team": "Texas Rangers",
-        "away_pitcher": "",
+        "away_pitcher": "Wandy Peralta",
         "home_pitcher": "Nathan Eovaldi",
         "status": "Scheduled"
     },

@@ -207,17 +207,17 @@
             "Starts": 15
         }
     },
-    "": {
+    "Wandy Peralta": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 1.96,
+            "HR/9": 0.74,
+            "FB%": 39.7,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 1.96,
+            "HR/9": 0.74,
+            "Starts": 31
         }
     },
     "Nathan Eovaldi": {
@@ -289,7 +289,7 @@
         "season": {
             "ERA": 3.68,
             "HR/9": 0.72,
-            "FB%": 62.3,
+            "FB%": 62.7,
             "Status": "Average"
         },
         "l45": {
