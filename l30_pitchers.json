@@ -51,17 +51,17 @@
             "Starts": 14
         }
     },
-    "Kumar Rocker": {
+    "Tyler Alexander": {
         "season": {
-            "ERA": 4.17,
-            "HR/9": 1.04,
-            "FB%": 47.6,
-            "Status": "Average"
+            "ERA": 2.97,
+            "HR/9": 0.59,
+            "FB%": 43.8,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.17,
-            "HR/9": 1.04,
-            "Starts": 14
+            "ERA": 2.97,
+            "HR/9": 0.59,
+            "Starts": 31
         }
     },
     "Tyler Phillips": {
@@ -77,17 +77,17 @@
             "Starts": 20
         }
     },
-    "": {
+    "Tim Mayza": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 2.97,
+            "HR/9": 1.08,
+            "FB%": 42.2,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 2.97,
+            "HR/9": 1.08,
+            "Starts": 29
         }
     },
     "Foster Griffin": {
@@ -116,6 +116,19 @@
             "Starts": 3
         }
     },
+    "Dylan Cease": {
+        "season": {
+            "ERA": 2.71,
+            "HR/9": 0.62,
+            "FB%": 47.6,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.71,
+            "HR/9": 0.62,
+            "Starts": 13
+        }
+    },
     "Shota Imanaga": {
         "season": {
             "ERA": 4.26,
@@ -139,6 +152,19 @@
         "l45": {
             "ERA": 9.0,
             "HR/9": 2.62,
+            "Starts": 6
+        }
+    },
+    "Brandon Woodruff": {
+        "season": {
+            "ERA": 3.6,
+            "HR/9": 1.2,
+            "FB%": 68.8,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.6,
+            "HR/9": 1.2,
             "Starts": 6
         }
     },
