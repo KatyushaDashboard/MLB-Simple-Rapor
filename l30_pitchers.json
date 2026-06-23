@@ -1,28 +1,28 @@
 {
     "Peter Lambert": {
         "season": {
-            "ERA": 3.23,
+            "ERA": 3.2,
             "HR/9": 0.84,
-            "FB%": 57.0,
+            "FB%": 57.4,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.23,
+            "ERA": 3.2,
             "HR/9": 0.84,
-            "Starts": 11
+            "Starts": 12
         }
     },
     "Shane Bieber": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 9.0,
+            "HR/9": 0.0,
+            "FB%": 100.0,
+            "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 9.0,
+            "HR/9": 0.0,
+            "Starts": 1
         }
     },
     "George Kirby": {
@@ -142,17 +142,17 @@
             "Starts": 15
         }
     },
-    "Zack Littell": {
+    "PJ Poulin": {
         "season": {
-            "ERA": 5.45,
-            "HR/9": 2.54,
-            "FB%": 63.2,
-            "Status": "Vulnerable"
+            "ERA": 3.07,
+            "HR/9": 1.23,
+            "FB%": 50.0,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 5.45,
-            "HR/9": 2.54,
-            "Starts": 15
+            "ERA": 3.07,
+            "HR/9": 1.23,
+            "Starts": 29
         }
     },
     "Edward Cabrera": {

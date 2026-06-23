@@ -5,7 +5,7 @@
         "home_team": "Toronto Blue Jays",
         "away_pitcher": "Peter Lambert",
         "home_pitcher": "Shane Bieber",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 823365,
@@ -13,7 +13,7 @@
         "home_team": "Pittsburgh Pirates",
         "away_pitcher": "George Kirby",
         "home_pitcher": "Mitch Keller",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822963,
@@ -21,7 +21,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Luinder Avila",
         "home_pitcher": "Shane McClanahan",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823849,
@@ -29,7 +29,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Cal Quantrill",
         "home_pitcher": "Sandy Alcantara",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824262,
@@ -37,15 +37,15 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Carlos Rod\u00f3n",
         "home_pitcher": "Casey Mize",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822718,
         "away_team": "Philadelphia Phillies",
         "home_team": "Washington Nationals",
         "away_pitcher": "Jes\u00fas Luzardo",
-        "home_pitcher": "Zack Littell",
-        "status": "Scheduled"
+        "home_pitcher": "PJ Poulin",
+        "status": "Pre-Game"
     },
     {
         "game_id": 823614,
@@ -53,7 +53,7 @@
         "home_team": "New York Mets",
         "away_pitcher": "Edward Cabrera",
         "home_pitcher": "Kodai Senga",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824501,
@@ -61,7 +61,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "Brandon Sproat",
         "home_pitcher": "Nick Lodolo",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823690,
@@ -69,7 +69,7 @@
         "home_team": "Minnesota Twins",
         "away_pitcher": "Justin Wrobleski",
         "home_pitcher": "Kendry Rojas",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824584,
@@ -77,7 +77,7 @@
         "home_team": "Chicago White Sox",
         "away_pitcher": "Parker Messick",
         "home_pitcher": "Sean Burke",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823043,
@@ -85,7 +85,7 @@
         "home_team": "St. Louis Cardinals",
         "away_pitcher": "Eduardo Rodriguez",
         "home_pitcher": "Kyle Leahy",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824340,
@@ -93,7 +93,7 @@
         "home_team": "Colorado Rockies",
         "away_pitcher": "Sonny Gray",
         "home_pitcher": "Sean Sullivan",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824017,
