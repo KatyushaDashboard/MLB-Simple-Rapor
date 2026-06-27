@@ -1,54 +1,54 @@
 {
     "Kai-Wei Teng": {
         "season": {
-            "ERA": 4.03,
-            "HR/9": 1.34,
-            "FB%": 50.0,
+            "ERA": 3.96,
+            "HR/9": 1.32,
+            "FB%": 50.4,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.03,
-            "HR/9": 1.34,
-            "Starts": 22
+            "ERA": 3.96,
+            "HR/9": 1.32,
+            "Starts": 23
         }
     },
     "Framber Valdez": {
         "season": {
-            "ERA": 3.91,
-            "HR/9": 0.9,
-            "FB%": 42.9,
+            "ERA": 4.03,
+            "HR/9": 0.98,
+            "FB%": 43.1,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.91,
-            "HR/9": 0.9,
-            "Starts": 16
+            "ERA": 4.03,
+            "HR/9": 0.98,
+            "Starts": 17
         }
     },
     "Gerrit Cole": {
         "season": {
-            "ERA": 3.62,
-            "HR/9": 1.39,
-            "FB%": 66.7,
+            "ERA": 4.01,
+            "HR/9": 1.87,
+            "FB%": 67.1,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.62,
-            "HR/9": 1.39,
-            "Starts": 6
+            "ERA": 4.01,
+            "HR/9": 1.87,
+            "Starts": 7
         }
     },
     "Jake Bennett": {
         "season": {
-            "ERA": 3.71,
-            "HR/9": 0.34,
-            "FB%": 45.3,
-            "Status": "Average"
+            "ERA": 3.45,
+            "HR/9": 0.31,
+            "FB%": 45.6,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.71,
-            "HR/9": 0.34,
-            "Starts": 5
+            "ERA": 3.45,
+            "HR/9": 0.31,
+            "Starts": 6
         }
     },
     "Cal Quantrill": {
@@ -103,17 +103,17 @@
             "Starts": 5
         }
     },
-    "Alan Rangel": {
+    "Tim Mayza": {
         "season": {
-            "ERA": 2.25,
-            "HR/9": 1.12,
-            "FB%": 66.7,
+            "ERA": 3.06,
+            "HR/9": 1.02,
+            "FB%": 42.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.25,
-            "HR/9": 1.12,
-            "Starts": 2
+            "ERA": 3.06,
+            "HR/9": 1.02,
+            "Starts": 31
         }
     },
     "Christian Scott": {
