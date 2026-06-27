@@ -5,7 +5,7 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Kai-Wei Teng",
         "home_pitcher": "Framber Valdez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824745,
@@ -13,7 +13,7 @@
         "home_team": "Boston Red Sox",
         "away_pitcher": "Gerrit Cole",
         "home_pitcher": "Jake Bennett",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822794,
@@ -21,7 +21,7 @@
         "home_team": "Toronto Blue Jays",
         "away_pitcher": "Cal Quantrill",
         "home_pitcher": "Dylan Cease",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823364,
@@ -45,7 +45,7 @@
         "home_team": "Chicago White Sox",
         "away_pitcher": "Michael Wacha",
         "home_pitcher": "Davis Martin",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822960,
