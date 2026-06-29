@@ -1,31 +1,25 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Zack Littell,Washington Nationals,11,6,6,5.4,75.0,5.52,2.76,9.6,2.52,1.37,0.269,62.1
-Kyle Bradish,Baltimore Orioles,16,5,7,3.64,89.0,9.51,4.25,8.8,1.11,1.45,0.258,41.4
-Brady Singer,Cincinnati Reds,15,3,6,4.81,73.0,7.27,3.08,10.48,2.1,1.51,0.286,54.8
-Mitch Keller,Pittsburgh Pirates,16,5,5,4.89,88.3,7.03,3.26,8.66,0.92,1.32,0.251,53.5
-Kumar Rocker,Texas Rangers,13,2,6,4.14,74.0,7.91,3.65,8.76,0.97,1.38,0.252,47.4
-Shane Bieber,Toronto Blue Jays,1,0,0,9.82,3.7,4.91,0.0,22.09,7.36,2.45,0.474,75.0
-Hunter Brown,Houston Astros,4,1,0,1.4,19.3,13.03,5.12,5.59,0.47,1.19,0.176,50.0
-Jack Flaherty,Detroit Tigers,15,1,8,5.35,65.7,10.69,4.66,9.46,1.1,1.57,0.264,63.3
-Emerson Hancock,Seattle Mariners,15,5,4,3.6,85.0,8.58,2.01,7.2,1.27,1.02,0.219,55.8
-Gavin Williams,Cleveland Guardians,16,9,4,3.82,96.7,10.33,2.89,7.36,1.4,1.14,0.223,46.4
-Merrill Kelly,Arizona Diamondbacks,13,5,7,5.71,75.7,5.23,3.69,9.99,1.78,1.52,0.283,56.6
-Drew Rasmussen,Tampa Bay Rays,15,6,4,2.62,86.0,9.31,1.57,6.38,0.94,0.88,0.194,43.0
-Jesús Luzardo,Philadelphia Phillies,16,6,4,4.0,92.3,10.72,2.92,8.77,0.88,1.3,0.255,40.8
-Cionel Pérez,New York Mets,0,3,3,4.99,30.7,6.75,3.52,8.8,1.47,1.37,0.252,33.3
-Ryan Feltner,Colorado Rockies,10,2,2,4.79,47.0,6.7,3.83,7.85,1.34,1.3,0.232,45.5
-Connor Prielipp,Minnesota Twins,11,2,5,5.17,55.7,8.89,3.72,9.05,0.97,1.42,0.262,55.0
-Luinder Avila,Kansas City Royals,6,3,3,5.06,42.7,8.23,5.7,8.86,0.84,1.62,0.268,50.6
-Anthony Kay,Chicago White Sox,14,6,2,4.24,76.3,7.43,3.54,8.96,1.3,1.39,0.257,52.8
-Ryan Rolison,Chicago Cubs,1,5,1,1.82,29.7,8.8,3.94,6.07,0.91,1.11,0.202,42.3
-Brandon Woodruff,Milwaukee Brewers,7,2,1,3.0,36.0,8.75,1.75,6.25,1.0,0.89,0.192,72.2
-Tyler Phillips,Miami Marlins,5,1,2,3.09,58.3,7.56,4.63,7.71,0.93,1.37,0.228,45.5
-Kyle Leahy,St. Louis Cardinals,15,5,4,4.24,76.3,7.31,3.3,10.26,1.06,1.51,0.287,47.4
-Aaron Civale,Athletics,13,5,4,4.88,62.7,6.61,2.73,11.49,1.87,1.58,0.309,66.2
-Sam Aldegheri,Los Angeles Angels,4,2,3,5.47,24.7,5.84,4.38,9.12,1.46,1.5,0.258,65.5
-Chris Sale,Atlanta Braves,14,8,5,2.14,84.0,10.61,2.25,7.18,0.64,1.05,0.216,51.0
-Robbie Ray,San Francisco Giants,15,6,6,3.7,87.7,8.21,4.31,7.19,1.44,1.28,0.221,61.5
-Emmet Sheehan,Los Angeles Dodgers,14,3,5,5.32,67.7,10.11,2.66,9.04,1.86,1.3,0.258,59.0
-Michael King,San Diego Padres,16,5,6,3.33,92.0,7.63,3.42,7.04,0.98,1.16,0.218,47.5
-Carlos Rodón,New York Yankees,8,4,2,3.7,41.3,10.02,4.79,6.75,0.65,1.28,0.211,57.5
-Sonny Gray,Boston Red Sox,14,9,1,2.95,76.3,7.78,2.36,8.37,1.06,1.19,0.246,45.8
+Sean Burke,Chicago White Sox,12,5,4,3.71,87.3,8.97,3.09,7.83,1.13,1.21,0.233,60.6
+Shane Baz,Baltimore Orioles,16,4,8,4.31,94.0,7.76,3.35,9.1,0.86,1.38,0.265,54.9
+Braxton Ashcraft,Pittsburgh Pirates,16,7,3,3.07,96.7,9.96,2.05,7.73,0.74,1.09,0.232,48.3
+Aaron Nola,Philadelphia Phillies,16,3,4,5.58,80.7,9.15,3.01,10.04,1.9,1.45,0.28,53.2
+Casey Mize,Detroit Tigers,11,2,5,2.95,58.0,9.0,2.17,7.45,0.62,1.07,0.224,61.8
+Ryan Weathers,New York Yankees,15,3,5,3.95,86.7,9.87,2.49,7.79,1.66,1.14,0.23,54.4
+Sean Manaea,New York Mets,3,1,2,4.87,57.3,9.42,3.14,9.58,0.94,1.41,0.269,57.3
+Trey Yesavage,Toronto Blue Jays,11,3,3,3.56,60.7,8.6,4.45,6.08,0.74,1.17,0.192,61.3
+Miles Mikolas,Washington Nationals,6,2,6,5.24,77.3,5.12,1.98,9.66,1.86,1.29,0.271,49.2
+Ranger Suarez,Boston Red Sox,15,3,3,2.83,82.7,9.15,2.72,7.51,0.44,1.14,0.225,56.1
+Tyler Alexander,Texas Rangers,2,1,1,2.62,34.3,7.08,2.62,9.17,0.52,1.31,0.267,44.4
+Parker Messick,Cleveland Guardians,16,7,4,2.67,94.3,9.64,2.77,6.68,0.86,1.05,0.207,50.9
+Nick Lodolo,Cincinnati Reds,9,2,2,5.59,46.7,7.33,3.47,10.22,1.54,1.52,0.299,50.0
+Robert Gasser,Milwaukee Brewers,6,1,3,4.5,30.0,9.3,3.6,7.8,1.8,1.27,0.228,70.7
+Shota Imanaga,Chicago Cubs,16,5,6,4.4,92.0,8.61,2.25,7.24,1.96,1.05,0.216,57.5
+Zebby Matthews,Minnesota Twins,8,3,5,4.56,49.3,7.11,2.01,8.76,1.82,1.2,0.253,60.6
+Peter Lambert,Houston Astros,12,6,4,3.28,68.7,8.39,3.67,6.82,0.92,1.17,0.207,58.1
+Sandy Alcantara,Miami Marlins,17,8,4,4.01,110.0,6.63,2.21,8.92,0.98,1.24,0.256,48.3
+Eric Lauer,Los Angeles Dodgers,10,3,5,4.87,64.7,5.85,3.34,7.79,2.23,1.24,0.232,65.3
+Gage Jump,Athletics,6,3,1,2.04,35.3,8.92,2.55,6.11,0.0,0.96,0.197,67.7
+Ryan Johnson,Los Angeles Angels,3,1,2,8.84,19.3,6.98,4.19,11.17,2.33,1.71,0.3,55.8
+George Kirby,Seattle Mariners,16,6,7,3.94,96.0,7.88,2.16,9.94,0.84,1.34,0.282,46.0
+Tyler Mahle,San Francisco Giants,12,1,7,5.49,62.3,8.81,3.75,9.39,1.59,1.46,0.274,47.4
+Eduardo Rodriguez,Arizona Diamondbacks,3,1,2,2.1,34.3,8.39,3.15,7.6,0.26,1.19,0.225,42.3
