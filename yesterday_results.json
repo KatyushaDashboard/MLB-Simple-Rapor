@@ -53,19 +53,19 @@
                 "rbi": 1,
                 "strikeouts_batter": 0
             },
-            "Kyle Teel": {
-                "hits": 1,
-                "hr": 0,
-                "tb": 1,
-                "rbi": 1,
-                "strikeouts_batter": 3
-            },
             "Chase Meidroth": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 2,
                 "rbi": 0,
                 "strikeouts_batter": 0
+            },
+            "Kyle Teel": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 3
             },
             "Grant Taylor": {
                 "hits": 0,
@@ -242,14 +242,14 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Taylor Ward": {
+            "Shane Baz": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Shane Baz": {
+            "Taylor Ward": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
@@ -1152,19 +1152,19 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Mark Vientos": {
-                "hits": 0,
-                "hr": 0,
-                "tb": 0,
-                "rbi": 0,
-                "strikeouts_batter": 2
-            },
             "Sean Manaea": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
+            },
+            "Mark Vientos": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 2
             },
             "Austin Warren": {
                 "hits": 0,
@@ -1355,14 +1355,14 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Andr\u00e9s Gim\u00e9nez": {
+            "Kevin Gausman": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Kevin Gausman": {
+            "Andr\u00e9s Gim\u00e9nez": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
@@ -1404,19 +1404,19 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "George Springer": {
-                "hits": 1,
-                "hr": 0,
-                "tb": 3,
-                "rbi": 0,
-                "strikeouts_batter": 3
-            },
             "Yohendrick Pi\u00f1ango": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 1
+            },
+            "George Springer": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 3,
+                "rbi": 0,
+                "strikeouts_batter": 3
             },
             "Mason Fluharty": {
                 "hits": 0,
@@ -1446,17 +1446,17 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Vladimir Guerrero Jr.": {
-                "hits": 1,
-                "hr": 0,
-                "tb": 1,
-                "rbi": 0,
-                "strikeouts_batter": 0
-            },
             "Patrick Corbin": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Vladimir Guerrero Jr.": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
@@ -2013,7 +2013,7 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Cameron Cauley": {
+            "Cam Cauley": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 3,
