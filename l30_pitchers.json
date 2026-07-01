@@ -12,17 +12,17 @@
             "Starts": 8
         }
     },
-    "": {
+    "Dean Kremer": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
+            "ERA": 4.09,
+            "HR/9": 3.27,
+            "FB%": 52.9,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 4.09,
+            "HR/9": 3.27,
+            "Starts": 2
         }
     },
     "MacKenzie Gore": {
@@ -51,17 +51,17 @@
             "Starts": 17
         }
     },
-    "Andrew Alvarez": {
+    "Brad Lord": {
         "season": {
-            "ERA": 3.44,
-            "HR/9": 0.49,
-            "FB%": 29.5,
+            "ERA": 3.31,
+            "HR/9": 0.99,
+            "FB%": 36.7,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.44,
-            "HR/9": 0.49,
-            "Starts": 10
+            "ERA": 3.31,
+            "HR/9": 0.99,
+            "Starts": 25
         }
     },
     "Payton Tolle": {
@@ -309,6 +309,19 @@
             "ERA": 7.5,
             "HR/9": 2.0,
             "Starts": 15
+        }
+    },
+    "": {
+        "season": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "FB%": 30.0,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "Starts": 0
         }
     },
     "J.T. Ginn": {

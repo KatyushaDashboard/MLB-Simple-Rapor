@@ -4,8 +4,8 @@
         "away_team": "Chicago White Sox",
         "home_team": "Baltimore Orioles",
         "away_pitcher": "Noah Schultz",
-        "home_pitcher": "",
-        "status": "Scheduled"
+        "home_pitcher": "Dean Kremer",
+        "status": "Pre-Game"
     },
     {
         "game_id": 824419,
@@ -13,15 +13,15 @@
         "home_team": "Cleveland Guardians",
         "away_pitcher": "MacKenzie Gore",
         "home_pitcher": "Joey Cantillo",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824740,
         "away_team": "Washington Nationals",
         "home_team": "Boston Red Sox",
-        "away_pitcher": "Andrew Alvarez",
+        "away_pitcher": "Brad Lord",
         "home_pitcher": "Payton Tolle",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823530,
@@ -29,7 +29,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Troy Melton",
         "home_pitcher": "Will Warren",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824660,
@@ -37,7 +37,7 @@
         "home_team": "Chicago Cubs",
         "away_pitcher": "Walker Buehler",
         "home_pitcher": "Colin Rea",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822791,
@@ -45,7 +45,7 @@
         "home_team": "Toronto Blue Jays",
         "away_pitcher": "Freddy Peralta",
         "home_pitcher": "Braydon Fisher",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823446,
