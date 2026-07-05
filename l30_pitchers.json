@@ -27,80 +27,80 @@
     },
     "Bubba Chandler": {
         "season": {
-            "ERA": 4.62,
-            "HR/9": 0.95,
-            "FB%": 61.1,
+            "ERA": 4.52,
+            "HR/9": 0.92,
+            "FB%": 61.9,
             "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.62,
-            "HR/9": 0.95,
-            "Starts": 17
+            "ERA": 4.52,
+            "HR/9": 0.92,
+            "Starts": 18
         }
     },
     "Cade Cavalli": {
         "season": {
-            "ERA": 3.69,
-            "HR/9": 0.7,
-            "FB%": 46.0,
+            "ERA": 3.88,
+            "HR/9": 0.78,
+            "FB%": 44.9,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.69,
-            "HR/9": 0.7,
-            "Starts": 18
+            "ERA": 3.88,
+            "HR/9": 0.78,
+            "Starts": 19
         }
     },
     "Kyle Bradish": {
         "season": {
-            "ERA": 3.77,
-            "HR/9": 1.06,
-            "FB%": 42.3,
+            "ERA": 3.62,
+            "HR/9": 1.02,
+            "FB%": 40.7,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.77,
-            "HR/9": 1.06,
-            "Starts": 17
+            "ERA": 3.63,
+            "HR/9": 1.02,
+            "Starts": 18
         }
     },
     "Nick Lodolo": {
         "season": {
-            "ERA": 5.05,
-            "HR/9": 1.39,
-            "FB%": 51.0,
+            "ERA": 4.69,
+            "HR/9": 1.29,
+            "FB%": 50.4,
             "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 5.05,
-            "HR/9": 1.39,
-            "Starts": 10
+            "ERA": 4.69,
+            "HR/9": 1.29,
+            "Starts": 11
         }
     },
     "Joe Ryan": {
         "season": {
-            "ERA": 3.61,
+            "ERA": 3.57,
             "HR/9": 0.92,
-            "FB%": 59.9,
+            "FB%": 60.1,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.61,
+            "ERA": 3.57,
             "HR/9": 0.92,
-            "Starts": 18
+            "Starts": 19
         }
     },
     "Ryan Weathers": {
         "season": {
-            "ERA": 4.08,
-            "HR/9": 1.63,
-            "FB%": 54.0,
+            "ERA": 4.12,
+            "HR/9": 1.61,
+            "FB%": 53.7,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.08,
-            "HR/9": 1.63,
-            "Starts": 16
+            "ERA": 4.1,
+            "HR/9": 1.6,
+            "Starts": 17
         }
     },
     "Chris Murphy": {
@@ -181,17 +181,17 @@
             "Starts": 16
         }
     },
-    "": {
+    "Mason Englert": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
+            "ERA": 3.96,
+            "HR/9": 1.44,
+            "FB%": 70.4,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 3.96,
+            "HR/9": 1.44,
+            "Starts": 12
         }
     },
     "Peter Lambert": {
