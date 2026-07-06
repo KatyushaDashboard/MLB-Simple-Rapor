@@ -5,7 +5,7 @@
         "home_team": "Kansas City Royals",
         "away_pitcher": "Cristopher S\u00e1nchez",
         "home_pitcher": "Noah Cameron",
-        "status": "Scheduled"
+        "status": "In Progress"
     },
     {
         "game_id": 822958,
@@ -13,7 +13,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Cam Schlittler",
         "home_pitcher": "Griffin Jax",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822712,
@@ -21,7 +21,7 @@
         "home_team": "Washington Nationals",
         "away_pitcher": "Mike Burrows",
         "home_pitcher": "Miles Mikolas",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824900,
@@ -29,7 +29,7 @@
         "home_team": "Atlanta Braves",
         "away_pitcher": "Freddy Peralta",
         "home_pitcher": "Reynaldo L\u00f3pez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823036,

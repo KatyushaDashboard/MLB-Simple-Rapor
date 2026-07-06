@@ -1,28 +1,28 @@
 {
     "Cristopher S\u00e1nchez": {
         "season": {
-            "ERA": 2.0,
-            "HR/9": 0.62,
-            "FB%": 37.6,
+            "ERA": 2.62,
+            "HR/9": 0.82,
+            "FB%": 37.3,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.0,
-            "HR/9": 0.62,
-            "Starts": 18
+            "ERA": 2.62,
+            "HR/9": 0.82,
+            "Starts": 19
         }
     },
     "Noah Cameron": {
         "season": {
-            "ERA": 4.95,
-            "HR/9": 1.08,
-            "FB%": 56.6,
+            "ERA": 4.77,
+            "HR/9": 1.02,
+            "FB%": 55.7,
             "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.95,
-            "HR/9": 1.08,
-            "Starts": 16
+            "ERA": 4.77,
+            "HR/9": 1.02,
+            "Starts": 17
         }
     },
     "Cam Schlittler": {
