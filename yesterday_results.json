@@ -326,6 +326,13 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
+            "Jared Shuster": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
             "Pedro Pag\u00e9s": {
                 "hits": 0,
                 "hr": 0,
@@ -1544,17 +1551,17 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Michael Harris II": {
-                "hits": 2,
-                "hr": 0,
-                "tb": 3,
-                "rbi": 0,
-                "strikeouts_batter": 0
-            },
             "Joey Bart": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Michael Harris II": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 3,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
@@ -1747,19 +1754,19 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Esmerlyn Valdez": {
-                "hits": 1,
-                "hr": 0,
-                "tb": 1,
-                "rbi": 0,
-                "strikeouts_batter": 1
-            },
             "Jared Triolo": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
                 "strikeouts_batter": 0
+            },
+            "Esmerlyn Valdez": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 1
             },
             "Jake Mangum": {
                 "hits": 1,
@@ -2363,14 +2370,14 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Anthony Volpe": {
+            "Fernando Cruz": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Fernando Cruz": {
+            "Anthony Volpe": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
@@ -2587,18 +2594,18 @@
                 "rbi": 0,
                 "strikeouts_batter": 1
             },
-            "Victor Mesa Jr.": {
-                "hits": 2,
-                "hr": 1,
-                "tb": 5,
-                "rbi": 1,
-                "strikeouts_batter": 0
-            },
             "Bryan Baker": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Victor Mesa Jr.": {
+                "hits": 2,
+                "hr": 1,
+                "tb": 5,
+                "rbi": 1,
                 "strikeouts_batter": 0
             },
             "Junior Caminero": {

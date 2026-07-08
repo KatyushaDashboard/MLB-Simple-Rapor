@@ -5,7 +5,7 @@
         "home_team": "San Francisco Giants",
         "away_pitcher": "Dylan Cease",
         "home_pitcher": "Logan Webb",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824815,
@@ -29,7 +29,7 @@
         "home_team": "Pittsburgh Pirates",
         "away_pitcher": "Grant Holmes",
         "home_pitcher": "Jared Jones",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823848,
@@ -37,7 +37,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "George Kirby",
         "home_pitcher": "Tyler Phillips",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822957,
@@ -45,7 +45,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Gerrit Cole",
         "home_pitcher": "Shane McClanahan",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822710,
@@ -69,7 +69,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "",
         "home_pitcher": "Chase Burns",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823684,
