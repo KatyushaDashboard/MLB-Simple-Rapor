@@ -350,17 +350,17 @@
             "Starts": 36
         }
     },
-    "Shohei Ohtani": {
+    "Kyle Hurt": {
         "season": {
-            "ERA": 1.79,
-            "HR/9": 0.42,
-            "FB%": 44.9,
-            "Status": "Elite"
+            "ERA": 4.55,
+            "HR/9": 0.91,
+            "FB%": 45.8,
+            "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 1.79,
-            "HR/9": 0.42,
-            "Starts": 14
+            "ERA": 4.55,
+            "HR/9": 0.91,
+            "Starts": 31
         }
     },
     "Tanner Gordon": {

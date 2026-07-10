@@ -5,7 +5,7 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Aaron Nola",
         "home_pitcher": "Jack Flaherty",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823357,
@@ -13,7 +13,7 @@
         "home_team": "Pittsburgh Pirates",
         "away_pitcher": "Brandon Sproat",
         "home_pitcher": "Braxton Ashcraft",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822709,
@@ -21,7 +21,7 @@
         "home_team": "Washington Nationals",
         "away_pitcher": "Ryan Weathers",
         "home_pitcher": "Carson Palmquist",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824817,
@@ -29,7 +29,7 @@
         "home_team": "Baltimore Orioles",
         "away_pitcher": "Luinder Avila",
         "home_pitcher": "Brandon Young",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824493,
@@ -37,7 +37,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "Shota Imanaga",
         "home_pitcher": "Hunter Greene",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822955,
@@ -45,7 +45,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Luis Castillo",
         "home_pitcher": "Nick Martinez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823845,
@@ -53,7 +53,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Parker Messick",
         "home_pitcher": "Sandy Alcantara",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823604,
@@ -61,7 +61,7 @@
         "home_team": "New York Mets",
         "away_pitcher": "Sonny Gray",
         "home_pitcher": "Nolan McLean",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824575,
@@ -69,7 +69,7 @@
         "home_team": "Chicago White Sox",
         "away_pitcher": "Jacob Lopez",
         "home_pitcher": "Sean Burke",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822878,
@@ -77,7 +77,7 @@
         "home_team": "Texas Rangers",
         "away_pitcher": "Hunter Brown",
         "home_pitcher": "Cal Quantrill",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823685,
@@ -85,7 +85,7 @@
         "home_team": "Minnesota Twins",
         "away_pitcher": "Grayson Rodriguez",
         "home_pitcher": "Zebby Matthews",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823033,
@@ -93,7 +93,7 @@
         "home_team": "St. Louis Cardinals",
         "away_pitcher": "Chris Sale",
         "home_pitcher": "Kyle Leahy",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823278,
@@ -108,8 +108,8 @@
         "away_team": "Arizona Diamondbacks",
         "home_team": "Los Angeles Dodgers",
         "away_pitcher": "Eduardo Rodriguez",
-        "home_pitcher": "Shohei Ohtani",
-        "status": "Scheduled"
+        "home_pitcher": "Kyle Hurt",
+        "status": "Pre-Game"
     },
     {
         "game_id": 823200,
