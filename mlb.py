@@ -1704,7 +1704,7 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
         
         # 4. AMBIL DATA PITCHER DARI MASTER
         # (Asumsi df master pitcher Anda bernama 'df_master_pitcher' atau sesuaikan dengan nama df Anda)
-        pitcher_row = df_pitchers[df_pitchers['name'] == nama_pitcher]
+        pitcher_row = df_pitchers[df_pitchers['Name'] == nama_pitcher]
         
         if not pitcher_row.empty:
             p_data = pitcher_row.iloc[0]
