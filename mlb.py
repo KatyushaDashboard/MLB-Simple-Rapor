@@ -1704,12 +1704,22 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
         
         # 4. AMBIL DATA PITCHER DARI MASTER
         # (Asumsi df master pitcher Anda bernama 'df_master_pitcher' atau sesuaikan dengan nama df Anda)
-        pitcher_row = df_pitchers[
-            df_pitchers['Name'].str.strip().str.lower() == nama_pitcher.strip().lower()
-        ]
+        # --- BLOK PENCARIAN ROBUST ---
+        st.write(f"Mencari pitcher dengan nama: '{pitcher_name}'") # Debug: lihat apa yang dicari
         
-        if not pitcher_row.empty:
+        # Gunakan .str.contains untuk mencari kemiripan, case=False mengabaikan besar kecil huruf
+        mask = df_pitchers['Name'].astype(str).str.contains(pitcher_name, case=False, na=False)
+        pitcher_row = df_pitchers[mask]
+        
+        # Debug: Tampilkan apa yang ditemukan
+        if pitcher_row.empty:
+            st.error(f"Pitcher '{pitcher_name}' tidak ditemukan di dataset.")
+            st.write("Daftar 5 nama pitcher pertama di master data Anda:")
+            st.write(df_pitchers['Name'].head(5).tolist()) # Ini akan menunjukkan format nama di CSV Anda
+        else:
+            st.success(f"Pitcher ditemukan: {pitcher_row.iloc[0]['Name']}")
             p_data = pitcher_row.iloc[0]
+            # ... (lanjutkan logika split dan prediksi Anda)
             
             # Cek tangan pitcher. Asumsi di master pitcher Anda ada kolom Hand atau default ke R
             throws_hand = p_data.get('Hand', 'R') 
