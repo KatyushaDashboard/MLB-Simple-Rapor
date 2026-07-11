@@ -1704,16 +1704,16 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
         
         # 4. AMBIL DATA PITCHER DARI MASTER
         # (Asumsi df master pitcher Anda bernama 'df_master_pitcher' atau sesuaikan dengan nama df Anda)
-        pitcher_row = df_pitchers[df_pitchers['Name'] == nama_pitcher]
+        pitcher_row = df_pitchers[
+            df_pitchers['Name'].str.strip().str.lower() == nama_pitcher.strip().str.lower()
+        ]
         
         if not pitcher_row.empty:
             p_data = pitcher_row.iloc[0]
             
-            # Cek tangan pitcher (Throws) untuk menentukan file splits mana yang dipakai
-            # Biasanya di master_pitcher ada kolom 'throws', 'Hand', atau sejenisnya
-            throws_hand = p_data.get('throws', 'R') 
+            # Cek tangan pitcher. Asumsi di master pitcher Anda ada kolom Hand atau default ke R
+            throws_hand = p_data.get('Hand', 'R') 
             
-            # Gunakan df_h_lhp / df_h_rhp (berdasarkan variabel Anda di atas)
             if throws_hand == 'L':
                 df_hitter_split = df_h_lhp
                 st.info(f"Kidal (LHP) terdeteksi. Menggunakan data: **{singkatan_lawan} vs LHP**")
@@ -1722,12 +1722,15 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                 st.info(f"Kanan (RHP) terdeteksi. Menggunakan data: **{singkatan_lawan} vs RHP**")
                 
             # Filter Lineup Lawan
-            lineup_lawan = df_hitter_split[df_hitter_split['team'] == singkatan_lawan]
+            # Memakai kolom 'Team_Full' sesuai di hitter_vs_rhp.csv
+            lineup_lawan = df_hitter_split[
+                df_hitter_split['Team_Full'].str.strip().str.upper() == singkatan_lawan.strip().upper()
+            ]
             
             if not lineup_lawan.empty:
-                # 5. JALANKAN MESIN PREDIKTIF!
-                # Memasukkan df_master_hitter (atau sesuaikan namanya) sebagai global df untuk avg liga
-                predictions = generate_pitcher_predictions(p_data, lineup_lawan, df_master_hitter)
+                # 5. JALANKAN MESIN PREDIKTIF
+                # (Pastikan dataframe master hitter dimasukkan, misal namanya df_hitters)
+                predictions = generate_pitcher_predictions(p_data, lineup_lawan, df_hitters)
                 
                 # --- UI HASIL PROYEKSI ---
                 st.markdown("### 📊 Hasil Proyeksi (Expected Value)")
@@ -1744,7 +1747,6 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                 st.markdown("---")
                 st.write("### 🧮 Kalkulator Odds & Probabilitas Pasar Taruhan")
                 
-                # Input Garis Taruhan (Line)
                 c_line1, c_line2 = st.columns(2)
                 with c_line1:
                     line_k = st.number_input("Bandar Line Strikeout (K):", value=5.5, step=0.5)
@@ -1759,8 +1761,6 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                     st.error(f"🔴 **UNDER {line_er}:** {res_er['prob_under']}%")
                     
             else:
-                st.warning(f"Data Hitter Splits untuk tim {singkatan_lawan} tidak ditemukan.")
+                st.warning(f"Data Lineup untuk tim {singkatan_lawan} tidak ditemukan (cek kolom Team_Full).")
         else:
-            st.warning(f"Data historis untuk pitcher **{nama_pitcher}** tidak ditemukan di master_pitcher_2026.csv.")
-    else:
-        st.info("Jadwal belum dimuat atau tidak ada jadwal hari ini.")
+            st.warning(f"Data historis untuk pitcher **{nama_pitcher}** tidak ditemukan di master_pitcher_2026.csv (Pastikan ejaan cocok).")
