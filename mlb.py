@@ -5,6 +5,7 @@ import json
 import os
 from datetime import datetime
 import itertools # <-- MODULE BARU UNTUK MATCHMAKER ULXRARE
+from predictive_models import generate_pitcher_predictions, calculate_poisson_prob
 
 # ====================================================================
 # 1. INITIAL SETUP & CONFIG 
@@ -115,7 +116,7 @@ PARK_FACTORS = {
     "HOU": 1.00, "TOR": 1.00, "LAD": 1.00, "NYY": 0.99, "MIN": 0.99,
     "MIL": 0.99, "CHC": 0.98, "KC": 0.98, "TB": 0.97, "PIT": 0.96,
     "WSH": 0.96, "MIA": 0.95, "STL": 0.95, "CLE": 0.94, "SF": 0.94,
-    "SD": 0.93, "NYM": 0.92, "DET": 0.91, "OAK": 0.90, "SEA": 0.88
+    "SD": 0.93, "NYM": 0.92, "DET": 0.91, "ATH": 0.90, "SEA": 0.88
 }
 
 def load_betting_history():
@@ -288,7 +289,8 @@ tabs = st.tabs([
     "💸 Tab 7: Cross Parlay",
     "🕸️ Tab 8: Overlap Network",
     "🏭 Tab 9 : Modelling Test",
-    " Tab 10 : Pitcher Projection"
+    " Tab 10 : Pitcher Projection",
+    "🔮 Tab 11 : Predictive Projections"
 ])
 
 # ====================================================================
@@ -920,7 +922,7 @@ with tabs[5]:
                 "Detroit Tigers": "DET", "Houston Astros": "HOU", "Kansas City Royals": "KC",
                 "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
                 "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
-                "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
+                "New York Yankees": "NYY", "Oakland Athletics": "ATH", "Philadelphia Phillies": "PHI",
                 "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
                 "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB",
                 "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"
@@ -1122,7 +1124,7 @@ with tabs[6]:
                         "Detroit Tigers": "DET", "Houston Astros": "HOU", "Kansas City Royals": "KC",
                         "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
                         "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
-                        "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
+                        "New York Yankees": "NYY", "Oakland Athletics": "ATH", "Philadelphia Phillies": "PHI",
                         "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
                         "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB",
                         "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"
@@ -1659,3 +1661,67 @@ with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
                 }, inplace=True)
 
                 st.data_editor(df_clean_p, use_container_width=True, hide_index=True, disabled=True)
+# ====================================================================
+# TAB 11: MODELLING TEST
+# ===================================================================
+with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
+    st.header("Pitcher Props Predictive Analytics")
+    st.subheader("Proyeksi Probabilitas vs Garis Taruhan Vegas")
+    
+    # Pilih Matchup Hari Ini (Menggunakan data schedule harian Anda)
+    # Asumsi Anda memiliki variabel daftar pertandingan hari ini dari 'today_schedule.json'
+    if 'matches' in today_schedule_data: 
+        selected_match = st.selectbox(
+            "Pilih Pertandingan Hari Ini:",
+            options=today_schedule_data['matches'],
+            format_func=lambda x: f"{x['away_team']} @ {x['home_team']} ({x['pitcher_name']})"
+        )
+        
+        if selected_match:
+            # Mengambil data baris pitcher terpilih dari master_pitcher df Anda
+            pitcher_name = selected_match['pitcher_name']
+            pitcher_row = df_master_pitcher[df_master_pitcher['name'] == pitcher_name]
+            
+            # Mengambil tim lawan untuk memfilter lineup hitter splits
+            opponent_team = selected_match['opponent_team']
+            throws_hand = selected_match['throws'] # 'R' atau 'L'
+            
+            # Ambil data split hitter berdasarkan tangan pelempar
+            df_hitter_split = df_hitter_vs_rhp if throws_hand == 'R' else df_hitter_vs_lhp
+            lineup_lawan = df_hitter_split[df_hitter_split['team'] == opponent_team]
+            
+            if not pitcher_row.empty and not lineup_lawan.empty:
+                p_data = pitcher_row.iloc[0]
+                
+                # Jalankan fungsi prediksi dari file sebelah!
+                predictions = generate_pitcher_predictions(p_data, lineup_lawan)
+                
+                # --- INTERMUKA PENGGUNA (UI) DI STREAMLIT ---
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.metric("Estimasi Total Out", f"{round(predictions['outs'], 1)} Outs (~{round(predictions['outs']/3, 1)} Inning)")
+                    st.metric("Estimasi Hits Allowed", f"{round(predictions['hits'], 1)} Hits")
+                
+                with col2:
+                    st.metric("Proyeksi Strikeout (K)", f"{round(predictions['k'], 1)} K")
+                    st.metric("Proyeksi Earned Runs (ER)", f"{round(predictions['er'], 1)} ER")
+                
+                st.markdown("---")
+                st.write("### 🧮 Kalkulator Odds & Probabilitas Pasar Taruhan")
+                
+                # Input Garis Taruhan (Line) dari Sportsbook secara manual untuk perbandingan harian
+                c_line1, c_line2 = st.columns(2)
+                with c_line1:
+                    line_k = st.number_input("Garis Taruhan Strikeout (Bandar Line K):", value=5.5, step=0.5)
+                    res_k = calculate_poisson_prob(predictions['k'], line_k)
+                    st.write(f"🟢 **OVER {line_k}:** {res_k['prob_over']}% | 🔴 **UNDER {line_k}:** {res_k['prob_under']}%")
+                    
+                with c_line2:
+                    line_er = st.number_input("Garis Taruhan Earned Runs (Bandar Line ER):", value=2.5, step=0.5)
+                    res_er = calculate_poisson_prob(predictions['er'], line_er)
+                    st.write(f"🟢 **OVER {line_er}:** {res_er['prob_over']}% | 🔴 **UNDER {line_er}:** {res_er['prob_under']}%")
+            else:
+                st.warning("Data riwayat untuk kombinasi Pitcher atau Lineup Tim Lawan tidak ditemukan di database CSV lokal Anda.")
+    else:
+        st.info("Tidak ada jadwal pertandingan aktif yang dimuat untuk hari ini.")
