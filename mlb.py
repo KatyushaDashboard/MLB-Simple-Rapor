@@ -1667,40 +1667,74 @@ with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
 with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
     st.header("Pitcher Props Predictive Analytics")
     st.subheader("Proyeksi Probabilitas vs Garis Taruhan Vegas")
-    
-    # Pilih Matchup Hari Ini (Menggunakan data schedule harian Anda)
-    # Asumsi Anda memiliki variabel daftar pertandingan hari ini dari 'today_schedule.json'
-    if 'matches' in today_schedule_data: 
-        selected_match = st.selectbox(
-            "Pilih Pertandingan Hari Ini:",
-            options=today_schedule_data['matches'],
-            format_func=lambda x: f"{x['away_team']} @ {x['home_team']} ({x['pitcher_name']})"
+
+    # Mengecek apakah jadwal_hari_ini sudah diload dari blok kode Anda sebelumnya
+    if data_siap and jadwal_hari_ini:
+        
+        # 1. DROPDOWN PILIHAN PERTANDINGAN (Sama persis dengan kode Anda)
+        opsi_match_pred = [f"{g['away_team']} @ {g['home_team']} (ID: {g['game_id']})" for g in jadwal_hari_ini]
+        pilihan_user_pred = st.selectbox("🎯 Pilih Pertandingan untuk Diproyeksi:", opsi_match_pred, key="sb_match_pred")
+        
+        idx_match_pred = opsi_match_pred.index(pilihan_user_pred)
+        game_terpilih_pred = jadwal_hari_ini[idx_match_pred]
+        
+        away_team_full = game_terpilih_pred['away_team']
+        home_team_full = game_terpilih_pred['home_team']
+        away_sp = game_terpilih_pred['away_pitcher']
+        home_sp = game_terpilih_pred['home_pitcher']
+        
+        # 2. PILIH PITCHER (Karena ada 2 pitcher dalam 1 game)
+        pilihan_pitcher = st.radio(
+            "⚾ Pilih Starting Pitcher yang ingin dianalisis Props-nya:",
+            options=[
+                f"{away_sp} (Away SP - {away_team_full})",
+                f"{home_sp} (Home SP - {home_team_full})"
+            ]
         )
         
-        if selected_match:
-            # Mengambil data baris pitcher terpilih dari master_pitcher df Anda
-            pitcher_name = selected_match['pitcher_name']
-            pitcher_row = df_master_pitcher[df_master_pitcher['name'] == pitcher_name]
+        # 3. TENTUKAN LAWAN & SINGKATANNYA
+        if "Away SP" in pilihan_pitcher:
+            nama_pitcher = away_sp
+            tim_lawan_full = home_team_full # Lawannya adalah tim Home
+        else:
+            nama_pitcher = home_sp
+            tim_lawan_full = away_team_full # Lawannya adalah tim Away
             
-            # Mengambil tim lawan untuk memfilter lineup hitter splits
-            opponent_team = selected_match['opponent_team']
-            throws_hand = selected_match['throws'] # 'R' atau 'L'
+        singkatan_lawan = nama_ke_singkatan.get(tim_lawan_full, tim_lawan_full)
+        
+        # 4. AMBIL DATA PITCHER DARI MASTER
+        # (Asumsi df master pitcher Anda bernama 'df_master_pitcher' atau sesuaikan dengan nama df Anda)
+        pitcher_row = df_master_pitcher[df_master_pitcher['name'] == nama_pitcher]
+        
+        if not pitcher_row.empty:
+            p_data = pitcher_row.iloc[0]
             
-            # Ambil data split hitter berdasarkan tangan pelempar
-            df_hitter_split = df_hitter_vs_rhp if throws_hand == 'R' else df_hitter_vs_lhp
-            lineup_lawan = df_hitter_split[df_hitter_split['team'] == opponent_team]
+            # Cek tangan pitcher (Throws) untuk menentukan file splits mana yang dipakai
+            # Biasanya di master_pitcher ada kolom 'throws', 'Hand', atau sejenisnya
+            throws_hand = p_data.get('throws', 'R') 
             
-            if not pitcher_row.empty and not lineup_lawan.empty:
-                p_data = pitcher_row.iloc[0]
+            # Gunakan df_h_lhp / df_h_rhp (berdasarkan variabel Anda di atas)
+            if throws_hand == 'L':
+                df_hitter_split = df_h_lhp
+                st.info(f"Kidal (LHP) terdeteksi. Menggunakan data: **{singkatan_lawan} vs LHP**")
+            else:
+                df_hitter_split = df_h_rhp
+                st.info(f"Kanan (RHP) terdeteksi. Menggunakan data: **{singkatan_lawan} vs RHP**")
                 
-                # Jalankan fungsi prediksi dari file sebelah!
-                predictions = generate_pitcher_predictions(p_data, lineup_lawan)
+            # Filter Lineup Lawan
+            lineup_lawan = df_hitter_split[df_hitter_split['team'] == singkatan_lawan]
+            
+            if not lineup_lawan.empty:
+                # 5. JALANKAN MESIN PREDIKTIF!
+                # Memasukkan df_master_hitter (atau sesuaikan namanya) sebagai global df untuk avg liga
+                predictions = generate_pitcher_predictions(p_data, lineup_lawan, df_master_hitter)
                 
-                # --- INTERMUKA PENGGUNA (UI) DI STREAMLIT ---
+                # --- UI HASIL PROYEKSI ---
+                st.markdown("### 📊 Hasil Proyeksi (Expected Value)")
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.metric("Estimasi Total Out", f"{round(predictions['outs'], 1)} Outs (~{round(predictions['outs']/3, 1)} Inning)")
+                    st.metric("Estimasi Total Out", f"{round(predictions['outs'], 1)} Outs (~{round(predictions['outs']/3, 1)} Inn)")
                     st.metric("Estimasi Hits Allowed", f"{round(predictions['hits'], 1)} Hits")
                 
                 with col2:
@@ -1710,18 +1744,23 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                 st.markdown("---")
                 st.write("### 🧮 Kalkulator Odds & Probabilitas Pasar Taruhan")
                 
-                # Input Garis Taruhan (Line) dari Sportsbook secara manual untuk perbandingan harian
+                # Input Garis Taruhan (Line)
                 c_line1, c_line2 = st.columns(2)
                 with c_line1:
-                    line_k = st.number_input("Garis Taruhan Strikeout (Bandar Line K):", value=5.5, step=0.5)
+                    line_k = st.number_input("Bandar Line Strikeout (K):", value=5.5, step=0.5)
                     res_k = calculate_poisson_prob(predictions['k'], line_k)
-                    st.write(f"🟢 **OVER {line_k}:** {res_k['prob_over']}% | 🔴 **UNDER {line_k}:** {res_k['prob_under']}%")
+                    st.success(f"🟢 **OVER {line_k}:** {res_k['prob_over']}%")
+                    st.error(f"🔴 **UNDER {line_k}:** {res_k['prob_under']}%")
                     
                 with c_line2:
-                    line_er = st.number_input("Garis Taruhan Earned Runs (Bandar Line ER):", value=2.5, step=0.5)
+                    line_er = st.number_input("Bandar Line Earned Runs (ER):", value=2.5, step=0.5)
                     res_er = calculate_poisson_prob(predictions['er'], line_er)
-                    st.write(f"🟢 **OVER {line_er}:** {res_er['prob_over']}% | 🔴 **UNDER {line_er}:** {res_er['prob_under']}%")
+                    st.success(f"🟢 **OVER {line_er}:** {res_er['prob_over']}%")
+                    st.error(f"🔴 **UNDER {line_er}:** {res_er['prob_under']}%")
+                    
             else:
-                st.warning("Data riwayat untuk kombinasi Pitcher atau Lineup Tim Lawan tidak ditemukan di database CSV lokal Anda.")
+                st.warning(f"Data Hitter Splits untuk tim {singkatan_lawan} tidak ditemukan.")
+        else:
+            st.warning(f"Data historis untuk pitcher **{nama_pitcher}** tidak ditemukan di master_pitcher_2026.csv.")
     else:
-        st.info("Tidak ada jadwal pertandingan aktif yang dimuat untuk hari ini.")
+        st.info("Jadwal belum dimuat atau tidak ada jadwal hari ini.")
