@@ -1,15 +1,28 @@
 {
-    "": {
+    "Brandon Sproat": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 5.16,
+            "HR/9": 1.65,
+            "FB%": 50.7,
+            "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 5.16,
+            "HR/9": 1.65,
+            "Starts": 18
+        }
+    },
+    "Braxton Ashcraft": {
+        "season": {
+            "ERA": 3.49,
+            "HR/9": 1.11,
+            "FB%": 49.8,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.49,
+            "HR/9": 1.11,
+            "Starts": 19
         }
     },
     "Shane Drohan": {
@@ -129,17 +142,30 @@
             "Starts": 19
         }
     },
-    "Miles Mikolas": {
+    "PJ Poulin": {
         "season": {
-            "ERA": 5.78,
-            "HR/9": 1.99,
-            "FB%": 50.5,
-            "Status": "Vulnerable"
+            "ERA": 2.83,
+            "HR/9": 1.03,
+            "FB%": 49.4,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 5.78,
-            "HR/9": 1.99,
-            "Starts": 19
+            "ERA": 2.83,
+            "HR/9": 1.03,
+            "Starts": 34
+        }
+    },
+    "Eduardo Rivera": {
+        "season": {
+            "ERA": 0.0,
+            "HR/9": 0.0,
+            "FB%": 33.3,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 0.0,
+            "HR/9": 0.0,
+            "Starts": 1
         }
     },
     "Freddy Peralta": {

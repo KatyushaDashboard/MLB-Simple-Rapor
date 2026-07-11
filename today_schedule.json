@@ -3,9 +3,9 @@
         "game_id": 823357,
         "away_team": "Milwaukee Brewers",
         "home_team": "Pittsburgh Pirates",
-        "away_pitcher": "",
-        "home_pitcher": "",
-        "status": "Scheduled"
+        "away_pitcher": "Brandon Sproat",
+        "home_pitcher": "Braxton Ashcraft",
+        "status": "Player challenge"
     },
     {
         "game_id": 823356,
@@ -21,7 +21,7 @@
         "home_team": "Minnesota Twins",
         "away_pitcher": "Ryan Johnson",
         "home_pitcher": "Joe Ryan",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824576,
@@ -29,7 +29,7 @@
         "home_team": "Chicago White Sox",
         "away_pitcher": "Gage Jump",
         "home_pitcher": "Bryan Hudson",
-        "status": "Scheduled"
+        "status": "Warmup"
     },
     {
         "game_id": 823198,
@@ -37,23 +37,23 @@
         "home_team": "San Francisco Giants",
         "away_pitcher": "Kyle Freeland",
         "home_pitcher": "Tyler Mahle",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822711,
         "away_team": "New York Yankees",
         "home_team": "Washington Nationals",
         "away_pitcher": "Cam Schlittler",
-        "home_pitcher": "Miles Mikolas",
-        "status": "Scheduled"
+        "home_pitcher": "PJ Poulin",
+        "status": "Pre-Game"
     },
     {
         "game_id": 823603,
         "away_team": "Boston Red Sox",
         "home_team": "New York Mets",
-        "away_pitcher": "",
+        "away_pitcher": "Eduardo Rivera",
         "home_pitcher": "Freddy Peralta",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822953,
@@ -61,7 +61,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Logan Gilbert",
         "home_pitcher": "Griffin Jax",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823844,
@@ -69,7 +69,7 @@
         "home_team": "Miami Marlins",
         "away_pitcher": "Tanner Bibee",
         "home_pitcher": "Eury P\u00e9rez",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824249,
