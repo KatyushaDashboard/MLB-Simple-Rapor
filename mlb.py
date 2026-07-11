@@ -1772,5 +1772,3 @@ with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
                     
             else:
                 st.warning(f"Data Lineup untuk tim {singkatan_lawan} tidak ditemukan (cek kolom Team_Full).")
-        else:
-            st.warning(f"Data historis untuk pitcher **{nama_pitcher}** tidak ditemukan di master_pitcher_2026.csv (Pastikan ejaan cocok).")
