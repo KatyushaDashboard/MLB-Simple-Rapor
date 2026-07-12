@@ -5,7 +5,7 @@
         "home_team": "Pittsburgh Pirates",
         "away_pitcher": "Robert Gasser",
         "home_pitcher": "Paul Skenes",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824814,
@@ -13,7 +13,7 @@
         "home_team": "Baltimore Orioles",
         "away_pitcher": "Seth Lugo",
         "home_pitcher": "Shane Baz",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822708,
@@ -29,7 +29,7 @@
         "home_team": "Cincinnati Reds",
         "away_pitcher": "Matthew Boyd",
         "home_pitcher": "Andrew Abbott",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823602,
@@ -45,7 +45,7 @@
         "home_team": "Tampa Bay Rays",
         "away_pitcher": "Emerson Hancock",
         "home_pitcher": "Ian Seymour",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824250,
@@ -53,7 +53,7 @@
         "home_team": "Detroit Tigers",
         "away_pitcher": "Zack Wheeler",
         "home_pitcher": "Tarik Skubal",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823842,
