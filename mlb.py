@@ -1661,6 +1661,56 @@ with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
                 }, inplace=True)
 
                 st.data_editor(df_clean_p, use_container_width=True, hide_index=True, disabled=True)
+
+# --- FUNGSI KALKULATOR +EV OTOMATIS ---
+def calculate_implied_prob(odds):
+    """Mengonversi American/Decimal Odds menjadi Implied Probability (%)"""
+    try:
+        odds = float(odds)
+        if odds >= 100:     # American Positif (misal +150)
+            return (100 / (odds + 100)) * 100
+        elif odds <= -100:  # American Negatif (misal -130)
+            return (abs(odds) / (abs(odds) + 100)) * 100
+        elif odds > 1.0:    # Decimal (misal 1.90)
+            return (1 / odds) * 100
+        else:
+            return 0.0
+    except:
+        return 0.0
+
+def render_ev_calculator(prop_name, model_expected, default_line):
+    """Me-render UI 3 Kolom untuk input Odds dan output +EV"""
+    st.markdown(f"**{prop_name}** (Proyeksi Model: **{round(model_expected, 2)}**)")
+    
+    # Input 3 Kolom: Line, Odds Over, Odds Under
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c1:
+        line_val = st.number_input("Line Bandar", value=default_line, step=0.5, key=f"l_{prop_name}")
+    with c2:
+        odds_over = st.number_input("Odds OVER", value=-110, step=10, key=f"oo_{prop_name}")
+    with c3:
+        odds_under = st.number_input("Odds UNDER", value=-110, step=10, key=f"ou_{prop_name}")
+        
+    # Hitung Probabilitas Model dengan Poisson
+    prob = calculate_poisson_prob(model_expected, line_val)
+    
+    # Hitung Implied Prob Bandar
+    bookie_prob_over = calculate_implied_prob(odds_over)
+    bookie_prob_under = calculate_implied_prob(odds_under)
+    
+    # Hitung Edge (Selisih)
+    edge_over = prob['prob_over'] - bookie_prob_over
+    edge_under = prob['prob_under'] - bookie_prob_under
+    
+    # Format Visual Output
+    stat_o = f"🔥 **+EV (+{edge_over:.1f}%)**" if edge_over > 0 else f"⚠️ -EV ({edge_over:.1f}%)"
+    stat_u = f"🔥 **+EV (+{edge_under:.1f}%)**" if edge_under > 0 else f"⚠️ -EV ({edge_under:.1f}%)"
+    
+    # Tampilkan Kesimpulan
+    st.info(f"📈 **OVER {line_val}:** Model **{prob['prob_over']}%** | Bandar **{bookie_prob_over:.1f}%** ➡️ {stat_o}")
+    st.info(f"📉 **UNDER {line_val}:** Model **{prob['prob_under']}%** | Bandar **{bookie_prob_under:.1f}%** ➡️ {stat_u}")
+    st.markdown("---")
+# ------------------------------------------
 ## ====================================================================
 # TAB 10: PITCHER PROJECTION (PREDICTIVE +EV)
 # ====================================================================
@@ -1724,31 +1774,27 @@ with tabs[10]: # Indeks ke-9 karena ini Tab 10
                     c3.metric("Proyeksi Strikeout (K)", f"{round(res['k'], 1)}")
                     c4.metric("Proyeksi Earned Runs (ER)", f"{round(res['er'], 1)}")
                     
-                    st.markdown("### 🧮 Kalkulator Bandar (Poisson Distribution)")
-                    line_col1, line_col2 = st.columns(2)
-                    with line_col1:
-                        line_k = st.number_input("Line Strikeout (K):", value=5.5, step=0.5)
-                        prob_k = calculate_poisson_prob(res['k'], line_k)
-                        st.write(f"🟢 **OVER {line_k}:** {prob_k['prob_over']}% | 🔴 **UNDER:** {prob_k['prob_under']}%")
-                    with line_col2:
-                        line_er = st.number_input("Line Earned Runs (ER):", value=2.5, step=0.5)
-                        prob_er = calculate_poisson_prob(res['er'], line_er)
-                        st.write(f"🟢 **OVER {line_er}:** {prob_er['prob_over']}% | 🔴 **UNDER:** {prob_er['prob_under']}%")
-                    # --- BARIS 2: OUTS & HITS ALLOWED ---
-                    line_col3, line_col4 = st.columns(2)
-                    with line_col3:
-                        # Nilai default 15.5 berarti bandar memprediksi pitcher bertahan sedikit lebih dari 5 Inning (15 Outs)
-                        line_outs = st.number_input("Line Pitching Outs:", value=17.5, step=0.5)
-                        prob_outs = calculate_poisson_prob(res['outs'], line_outs)
-                        st.write(f"🟢 **OVER {line_outs}:** {prob_outs['prob_over']}% | 🔴 **UNDER:** {prob_outs['prob_under']}%")
-                    with line_col4:
-                        line_hits = st.number_input("Line Hits Allowed:", value=4.5, step=0.5)
-                        prob_hits = calculate_poisson_prob(res['hits'], line_hits)
-                        st.write(f"🟢 **OVER {line_hits}:** {prob_hits['prob_over']}% | 🔴 **UNDER:** {prob_hits['prob_under']}%")
+                    # ... [KODE SEBELUMNYA: c4.metric("Proyeksi Earned Runs (ER)", f"{round(res['er'], 1)} ER")]
+                    
+                    st.markdown("---")
+                    st.markdown("### 🧮 Mesin EV: Komparasi Model vs Bandar")
+                    st.write("Masukkan Line dan Odds (American atau Desimal) dari Sportsbook Anda untuk menemukan +EV.")
+                    
+                    # Kolom Kiri: Strikeout & Outs
+                    col_left, col_right = st.columns(2)
+                    
+                    with col_left:
+                        render_ev_calculator("Strikeouts (K)", res['k'], 5.5)
+                        render_ev_calculator("Pitching Outs", res['outs'], 15.5)
+                        
+                    with col_right:
+                        render_ev_calculator("Earned Runs (ER)", res['er'], 2.5)
+                        render_ev_calculator("Hits Allowed", res['hits'], 4.5)
+                        
                 else:
                     st.warning(f"Lineup tim {singkatan_lawan} tidak ditemukan di CSV Splits.")
             except Exception as e:
-                st.error(f"Gagal memuat file CSV Splits (hitter_vs_rhp/lhp.csv): {e}")
+                st.error(f"Gagal memuat file CSV Splits: {e}")
         else:
             st.error(f"❌ Pitcher '{pitcher_name}' tidak ditemukan di master_pitcher_2026.csv.")
     else:
