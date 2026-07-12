@@ -1661,58 +1661,84 @@ with tabs[9]: # Sesuaikan nama variabel tab lu, misal tab10 atau tabs[9]
                 }, inplace=True)
 
                 st.data_editor(df_clean_p, use_container_width=True, hide_index=True, disabled=True)
+## ====================================================================
+# TAB 10: PITCHER PROJECTION (PREDICTIVE +EV)
 # ====================================================================
-# TAB 11: MODELLING TEST
-# ===================================================================
-with tabs[10]: # Sesuaikan nama variabel tab lu, misal tab9 atau tabs[8]
+with tabs[10]: # Indeks ke-9 karena ini Tab 10
     st.header("🔮 Pitcher Props Predictive Analytics")
     
-    if data_siap and jadwal_hari_ini:
-        # 1. Pilih Pertandingan
-        opsi_match = [f"{g['away_team']} @ {g['home_team']} (ID: {g['game_id']})" for g in jadwal_hari_ini]
-        pilihan_user = st.selectbox("🎯 Pilih Pertandingan:", opsi_match)
+    if isinstance(today_schedule, list) and len(today_schedule) > 0:
+        # Pilihan Game
+        opsi_match = [f"{g['away_team']} @ {g['home_team']}" for g in today_schedule]
+        pilihan_user = st.selectbox("🎯 Pilih Pertandingan:", opsi_match, key="pred_match")
         idx = opsi_match.index(pilihan_user)
-        game = jadwal_hari_ini[idx]
+        game = today_schedule[idx]
         
-        # 2. Pilih Pitcher (Didefinisikan DI DALAM tab)
-        pilihan = st.radio("Pilih Pitcher:", [f"{game['away_pitcher']} (Away)", f"{game['home_pitcher']} (Home)"])
-        pitcher_name = pilihan.split(" (")[0].strip() # Ambil nama, hilangkan spasi
-        
-        # Debugging aman (hanya muncul saat pitcher_name sudah ada nilainya)
-        st.write(f"Mencari pitcher dengan nama: '{pitcher_name}'") 
+        c_pitch, c_hand = st.columns(2)
+        with c_pitch:
+            pilihan = st.radio("⚾ Pilih Pitcher:", [
+                f"{game['away_pitcher']} (Away)", 
+                f"{game['home_pitcher']} (Home)"
+            ])
+            pitcher_name = pilihan.split(" (")[0].strip()
+            
+        with c_hand:
+            # OVERRIDE MANUAL: Di master_pitcher CSV tidak ada kolom LHP/RHP!
+            hand_type = st.radio("Tangan Pelempar (RHP/LHP):", ["RHP (Kanan)", "LHP (Kidal)"])
         
         tim_lawan = game['home_team'] if "Away" in pilihan else game['away_team']
-        singkatan_lawan = nama_ke_singkatan.get(tim_lawan, tim_lawan)
+        # Gunakan TEAM_MAPPING yang sudah didefinisikan di mlb.py Anda
+        singkatan_lawan = TEAM_MAPPING.get(tim_lawan, tim_lawan) 
         
-        # 3. Pencarian Pitcher (Gunakan filter yang bersih)
-        # Pastikan kolom di csv Anda adalah 'Name' (N kapital)
-        pitcher_row = df_pitchers[df_pitchers['Name'].astype(str).str.strip().str.lower() == pitcher_name.lower()]
+        # PENCARIAN PITCHER (Brute-Force Loop - SUPER AMAN DARI ERROR STRING)
+        p_data = None
+        for _, row in df_pitchers.iterrows():
+            if str(row['Name']).strip().lower() == pitcher_name.lower():
+                p_data = row
+                break
         
-        if not pitcher_row.empty:
-            p_data = pitcher_row.iloc[0]
+        if p_data is not None:
+            st.success(f"✅ Data Pitcher Ditemukan: {p_data['Name']} (ERA: {p_data.get('ERA', '-')})")
             
-            # Tentukan split (Gunakan kolom Hand)
-            hand_type = p_data.get('Hand', 'R')
-            df_split = df_h_lhp if hand_type == 'L' else df_h_rhp
-            
-            # Filter Lineup (Gunakan kolom Team_Full)
-            lineup = df_split[df_split['Team_Full'].astype(str).str.strip() == singkatan_lawan.strip()]
-            
-            if not lineup.empty:
-                # 4. Kalkulasi (Pastikan df_hitters ada)
-                res = generate_pitcher_predictions(p_data, lineup, df_master_hitter)
+            # LOAD FILE SPLIT BERDASARKAN TOMBOL MANUAL
+            try:
+                # Load on demand agar tidak berat
+                df_h_lhp = pd.read_csv("hitter_vs_lhp.csv")
+                df_h_rhp = pd.read_csv("hitter_vs_rhp.csv")
                 
-                # Tampilkan Hasil
-                c1, c2 = st.columns(2)
-                c1.metric("Proyeksi K", f"{round(res['k'], 1)}")
-                c2.metric("Proyeksi ER", f"{round(res['er'], 1)}")
+                df_split = df_h_lhp if "LHP" in hand_type else df_h_rhp
                 
-                line_k = st.number_input("Line K:", value=5.5)
-                prob = calculate_poisson_prob(res['k'], line_k)
-                st.write(f"Over {line_k}: {prob['prob_over']}% | Under {line_k}: {prob['prob_under']}%")
-            else:
-                st.warning(f"Data Lineup untuk {singkatan_lawan} tidak ditemukan.")
+                # FILTER LINEUP (Menggunakan 'Team_Full' seperti struktur riil di CSV Anda)
+                lineup = df_split[df_split['Team_Full'].astype(str).str.strip().str.upper() == singkatan_lawan.upper()]
+                
+                if not lineup.empty:
+                    st.info(f"✅ Data Lineup {singkatan_lawan} vs {hand_type[:3]} Ditemukan ({len(lineup)} pemukul)")
+                    
+                    # EKSEKUSI MODEL!
+                    res = generate_pitcher_predictions(p_data, lineup, df_hitters)
+                    
+                    st.markdown("### 📊 Hasil Proyeksi Model")
+                    c1, c2, c3, c4 = st.columns(4)
+                    c1.metric("Est. Outs", f"{round(res['outs'], 1)}")
+                    c2.metric("Est. Batters Faced", f"{round(res['tbf'], 1)}")
+                    c3.metric("Proyeksi Strikeout (K)", f"{round(res['k'], 1)}")
+                    c4.metric("Proyeksi Earned Runs (ER)", f"{round(res['er'], 1)}")
+                    
+                    st.markdown("### 🧮 Kalkulator Bandar (Poisson Distribution)")
+                    line_col1, line_col2 = st.columns(2)
+                    with line_col1:
+                        line_k = st.number_input("Line Strikeout (K):", value=5.5, step=0.5)
+                        prob_k = calculate_poisson_prob(res['k'], line_k)
+                        st.write(f"🟢 **OVER {line_k}:** {prob_k['prob_over']}% | 🔴 **UNDER:** {prob_k['prob_under']}%")
+                    with line_col2:
+                        line_er = st.number_input("Line Earned Runs (ER):", value=2.5, step=0.5)
+                        prob_er = calculate_poisson_prob(res['er'], line_er)
+                        st.write(f"🟢 **OVER {line_er}:** {prob_er['prob_over']}% | 🔴 **UNDER:** {prob_er['prob_under']}%")
+                else:
+                    st.warning(f"Lineup tim {singkatan_lawan} tidak ditemukan di CSV Splits.")
+            except Exception as e:
+                st.error(f"Gagal memuat file CSV Splits (hitter_vs_rhp/lhp.csv): {e}")
         else:
-            st.warning(f"Pitcher '{pitcher_name}' tidak ditemukan di database.")
+            st.error(f"❌ Pitcher '{pitcher_name}' tidak ditemukan di master_pitcher_2026.csv.")
     else:
-        st.info("Jadwal hari ini belum dimuat.")
+        st.info("Jadwal hari ini belum dimuat dari today_schedule.json.")
