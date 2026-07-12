@@ -1734,6 +1734,17 @@ with tabs[10]: # Indeks ke-9 karena ini Tab 10
                         line_er = st.number_input("Line Earned Runs (ER):", value=2.5, step=0.5)
                         prob_er = calculate_poisson_prob(res['er'], line_er)
                         st.write(f"🟢 **OVER {line_er}:** {prob_er['prob_over']}% | 🔴 **UNDER:** {prob_er['prob_under']}%")
+                    # --- BARIS 2: OUTS & HITS ALLOWED ---
+                    line_col3, line_col4 = st.columns(2)
+                    with line_col3:
+                        # Nilai default 15.5 berarti bandar memprediksi pitcher bertahan sedikit lebih dari 5 Inning (15 Outs)
+                        line_outs = st.number_input("Line Pitching Outs:", value=17.5, step=0.5)
+                        prob_outs = calculate_poisson_prob(res['outs'], line_outs)
+                        st.write(f"🟢 **OVER {line_outs}:** {prob_outs['prob_over']}% | 🔴 **UNDER:** {prob_outs['prob_under']}%")
+                    with line_col4:
+                        line_hits = st.number_input("Line Hits Allowed:", value=4.5, step=0.5)
+                        prob_hits = calculate_poisson_prob(res['hits'], line_hits)
+                        st.write(f"🟢 **OVER {line_hits}:** {prob_hits['prob_over']}% | 🔴 **UNDER:** {prob_hits['prob_under']}%")
                 else:
                     st.warning(f"Lineup tim {singkatan_lawan} tidak ditemukan di CSV Splits.")
             except Exception as e:
