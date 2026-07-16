@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "game_id": 823440,
+        "away_team": "New York Mets",
+        "home_team": "Philadelphia Phillies",
+        "away_pitcher": "Christian Scott",
+        "home_pitcher": "Aaron Nola",
+        "status": "Scheduled"
+    }
+]

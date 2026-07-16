@@ -1,28 +1,28 @@
 {
-    "Dylan Cease": {
+    "Christian Scott": {
         "season": {
-            "ERA": 2.56,
-            "HR/9": 0.46,
-            "FB%": 49.6,
+            "ERA": 3.17,
+            "HR/9": 1.17,
+            "FB%": 62.4,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.56,
-            "HR/9": 0.46,
-            "Starts": 17
+            "ERA": 3.17,
+            "HR/9": 1.17,
+            "Starts": 12
         }
     },
-    "Cristopher S\u00e1nchez": {
+    "Aaron Nola": {
         "season": {
-            "ERA": 2.62,
-            "HR/9": 0.85,
-            "FB%": 38.2,
-            "Status": "Elite"
+            "ERA": 5.75,
+            "HR/9": 1.86,
+            "FB%": 53.6,
+            "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 2.62,
-            "HR/9": 0.85,
-            "Starts": 20
+            "ERA": 5.75,
+            "HR/9": 1.86,
+            "Starts": 19
         }
     }
 }
