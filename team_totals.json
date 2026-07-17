@@ -1,10 +1,8 @@
 {
-    "Tampa Bay Rays": 4.15,
-    "Boston Red Sox": 4.15,
+    "Tampa Bay Rays": 0.0,
+    "Boston Red Sox": 3.82,
     "Los Angeles Dodgers": 4.04,
     "New York Yankees": 5.33,
-    "Pittsburgh Pirates": 3.81,
-    "Cleveland Guardians": 4.37,
     "Texas Rangers": 2.2,
     "Atlanta Braves": 3.11,
     "Chicago White Sox": 2.85,
@@ -24,7 +22,9 @@
     "Washington Nationals": 3.51,
     "Athletics": 3.83,
     "St. Louis Cardinals": 5.38,
-    "Arizona Diamondbacks": 4.15,
+    "Arizona Diamondbacks": 3.01,
     "San Francisco Giants": 2.18,
-    "Seattle Mariners": 4.27
+    "Seattle Mariners": 4.27,
+    "Pittsburgh Pirates": 3.81,
+    "Cleveland Guardians": 4.37
 }

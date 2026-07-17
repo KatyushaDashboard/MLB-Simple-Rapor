@@ -1,41 +1,54 @@
 {
     "Griffin Jax": {
         "season": {
-            "ERA": 3.47,
-            "HR/9": 1.54,
-            "FB%": 48.8,
-            "Status": "Elite"
+            "ERA": 4.08,
+            "HR/9": 1.56,
+            "FB%": 49.3,
+            "Status": "Average"
         },
         "l45": {
-            "ERA": 3.47,
-            "HR/9": 1.54,
-            "Starts": 25
+            "ERA": 4.08,
+            "HR/9": 1.56,
+            "Starts": 26
         }
     },
     "Jake Bennett": {
         "season": {
-            "ERA": 2.64,
-            "HR/9": 0.57,
-            "FB%": 48.5,
+            "ERA": 2.35,
+            "HR/9": 0.5,
+            "FB%": 51.7,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.64,
-            "HR/9": 0.57,
-            "Starts": 8
+            "ERA": 2.35,
+            "HR/9": 0.5,
+            "Starts": 9
         }
     },
-    "": {
+    "Mason Englert": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
+            "ERA": 3.82,
+            "HR/9": 1.76,
+            "FB%": 68.3,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 3.82,
+            "HR/9": 1.76,
+            "Starts": 13
+        }
+    },
+    "Eduardo Rivera": {
+        "season": {
+            "ERA": 0.0,
+            "HR/9": 0.0,
+            "FB%": 50.0,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 0.0,
+            "HR/9": 0.0,
+            "Starts": 2
         }
     },
     "Roki Sasaki": {
@@ -62,32 +75,6 @@
             "ERA": 4.04,
             "HR/9": 1.47,
             "Starts": 9
-        }
-    },
-    "Jared Jones": {
-        "season": {
-            "ERA": 4.37,
-            "HR/9": 1.29,
-            "FB%": 50.8,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.37,
-            "HR/9": 1.29,
-            "Starts": 8
-        }
-    },
-    "Gavin Williams": {
-        "season": {
-            "ERA": 3.81,
-            "HR/9": 1.35,
-            "FB%": 44.6,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.81,
-            "HR/9": 1.35,
-            "Starts": 19
         }
     },
     "Cal Quantrill": {
@@ -324,6 +311,19 @@
             "Starts": 9
         }
     },
+    "Michael McGreevy": {
+        "season": {
+            "ERA": 3.01,
+            "HR/9": 1.15,
+            "FB%": 48.0,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.01,
+            "HR/9": 1.15,
+            "Starts": 18
+        }
+    },
     "Merrill Kelly": {
         "season": {
             "ERA": 5.38,
@@ -361,6 +361,32 @@
             "ERA": 2.18,
             "HR/9": 1.25,
             "Starts": 10
+        }
+    },
+    "Jared Jones": {
+        "season": {
+            "ERA": 4.37,
+            "HR/9": 1.29,
+            "FB%": 50.8,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.37,
+            "HR/9": 1.29,
+            "Starts": 8
+        }
+    },
+    "Gavin Williams": {
+        "season": {
+            "ERA": 3.81,
+            "HR/9": 1.35,
+            "FB%": 44.6,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.81,
+            "HR/9": 1.35,
+            "Starts": 19
         }
     }
 }

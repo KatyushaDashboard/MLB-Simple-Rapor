@@ -5,15 +5,15 @@
         "home_team": "Boston Red Sox",
         "away_pitcher": "Griffin Jax",
         "home_pitcher": "Jake Bennett",
-        "status": "Scheduled"
+        "status": "Final"
     },
     {
         "game_id": 824737,
         "away_team": "Tampa Bay Rays",
         "home_team": "Boston Red Sox",
-        "away_pitcher": "",
-        "home_pitcher": "",
-        "status": "Scheduled"
+        "away_pitcher": "Mason Englert",
+        "home_pitcher": "Eduardo Rivera",
+        "status": "Pre-Game"
     },
     {
         "game_id": 823524,
@@ -21,15 +21,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Roki Sasaki",
         "home_pitcher": "Gerrit Cole",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824414,
-        "away_team": "Pittsburgh Pirates",
-        "home_team": "Cleveland Guardians",
-        "away_pitcher": "Jared Jones",
-        "home_pitcher": "Gavin Williams",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824901,
@@ -37,7 +29,7 @@
         "home_team": "Atlanta Braves",
         "away_pitcher": "Cal Quantrill",
         "home_pitcher": "Chris Sale",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822789,
@@ -45,7 +37,7 @@
         "home_team": "Toronto Blue Jays",
         "away_pitcher": "Anthony Kay",
         "home_pitcher": "Spencer Miles",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 823766,
@@ -53,7 +45,7 @@
         "home_team": "Milwaukee Brewers",
         "away_pitcher": "Sandy Alcantara",
         "home_pitcher": "Logan Henderson",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824655,
@@ -61,7 +53,7 @@
         "home_team": "Chicago Cubs",
         "away_pitcher": "Bailey Ober",
         "home_pitcher": "Colin Rea",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824170,
@@ -69,7 +61,7 @@
         "home_team": "Houston Astros",
         "away_pitcher": "Dean Kremer",
         "home_pitcher": "Peter Lambert",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824090,
@@ -77,7 +69,7 @@
         "home_team": "Kansas City Royals",
         "away_pitcher": "Michael King",
         "home_pitcher": "Seth Lugo",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824332,
@@ -85,7 +77,7 @@
         "home_team": "Colorado Rockies",
         "away_pitcher": "Brady Singer",
         "home_pitcher": "Gabriel Hughes",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824009,
@@ -107,7 +99,7 @@
         "game_id": 825060,
         "away_team": "St. Louis Cardinals",
         "home_team": "Arizona Diamondbacks",
-        "away_pitcher": "",
+        "away_pitcher": "Michael McGreevy",
         "home_pitcher": "Merrill Kelly",
         "status": "Scheduled"
     },
@@ -118,5 +110,13 @@
         "away_pitcher": "Landen Roupp",
         "home_pitcher": "Bryce Miller",
         "status": "Scheduled"
+    },
+    {
+        "game_id": 824414,
+        "away_team": "Pittsburgh Pirates",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Jared Jones",
+        "home_pitcher": "Gavin Williams",
+        "status": "Postponed"
     }
 ]
