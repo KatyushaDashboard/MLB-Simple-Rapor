@@ -1,130 +1,130 @@
 [
     {
-        "game_id": 824414,
-        "away_team": "Pittsburgh Pirates",
-        "home_team": "Cleveland Guardians",
-        "away_pitcher": "Jared Jones",
-        "home_pitcher": "Gavin Williams",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824412,
-        "away_team": "Pittsburgh Pirates",
-        "home_team": "Cleveland Guardians",
-        "away_pitcher": "",
-        "home_pitcher": "Logan Allen",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824657,
-        "away_team": "Minnesota Twins",
-        "home_team": "Chicago Cubs",
-        "away_pitcher": "Taj Bradley",
-        "home_pitcher": "Matthew Boyd",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 822790,
+        "game_id": 822786,
         "away_team": "Chicago White Sox",
         "home_team": "Toronto Blue Jays",
-        "away_pitcher": "Davis Martin",
-        "home_pitcher": "Shane Bieber",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824331,
-        "away_team": "Cincinnati Reds",
-        "home_team": "Colorado Rockies",
-        "away_pitcher": "Rhett Lowder",
-        "home_pitcher": "Tomoyuki Sugano",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 823441,
-        "away_team": "New York Mets",
-        "home_team": "Philadelphia Phillies",
-        "away_pitcher": "Sean Manaea",
-        "home_pitcher": "Jes\u00fas Luzardo",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824169,
-        "away_team": "Baltimore Orioles",
-        "home_team": "Houston Astros",
-        "away_pitcher": "Trevor Rogers",
-        "home_pitcher": "Spencer Arrighetti",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824088,
-        "away_team": "San Diego Padres",
-        "home_team": "Kansas City Royals",
-        "away_pitcher": "Griffin Canning",
-        "home_pitcher": "Randy Dobnak",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 825059,
-        "away_team": "St. Louis Cardinals",
-        "home_team": "Arizona Diamondbacks",
-        "away_pitcher": "Dustin May",
-        "home_pitcher": "Brandon Pfaadt",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824738,
-        "away_team": "Tampa Bay Rays",
-        "home_team": "Boston Red Sox",
-        "away_pitcher": "Ian Seymour",
-        "home_pitcher": "Patrick Sandoval",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 824899,
-        "away_team": "Texas Rangers",
-        "home_team": "Atlanta Braves",
-        "away_pitcher": "MacKenzie Gore",
-        "home_pitcher": "Owen Murphy",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 823763,
-        "away_team": "Miami Marlins",
-        "home_team": "Milwaukee Brewers",
-        "away_pitcher": "Max Meyer",
-        "home_pitcher": "Shane Drohan",
-        "status": "Scheduled"
-    },
-    {
-        "game_id": 823116,
-        "away_team": "San Francisco Giants",
-        "home_team": "Seattle Mariners",
-        "away_pitcher": "Logan Webb",
-        "home_pitcher": "Bryan Woo",
+        "away_pitcher": "Sean Burke",
+        "home_pitcher": "Trey Yesavage",
         "status": "Scheduled"
     },
     {
         "game_id": 823523,
         "away_team": "Los Angeles Dodgers",
         "home_team": "New York Yankees",
-        "away_pitcher": "Emmet Sheehan",
-        "home_pitcher": "Ryan Weathers",
+        "away_pitcher": "Yoshinobu Yamamoto",
+        "home_pitcher": "Cam Schlittler",
         "status": "Scheduled"
     },
     {
-        "game_id": 824979,
+        "game_id": 823521,
+        "away_team": "Los Angeles Dodgers",
+        "home_team": "New York Yankees",
+        "away_pitcher": "",
+        "home_pitcher": "",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824739,
+        "away_team": "Tampa Bay Rays",
+        "home_team": "Boston Red Sox",
+        "away_pitcher": "Shane McClanahan",
+        "home_pitcher": "Sonny Gray",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 823439,
+        "away_team": "New York Mets",
+        "home_team": "Philadelphia Phillies",
+        "away_pitcher": "Nolan McLean",
+        "home_pitcher": "Alan Rangel",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824897,
+        "away_team": "Texas Rangers",
+        "home_team": "Atlanta Braves",
+        "away_pitcher": "Nathan Eovaldi",
+        "home_pitcher": "Grant Holmes",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824411,
+        "away_team": "Pittsburgh Pirates",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Paul Skenes",
+        "home_pitcher": "Joey Cantillo",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824168,
+        "away_team": "Baltimore Orioles",
+        "home_team": "Houston Astros",
+        "away_pitcher": "Brandon Young",
+        "home_pitcher": "Hunter Brown",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824086,
+        "away_team": "San Diego Padres",
+        "home_team": "Kansas City Royals",
+        "away_pitcher": "Germ\u00e1n M\u00e1rquez",
+        "home_pitcher": "Noah Cameron",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 823764,
+        "away_team": "Miami Marlins",
+        "home_team": "Milwaukee Brewers",
+        "away_pitcher": "Eury P\u00e9rez",
+        "home_pitcher": "Robert Gasser",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824653,
+        "away_team": "Minnesota Twins",
+        "home_team": "Chicago Cubs",
+        "away_pitcher": "Zebby Matthews",
+        "home_pitcher": "Shota Imanaga",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824330,
+        "away_team": "Cincinnati Reds",
+        "home_team": "Colorado Rockies",
+        "away_pitcher": "Hunter Greene",
+        "home_pitcher": "Ryan Feltner",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 824978,
         "away_team": "Washington Nationals",
         "home_team": "Athletics",
-        "away_pitcher": "Zack Littell",
-        "home_pitcher": "J.T. Ginn",
+        "away_pitcher": "Foster Griffin",
+        "home_pitcher": "Jacob Lopez",
         "status": "Scheduled"
     },
     {
-        "game_id": 824008,
+        "game_id": 824007,
         "away_team": "Detroit Tigers",
         "home_team": "Los Angeles Angels",
-        "away_pitcher": "Tarik Skubal",
-        "home_pitcher": "Grayson Rodriguez",
+        "away_pitcher": "Casey Mize",
+        "home_pitcher": "Ryan Johnson",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 823113,
+        "away_team": "San Francisco Giants",
+        "home_team": "Seattle Mariners",
+        "away_pitcher": "Robbie Ray",
+        "home_pitcher": "Logan Gilbert",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 825057,
+        "away_team": "St. Louis Cardinals",
+        "home_team": "Arizona Diamondbacks",
+        "away_pitcher": "Andre Pallante",
+        "home_pitcher": "Eduardo Rodriguez",
         "status": "Scheduled"
     }
 ]
