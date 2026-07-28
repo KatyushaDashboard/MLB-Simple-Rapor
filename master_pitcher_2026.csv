@@ -1,24 +1,29 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-George Kirby,Seattle Mariners,19,8,8,3.57,116.0,8.07,1.94,9.62,0.85,1.28,0.276,48.6
-Kumar Rocker,Texas Rangers,17,3,8,4.13,96.0,8.06,3.38,8.44,1.12,1.31,0.244,50.5
-Kyle Bradish,Baltimore Orioles,20,7,9,3.49,113.3,8.74,4.05,7.86,0.95,1.32,0.235,41.9
-Keider Montero,Detroit Tigers,16,7,5,3.14,106.0,6.62,1.87,6.79,0.85,0.96,0.206,55.9
-Merrill Kelly,Arizona Diamondbacks,18,8,8,5.12,103.7,5.64,3.56,9.72,1.91,1.48,0.279,52.6
-Mitch Keller,Pittsburgh Pirates,20,6,7,4.9,108.3,6.9,3.07,8.72,1.08,1.31,0.252,55.0
-Zack Wheeler,Philadelphia Phillies,16,10,2,2.16,100.0,10.53,1.98,5.94,0.99,0.88,0.186,48.0
-Tyler Phillips,Miami Marlins,10,2,5,3.52,79.3,6.58,4.08,8.39,1.02,1.39,0.245,46.8
-Max Scherzer,Toronto Blue Jays,6,1,4,10.23,22.0,5.73,4.5,11.05,3.68,1.73,0.303,67.3
-Andrew Alvarez,Washington Nationals,7,2,3,4.22,53.3,9.28,4.22,9.28,0.34,1.5,0.27,35.4
 Slade Cecconi,Cleveland Guardians,20,4,7,4.6,103.7,7.12,2.95,10.07,1.3,1.45,0.282,48.6
 Chase Burns,Cincinnati Reds,19,12,1,2.42,107.7,10.37,3.26,6.69,1.0,1.11,0.204,59.8
-Martín Pérez,Atlanta Braves,15,6,6,3.38,85.3,6.86,3.8,6.96,1.05,1.2,0.216,45.6
-Zac Thornton,New York Mets,4,1,1,1.93,23.3,6.56,2.31,5.4,0.39,0.86,0.175,58.0
-Max Fried,New York Yankees,11,4,3,2.97,66.7,7.7,2.7,5.94,0.14,0.96,0.19,48.9
-Noah Schultz,Chicago White Sox,12,3,7,6.04,56.7,7.78,4.61,8.58,1.43,1.46,0.252,55.7
-David Peterson,Chicago Cubs,12,5,7,5.97,89.0,7.48,3.84,10.21,0.91,1.56,0.281,43.2
-Tatsuya Imai,Houston Astros,14,6,4,5.59,58.0,11.02,5.59,7.6,1.4,1.47,0.227,49.0
-Walbert Ureña,Los Angeles Angels,16,6,7,2.78,87.3,8.55,4.84,6.9,0.52,1.31,0.208,44.3
-Payton Tolle,Boston Red Sox,16,5,6,3.31,89.7,9.64,2.61,7.33,0.9,1.1,0.217,65.1
-Jack Perkins,Athletics,7,2,5,6.75,62.7,10.91,3.45,9.34,1.58,1.42,0.259,61.9
-Brandon Sproat,Milwaukee Brewers,17,3,5,5.09,86.7,9.45,4.47,8.0,1.66,1.38,0.241,52.3
-Tyler Mahle,San Francisco Giants,16,2,9,5.31,83.0,8.35,3.58,9.43,1.41,1.45,0.274,50.3
+Gavin Williams,Cleveland Guardians,21,10,5,3.78,126.3,11.11,2.64,7.27,1.42,1.1,0.219,46.7
+Dean Kremer,Baltimore Orioles,6,1,3,5.06,32.0,9.56,2.25,8.44,2.81,1.19,0.25,51.7
+Troy Melton,Detroit Tigers,10,5,1,1.95,60.0,8.25,2.85,5.7,1.2,0.95,0.178,53.3
+Brandon Pfaadt,Arizona Diamondbacks,8,5,1,4.43,65.0,6.23,2.77,9.14,1.11,1.32,0.261,44.8
+Bubba Chandler,Pittsburgh Pirates,19,3,8,4.47,100.7,8.05,5.01,7.51,0.89,1.39,0.223,60.2
+Griffin Jax,Tampa Bay Rays,16,6,7,3.89,81.0,9.11,3.0,8.0,1.44,1.22,0.242,49.0
+Aaron Nola,Philadelphia Phillies,21,3,8,5.82,108.3,9.3,2.99,10.05,2.08,1.45,0.28,53.7
+Sandy Alcantara,Miami Marlins,22,10,6,4.01,143.7,6.89,2.38,8.71,1.06,1.23,0.253,49.3
+Shane Bieber,Toronto Blue Jays,6,2,1,4.7,30.7,6.46,3.52,9.39,2.05,1.43,0.267,39.4
+Cade Cavalli,Washington Nationals,22,7,4,3.58,110.7,10.33,2.77,8.86,0.73,1.29,0.255,44.9
+Chris Sale,Atlanta Braves,19,11,6,2.19,111.0,10.86,2.11,7.38,0.65,1.05,0.221,51.6
+Christian Scott,New York Mets,14,3,2,3.13,63.3,11.08,4.12,7.25,0.99,1.26,0.215,62.0
+Seth Lugo,Kansas City Royals,21,4,6,4.36,117.7,7.19,2.91,9.41,1.15,1.37,0.274,54.0
+Taj Bradley,Minnesota Twins,20,9,4,3.69,114.7,10.12,3.61,7.38,1.33,1.22,0.219,61.4
+Gerrit Cole,New York Yankees,11,3,5,3.92,62.0,9.58,1.74,8.13,1.6,1.1,0.233,65.3
+Anthony Kay,Chicago White Sox,19,7,4,4.21,98.3,7.32,3.66,8.69,1.28,1.37,0.253,51.4
+Colin Rea,Chicago Cubs,17,7,7,4.85,105.7,6.9,3.24,9.54,1.45,1.42,0.271,47.3
+Peter Lambert,Houston Astros,17,8,5,3.03,98.0,8.63,3.49,6.61,1.01,1.12,0.201,62.4
+Reid Detmers,Los Angeles Angels,21,3,7,4.05,120.0,10.2,2.78,7.12,0.98,1.1,0.214,60.9
+Jake Bennett,Boston Red Sox,10,6,3,2.58,59.3,6.37,1.37,7.13,0.61,0.94,0.22,52.7
+Gage Jump,Athletics,11,3,6,4.42,57.0,9.63,3.32,9.47,1.11,1.42,0.276,59.0
+Michael Lorenzen,Colorado Rockies,21,3,9,6.53,100.7,6.97,3.49,12.61,1.43,1.79,0.327,48.4
+Michael King,San Diego Padres,21,6,7,3.24,119.3,7.77,3.7,6.86,0.83,1.17,0.212,51.7
+Logan Henderson,Milwaukee Brewers,8,4,1,3.05,38.3,11.03,1.64,6.81,1.17,0.94,0.207,67.2
+Landen Roupp,San Francisco Giants,20,7,8,3.93,110.0,9.25,3.68,7.45,0.65,1.24,0.224,39.5
+Luis Castillo,Seattle Mariners,16,3,9,4.85,94.7,7.99,2.85,9.13,1.33,1.33,0.257,55.7
