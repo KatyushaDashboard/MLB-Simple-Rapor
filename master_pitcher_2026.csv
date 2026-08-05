@@ -1,29 +1,30 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Grayson Rodriguez,Los Angeles Angels,10,3,3,7.98,44.0,7.36,4.3,11.45,1.84,1.75,0.315,63.7
-Sean Manaea,New York Mets,9,2,5,4.42,91.7,8.64,2.95,9.13,1.28,1.34,0.262,56.1
-Joey Cantillo,Cleveland Guardians,23,8,6,3.88,113.7,9.82,4.28,8.79,1.03,1.45,0.257,52.7
-J.T. Ginn,Athletics,19,8,6,3.46,109.3,8.23,4.03,6.91,1.07,1.22,0.211,46.3
-Brady Singer,Cincinnati Reds,21,5,10,4.35,107.7,7.61,3.01,9.78,1.76,1.42,0.271,52.0
-Zack Littell,Washington Nationals,14,7,8,4.94,105.7,5.79,2.9,9.2,2.13,1.34,0.263,61.0
-Jesús Luzardo,Philadelphia Phillies,22,9,5,3.57,128.7,10.98,2.87,7.83,0.84,1.19,0.232,40.4
-Hunter Dobbins,St. Louis Cardinals,4,2,1,3.74,33.7,8.55,2.94,9.09,1.07,1.34,0.26,52.3
-Ryan Weathers,New York Yankees,21,4,7,3.99,115.0,9.86,2.58,8.61,1.33,1.24,0.249,48.6
-Davis Martin,Chicago White Sox,21,9,5,3.62,117.0,8.15,2.69,8.69,0.54,1.26,0.255,50.9
-Patrick Sandoval,Boston Red Sox,4,0,0,3.32,19.0,9.47,2.84,11.37,1.42,1.58,0.304,62.9
-Ryan Gusto,Miami Marlins,8,0,2,5.31,39.0,7.85,3.0,9.92,0.92,1.44,0.27,49.4
-Grant Holmes,Atlanta Braves,20,6,4,3.88,102.0,7.68,3.97,8.29,1.59,1.36,0.242,53.7
-Joe Ryan,Minnesota Twins,22,6,7,3.52,120.3,10.1,1.87,8.15,1.27,1.11,0.235,60.7
-Randy Dobnak,Kansas City Royals,3,1,0,1.04,26.0,4.85,3.46,7.27,0.69,1.19,0.219,36.1
-Jared Jones,Pittsburgh Pirates,11,2,2,3.81,52.0,10.04,2.6,6.58,1.21,1.02,0.198,58.8
-Logan Henderson,Milwaukee Brewers,9,5,1,2.66,44.0,11.05,1.84,6.34,1.02,0.91,0.195,63.5
-Tarik Skubal,Los Angeles Dodgers,16,7,5,2.79,96.7,10.8,1.3,6.89,0.93,0.91,0.21,44.0
-Javier Assad,Chicago Cubs,9,6,1,3.75,69.7,6.2,2.33,8.14,1.55,1.16,0.243,49.0
-Blade Tidwell,San Francisco Giants,0,0,0,3.0,12.0,7.5,2.25,7.5,0.75,1.08,0.233,65.2
-MacKenzie Gore,Texas Rangers,23,6,9,4.77,122.7,9.98,3.23,8.07,1.17,1.26,0.235,57.7
-Trey Yesavage,Toronto Blue Jays,17,5,5,3.73,91.7,8.93,4.42,5.99,0.98,1.16,0.188,61.7
-Hayden Wesneski,Houston Astros,1,1,0,4.76,5.7,6.35,3.18,11.12,0.0,1.59,0.333,36.4
-Freddy Peralta,Tampa Bay Rays,22,5,9,4.99,113.7,8.95,3.8,9.5,1.35,1.48,0.264,53.1
-Gabriel Hughes,Colorado Rockies,4,0,3,3.33,24.3,7.77,2.59,8.14,0.0,1.19,0.25,56.2
-Randy Vásquez,San Diego Padres,17,6,6,4.45,95.0,6.06,2.84,10.42,1.33,1.47,0.294,59.7
-Eduardo Rodriguez,Arizona Diamondbacks,4,2,2,2.44,48.0,9.56,3.0,7.5,0.56,1.17,0.22,44.7
-Emerson Hancock,Seattle Mariners,20,6,5,3.26,110.3,8.32,2.2,7.18,1.14,1.04,0.217,56.2
+Jameson Taillon,Toronto Blue Jays,15,2,6,5.92,76.0,8.05,3.2,9.0,2.96,1.36,0.256,62.1
+Hunter Brown,Houston Astros,10,3,1,3.42,52.7,9.4,5.13,6.49,1.03,1.29,0.202,42.7
+Eric Lauer,Los Angeles Dodgers,14,6,5,4.5,88.0,5.73,2.97,7.77,2.05,1.19,0.232,64.2
+Shota Imanaga,Chicago Cubs,22,7,9,3.67,127.7,8.39,2.04,7.61,1.69,1.07,0.227,57.8
+Carson Whisenhunt,San Francisco Giants,4,2,2,6.63,19.0,7.58,5.68,9.95,1.89,1.74,0.284,55.3
+Nick Martinez,Tampa Bay Rays,21,10,3,2.77,123.3,5.04,1.46,8.46,1.09,1.1,0.247,60.2
+Tomoyuki Sugano,Colorado Rockies,19,11,4,4.47,102.7,5.08,2.1,9.2,1.84,1.26,0.264,55.8
+Reid Detmers,Los Angeles Angels,22,3,7,4.03,125.0,10.44,2.74,7.13,1.08,1.1,0.214,61.5
+Trevor Rogers,Baltimore Orioles,20,6,7,4.27,109.7,7.3,2.63,8.86,0.82,1.28,0.254,58.8
+Christian Scott,New York Mets,15,3,3,2.99,69.3,11.03,3.89,7.27,0.91,1.24,0.215,61.3
+Tanner Bibee,Cleveland Guardians,23,4,11,3.81,132.3,6.8,2.58,7.75,1.36,1.15,0.233,58.4
+Jacob Lopez,Athletics,14,5,4,5.79,70.0,7.84,5.4,9.64,1.54,1.67,0.273,66.2
+Rhett Lowder,Cincinnati Reds,16,3,7,5.42,83.0,7.59,4.01,9.65,1.08,1.52,0.268,52.0
+Jake Irvin,Washington Nationals,12,2,5,5.56,56.7,9.37,3.81,8.1,1.43,1.32,0.235,58.3
+Andrew Painter,Philadelphia Phillies,13,1,8,6.72,71.0,7.48,3.42,11.03,1.9,1.61,0.304,63.0
+Andre Pallante,St. Louis Cardinals,21,11,6,3.72,118.7,6.52,2.58,8.42,0.76,1.22,0.244,38.6
+Will Warren,New York Yankees,21,8,5,4.14,108.7,9.03,2.98,9.28,1.24,1.36,0.264,49.3
+Sean Burke,Chicago White Sox,18,7,5,3.04,124.3,10.13,2.68,7.24,0.94,1.1,0.22,62.1
+Sonny Gray,Boston Red Sox,20,13,2,2.93,113.7,7.76,2.38,8.16,0.95,1.17,0.242,48.5
+Eury Pérez,Miami Marlins,19,5,8,3.44,104.7,9.63,3.44,6.45,1.12,1.1,0.201,57.4
+Bryce Elder,Atlanta Braves,21,7,6,3.84,119.7,7.6,3.01,8.2,1.43,1.25,0.239,51.8
+Dean Kremer,Minnesota Twins,7,1,4,6.5,36.0,9.5,2.75,9.5,3.0,1.36,0.271,53.0
+Noah Cameron,Kansas City Royals,20,5,8,4.59,115.7,8.33,3.03,9.03,1.09,1.34,0.258,54.5
+Paul Skenes,Pittsburgh Pirates,23,9,9,3.9,124.7,11.26,2.31,7.72,0.94,1.11,0.23,54.8
+Kyle Harrison,Milwaukee Brewers,17,8,2,3.01,83.7,10.86,2.15,7.53,1.08,1.08,0.221,58.9
+Casey Mize,San Diego Padres,16,4,6,2.7,86.7,8.83,1.97,6.96,0.52,0.99,0.213,63.9
+Mitch Bratt,Arizona Diamondbacks,5,0,1,5.23,20.7,5.23,6.53,10.02,1.74,1.84,0.284,61.7
+Drew Anderson,Detroit Tigers,2,4,4,4.24,63.7,11.03,3.39,8.34,1.27,1.3,0.241,48.6
+Bryan Woo,Seattle Mariners,21,7,8,4.56,120.3,9.12,1.94,8.38,0.97,1.15,0.241,58.5
