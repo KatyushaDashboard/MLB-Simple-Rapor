@@ -51,17 +51,17 @@
             "Starts": 18
         }
     },
-    "": {
+    "Chase Petty": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
+            "ERA": 4.5,
+            "HR/9": 1.5,
+            "FB%": 59.2,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 4.5,
+            "HR/9": 1.5,
+            "Starts": 15
         }
     },
     "Cade Cavalli": {
@@ -205,6 +205,19 @@
             "ERA": 3.48,
             "HR/9": 0.72,
             "Starts": 22
+        }
+    },
+    "": {
+        "season": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "FB%": 30.0,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "Starts": 0
         }
     },
     "Daniel Lynch IV": {
@@ -361,6 +374,19 @@
             "ERA": 3.17,
             "HR/9": 0.85,
             "Starts": 24
+        }
+    },
+    "JT Brubaker": {
+        "season": {
+            "ERA": 3.17,
+            "HR/9": 0.67,
+            "FB%": 56.8,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.17,
+            "HR/9": 0.67,
+            "Starts": 34
         }
     }
 }

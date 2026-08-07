@@ -13,13 +13,13 @@
         "home_team": "Philadelphia Phillies",
         "away_pitcher": "Jos\u00e9 Soriano",
         "home_pitcher": "Zack Wheeler",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822699,
         "away_team": "Cincinnati Reds",
         "home_team": "Washington Nationals",
-        "away_pitcher": "",
+        "away_pitcher": "Chase Petty",
         "home_pitcher": "Cade Cavalli",
         "status": "Scheduled"
     },
@@ -29,7 +29,7 @@
         "home_team": "New York Yankees",
         "away_pitcher": "Tyler Mahle",
         "home_pitcher": "Max Fried",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 824727,
@@ -77,7 +77,7 @@
         "home_team": "St. Louis Cardinals",
         "away_pitcher": "Ryan Feltner",
         "home_pitcher": "Kyle Leahy",
-        "status": "Scheduled"
+        "status": "Pre-Game"
     },
     {
         "game_id": 822863,
@@ -116,7 +116,7 @@
         "away_team": "Detroit Tigers",
         "home_team": "San Francisco Giants",
         "away_pitcher": "Keider Montero",
-        "home_pitcher": "",
+        "home_pitcher": "JT Brubaker",
         "status": "Scheduled"
     }
 ]
