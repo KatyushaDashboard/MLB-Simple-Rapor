@@ -1,21 +1,29 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Sonny Gray,Boston Red Sox,21,14,2,2.78,119.7,7.97,2.41,7.97,0.9,1.15,0.238,48.3
-Jameson Taillon,Toronto Blue Jays,16,2,6,5.96,80.0,8.1,3.26,9.22,2.93,1.39,0.26,62.1
-Christian Scott,New York Mets,16,3,3,3.15,74.3,11.14,3.87,7.51,0.85,1.26,0.221,61.4
-Bryce Elder,Atlanta Braves,22,8,6,3.69,126.7,7.39,2.98,7.82,1.35,1.2,0.23,51.9
-Trevor Rogers,Baltimore Orioles,21,7,7,4.2,115.7,7.63,2.49,8.64,0.86,1.24,0.249,58.3
-Dean Kremer,Minnesota Twins,8,1,4,5.93,41.0,8.78,2.85,9.0,2.63,1.32,0.263,53.8
-Andrew Painter,Philadelphia Phillies,14,1,8,6.48,75.0,7.56,3.36,10.8,1.8,1.57,0.299,61.0
-Hunter Dobbins,St. Louis Cardinals,5,2,2,3.6,40.0,8.1,3.15,8.55,1.35,1.3,0.247,48.8
-MacKenzie Gore,Texas Rangers,24,6,9,4.55,128.7,9.79,3.29,7.9,1.12,1.24,0.231,56.4
-Reid Detmers,Los Angeles Angels,23,3,8,4.12,129.0,10.47,2.72,7.19,1.19,1.1,0.215,61.8
-Gabriel Hughes,Colorado Rockies,5,0,3,4.25,29.7,8.49,2.73,7.89,0.3,1.18,0.241,52.6
-Michael Soroka,Arizona Diamondbacks,15,8,3,3.07,82.0,8.67,1.87,7.9,0.66,1.09,0.233,55.6
-Freddy Peralta,Tampa Bay Rays,23,5,9,5.37,117.3,8.9,3.76,9.89,1.46,1.52,0.273,52.2
-Jacob Lopez,Athletics,15,5,4,5.64,75.0,8.4,5.16,9.48,1.56,1.63,0.27,67.3
-Logan Henderson,Milwaukee Brewers,10,6,1,2.7,50.0,11.16,1.8,6.3,1.26,0.9,0.193,63.1
-Casey Mize,San Diego Padres,17,4,7,3.4,90.0,8.6,2.2,7.6,0.6,1.09,0.228,64.0
-Hayden Wesneski,Houston Astros,2,2,0,3.86,11.7,6.17,3.09,8.49,0.0,1.29,0.262,45.8
-Blade Tidwell,San Francisco Giants,1,0,0,3.18,17.0,6.88,2.12,8.47,0.53,1.18,0.25,62.9
-Noah Cameron,Kansas City Royals,21,6,8,4.37,123.7,8.44,2.91,8.66,1.02,1.29,0.25,54.6
-Tarik Skubal,Los Angeles Dodgers,17,7,6,2.81,102.7,10.69,1.4,6.84,0.96,0.92,0.208,46.1
+Tanner Bibee,Cleveland Guardians,24,4,11,3.85,138.0,7.17,2.48,7.7,1.5,1.13,0.231,58.1
+Drew Anderson,Detroit Tigers,3,4,4,4.01,67.3,10.43,3.34,8.29,1.2,1.29,0.241,50.0
+Paul Skenes,Pittsburgh Pirates,24,9,10,3.96,129.7,11.24,2.5,7.57,0.9,1.12,0.226,55.1
+Eury Pérez,Miami Marlins,20,5,9,3.61,109.7,9.93,3.45,6.73,1.07,1.13,0.208,58.8
+Shota Imanaga,Chicago Cubs,23,8,9,3.6,132.7,8.48,1.97,7.87,1.7,1.09,0.232,58.8
+Bryan Woo,Seattle Mariners,22,8,8,4.31,127.3,8.98,1.91,8.13,0.92,1.12,0.237,59.3
+Ryan Weathers,New York Yankees,22,5,7,3.79,121.0,9.82,2.53,8.48,1.26,1.22,0.247,47.7
+Patrick Sandoval,Boston Red Sox,5,1,0,3.38,24.0,9.38,3.75,11.25,1.12,1.67,0.309,62.8
+Dylan Cease,Toronto Blue Jays,21,7,5,2.28,126.3,13.11,3.7,5.7,0.5,1.04,0.179,50.0
+Nolan McLean,New York Mets,23,8,7,3.51,130.7,10.74,3.31,7.16,0.96,1.16,0.216,43.6
+Martín Pérez,Atlanta Braves,18,7,6,3.14,100.3,7.0,3.59,6.73,0.99,1.15,0.208,45.3
+Brandon Young,Baltimore Orioles,19,8,3,3.43,107.7,7.44,3.18,8.61,1.0,1.31,0.249,53.3
+Bailey Ober,Minnesota Twins,17,7,3,4.45,93.0,6.1,2.32,8.61,1.35,1.22,0.247,61.0
+Nick Lodolo,Cincinnati Reds,12,3,2,4.6,62.7,7.18,3.88,9.34,1.29,1.47,0.277,50.8
+Sean Burke,Chicago White Sox,19,7,6,3.08,128.7,10.07,2.73,7.34,0.98,1.12,0.222,62.7
+Cristopher Sánchez,Philadelphia Phillies,24,15,4,2.65,149.7,10.46,2.1,8.84,0.78,1.22,0.252,36.2
+Andre Pallante,St. Louis Cardinals,22,12,6,3.63,124.0,6.53,2.69,8.27,0.73,1.22,0.241,38.1
+Cody Bradford,Texas Rangers,1,0,0,0.0,4.3,10.38,4.15,10.38,0.0,1.62,0.278,87.5
+Ryan Johnson,Los Angeles Angels,10,2,6,7.11,50.7,6.75,4.44,9.95,2.31,1.6,0.28,57.8
+Tomoyuki Sugano,Colorado Rockies,20,11,5,4.51,107.7,5.1,2.17,9.2,1.84,1.26,0.264,55.2
+Mitch Bratt,Arizona Diamondbacks,6,1,1,3.9,27.7,6.83,5.86,7.81,1.3,1.52,0.235,65.5
+Nick Martinez,Tampa Bay Rays,22,11,3,2.65,129.0,5.09,1.4,8.51,1.05,1.1,0.248,59.5
+Mason Barnett,Athletics,2,1,2,5.56,34.0,9.53,4.5,7.94,2.12,1.38,0.234,66.1
+Kyle Harrison,Milwaukee Brewers,18,9,2,2.84,88.7,11.27,2.13,7.21,1.02,1.04,0.214,57.3
+Walker Buehler,San Diego Padres,23,6,5,5.07,108.3,7.89,3.74,9.39,1.16,1.46,0.267,48.1
+Hunter Brown,Houston Astros,11,3,1,3.53,58.7,9.66,4.91,6.29,1.07,1.24,0.196,38.7
+Michael Wacha,Kansas City Royals,23,5,8,3.44,144.0,7.0,2.56,7.81,1.06,1.15,0.234,57.0
+Blake Snell,Los Angeles Dodgers,1,0,1,12.0,3.0,15.0,6.0,18.0,0.0,2.67,0.375,20.0
