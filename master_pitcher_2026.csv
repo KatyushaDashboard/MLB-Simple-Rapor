@@ -1,33 +1,31 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Keider Montero,Detroit Tigers,22,9,8,3.24,139.0,5.96,2.01,6.93,0.91,0.99,0.208,55.1
-Logan Allen,Cleveland Guardians,1,0,0,3.77,14.3,9.42,2.51,10.67,1.88,1.47,0.283,48.3
-Andrew Sears,Detroit Tigers,0,0,1,6.75,6.7,5.4,1.35,10.8,1.35,1.35,0.296,73.3
-Foster Griffin,Cleveland Guardians,27,15,4,3.21,154.3,8.11,2.27,7.81,1.34,1.12,0.231,49.7
-Shane Drohan,Milwaukee Brewers,16,7,5,3.75,110.3,8.97,3.02,8.65,0.82,1.3,0.253,53.8
-Rhett Lowder,Cincinnati Reds,21,6,8,5.14,112.0,7.07,3.46,9.64,1.29,1.46,0.268,53.3
-Chris Sale,Atlanta Braves,24,13,9,2.06,144.0,11.06,1.75,7.25,0.5,1.0,0.218,51.9
-Cristopher Sánchez,Philadelphia Phillies,28,16,4,2.52,175.3,10.37,2.0,8.73,0.72,1.19,0.251,35.6
-Ryan Johnson,Los Angeles Angels,14,3,7,5.47,72.3,6.47,4.48,8.34,1.99,1.42,0.245,58.0
-Jared Jones,Pittsburgh Pirates,16,2,6,4.83,72.7,10.28,3.34,8.17,1.49,1.28,0.236,59.0
-Ranger Suarez,Boston Red Sox,24,5,4,3.64,123.7,8.66,2.84,8.3,0.58,1.24,0.245,52.1
-Shane Baz,Baltimore Orioles,27,5,14,4.01,157.0,7.97,3.15,9.0,0.63,1.35,0.263,56.1
-Matt Wilkinson,San Francisco Giants,3,0,2,4.63,11.7,4.63,1.54,8.49,0.77,1.11,0.244,71.4
-Nolan McLean,New York Mets,27,10,8,3.06,155.7,9.94,3.53,6.59,0.87,1.12,0.203,45.4
-Shota Imanaga,Chicago Cubs,27,8,10,4.01,150.3,8.86,2.1,8.2,1.98,1.14,0.239,60.7
-Janson Junk,Miami Marlins,20,6,8,4.11,103.0,6.12,2.45,9.26,1.05,1.3,0.266,50.7
-Zebby Matthews,Minnesota Twins,19,9,8,4.58,112.0,7.47,2.57,8.76,1.53,1.26,0.255,49.3
-Erick Fedde,Chicago White Sox,13,7,8,4.16,123.3,6.42,3.28,9.05,1.61,1.37,0.26,54.8
-Nick Martinez,Tampa Bay Rays,26,13,4,2.99,153.7,5.33,1.29,8.61,1.05,1.1,0.25,58.9
-Trevor Williams,Texas Rangers,0,0,0,3.93,18.3,11.29,3.44,9.33,1.47,1.42,0.271,43.3
-Merrill Kelly,Arizona Diamondbacks,25,9,12,5.08,141.7,6.04,4.07,9.28,1.65,1.48,0.27,52.1
-Cristian Javier,Houston Astros,8,1,5,6.45,44.7,8.46,3.83,10.88,1.61,1.63,0.297,74.7
-Jameson Taillon,Toronto Blue Jays,17,2,6,5.68,84.0,8.04,3.43,8.89,2.79,1.37,0.253,61.8
-Daniel Lynch IV,Kansas City Royals,5,4,4,3.06,61.7,6.71,2.77,6.71,0.73,1.05,0.202,48.9
-Andre Pallante,St. Louis Cardinals,24,12,6,3.57,136.0,6.42,2.71,8.47,0.66,1.24,0.249,38.4
-Ryan Feltner,Colorado Rockies,20,5,9,5.84,101.7,6.73,3.98,10.0,1.68,1.55,0.281,50.0
-Max Fried,New York Yankees,16,4,4,2.8,90.0,8.3,2.8,6.2,0.3,1.0,0.198,49.4
-Walker Buehler,San Diego Padres,27,8,6,4.66,131.3,7.61,3.36,8.84,1.16,1.36,0.256,49.1
-Jackson Kent,Washington Nationals,4,1,2,5.59,19.3,7.91,6.98,8.38,0.47,1.71,0.247,42.1
-Blake Snell,Los Angeles Dodgers,5,2,1,2.42,26.0,12.46,4.15,5.54,0.0,1.08,0.17,52.3
-Kade Morris,Athletics,1,0,1,9.82,14.7,6.14,3.68,15.34,2.45,2.11,0.385,56.2
-Logan Gilbert,Seattle Mariners,27,11,8,3.42,160.3,9.32,2.25,7.07,1.23,1.04,0.215,58.1
+Anthony Molina,San Francisco Giants,1,2,0,3.77,14.3,5.65,1.26,8.16,1.26,1.05,0.241,56.2
+Zac Thornton,New York Mets,11,3,4,2.93,61.3,6.6,2.05,8.36,1.03,1.16,0.251,52.8
+Javier Assad,Chicago Cubs,10,6,1,3.46,83.3,5.94,2.27,7.67,1.62,1.1,0.233,47.3
+Ryan Gusto,Miami Marlins,14,1,3,3.86,67.7,7.58,2.66,9.31,1.06,1.33,0.256,49.7
+Martín Pérez,Atlanta Braves,22,8,8,3.05,121.0,6.77,3.72,7.21,0.89,1.21,0.22,45.3
+Zack Wheeler,Philadelphia Phillies,23,11,5,3.31,130.3,10.63,2.83,6.97,1.31,1.09,0.212,49.1
+Framber Valdez,Detroit Tigers,27,8,10,4.36,150.7,6.93,3.4,9.2,0.9,1.4,0.261,38.9
+Parker Messick,Cleveland Guardians,27,11,8,2.46,161.0,9.0,2.4,6.76,0.78,1.02,0.206,50.3
+Yusei Kikuchi,Los Angeles Angels,9,0,5,5.65,43.0,9.0,3.35,10.05,1.47,1.49,0.284,56.6
+Braxton Ashcraft,Pittsburgh Pirates,27,14,5,3.59,160.3,9.21,1.96,7.75,1.18,1.08,0.232,44.9
+Dustin May,Milwaukee Brewers,26,6,9,4.69,128.7,8.53,3.15,8.74,0.7,1.32,0.257,52.9
+Andrew Abbott,Cincinnati Reds,28,6,10,4.49,148.3,6.98,4.25,8.74,1.27,1.44,0.253,56.9
+Sonny Gray,Boston Red Sox,25,16,4,2.82,143.7,8.02,2.32,8.27,0.94,1.18,0.244,50.0
+Chris Bassitt,Baltimore Orioles,14,6,4,4.97,79.7,6.21,3.28,10.96,1.02,1.58,0.303,47.7
+Drew Rasmussen,Tampa Bay Rays,26,14,5,2.95,146.3,9.16,1.66,6.7,0.8,0.93,0.203,49.3
+Jacob deGrom,Texas Rangers,26,10,9,4.0,137.3,10.94,2.42,7.73,1.11,1.13,0.226,57.7
+Max Scherzer,Toronto Blue Jays,13,2,7,6.16,57.0,7.26,4.11,8.37,1.89,1.39,0.242,63.1
+Seth Lugo,Kansas City Royals,28,6,8,5.03,154.0,6.9,2.86,9.94,1.05,1.42,0.286,53.8
+Taj Bradley,Minnesota Twins,27,10,6,3.85,154.3,10.38,3.85,7.52,1.22,1.26,0.222,60.3
+Anthony Kay,Chicago White Sox,26,9,7,4.28,136.7,7.44,3.23,8.96,1.25,1.35,0.257,49.8
+Brandon Pfaadt,Arizona Diamondbacks,15,7,2,3.49,111.0,5.92,2.19,8.03,1.05,1.14,0.236,50.6
+Ethan Pecko,Houston Astros,3,1,0,6.23,13.0,6.23,6.23,7.62,2.77,1.54,0.229,67.9
+Carlos Rodón,New York Yankees,12,4,3,3.2,59.0,9.61,4.73,5.95,0.76,1.19,0.187,61.6
+Robbie Ray,San Diego Padres,26,11,7,3.14,149.0,7.61,4.41,7.31,1.21,1.3,0.224,60.8
+Matthew Liberatore,St. Louis Cardinals,27,5,13,5.41,134.7,9.42,3.14,10.09,1.67,1.47,0.285,60.8
+Mason Adams,Colorado Rockies,2,0,0,3.0,9.0,10.0,5.0,8.0,2.0,1.44,0.242,66.7
+Cade Cavalli,Washington Nationals,29,12,5,3.12,152.7,10.43,2.71,8.08,1.0,1.2,0.238,43.1
+Tyler Glasnow,Los Angeles Dodgers,9,4,0,2.79,51.7,10.8,2.44,4.88,0.87,0.81,0.159,52.3
+Jeffrey Springs,Athletics,25,3,13,6.37,123.0,7.17,3.66,9.8,2.41,1.5,0.274,60.1
+George Kirby,Seattle Mariners,26,9,10,4.19,152.7,7.55,2.12,10.02,1.12,1.35,0.284,53.1
