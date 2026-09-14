@@ -1,29 +1,21 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Gabriel Hughes,Colorado Rockies,11,0,7,5.81,57.3,7.53,3.3,9.1,0.78,1.38,0.262,53.3
-Jackson Jobe,Detroit Tigers,6,1,2,4.45,28.3,8.26,3.81,8.89,1.59,1.41,0.257,37.5
-Grayson Rodriguez,Los Angeles Angels,17,4,7,6.28,81.7,8.27,4.08,10.03,1.54,1.57,0.283,57.1
-Jake Irvin,Washington Nationals,19,2,9,5.52,91.3,8.87,4.14,8.67,1.48,1.42,0.251,57.6
-Andrew Painter,Philadelphia Phillies,20,3,9,5.71,110.3,7.91,3.18,9.54,1.55,1.41,0.271,56.9
-Grant Holmes,Atlanta Braves,27,9,5,3.46,137.7,7.19,3.73,7.85,1.24,1.29,0.233,52.9
-Christian Scott,New York Mets,21,4,4,3.81,99.3,10.87,3.99,7.61,0.91,1.29,0.223,60.9
-Cam Schlittler,New York Yankees,30,13,6,2.01,178.7,11.08,2.12,6.15,0.81,0.92,0.189,52.8
-Trevor Rogers,Baltimore Orioles,27,10,9,4.15,151.7,8.19,2.2,8.72,0.95,1.21,0.252,58.9
-Dylan Cease,Toronto Blue Jays,27,10,5,2.4,161.3,12.66,3.74,5.63,0.61,1.04,0.177,51.2
-Hayden Wesneski,Houston Astros,8,5,1,3.35,45.7,7.09,2.76,6.5,0.59,1.03,0.204,56.8
-Freddy Peralta,Tampa Bay Rays,29,8,11,4.82,153.0,8.35,3.24,9.0,1.35,1.36,0.255,55.0
-Emmet Sheehan,Los Angeles Dodgers,21,5,8,5.08,101.0,10.51,2.76,8.55,1.87,1.26,0.247,61.1
-Eury Pérez,Miami Marlins,26,7,11,3.94,139.3,9.69,4.0,7.17,1.1,1.24,0.218,58.4
-Tanner Bibee,Cleveland Guardians,30,5,15,4.22,170.7,7.01,2.74,8.02,1.42,1.2,0.238,60.1
-Chase Burns,Cincinnati Reds,27,15,3,2.73,148.3,10.68,3.09,7.16,0.91,1.14,0.216,59.6
-Robert Gasser,Milwaukee Brewers,17,4,5,4.43,91.3,8.57,2.86,8.67,1.38,1.28,0.247,62.0
-Michael McGreevy,St. Louis Cardinals,28,6,9,3.92,154.0,6.19,2.45,8.82,1.17,1.25,0.257,49.0
-Bubba Chandler,Pittsburgh Pirates,27,7,9,4.25,142.0,8.18,4.5,7.54,0.82,1.34,0.225,56.4
-Matthew Boyd,Chicago Cubs,19,8,4,4.03,109.3,7.08,2.72,8.23,1.23,1.22,0.244,50.9
-Noah Cameron,Kansas City Royals,27,9,8,3.93,160.3,8.14,2.86,7.97,0.9,1.2,0.234,54.7
-Payton Tolle,Boston Red Sox,24,9,6,3.15,137.0,10.45,2.43,7.29,0.99,1.08,0.219,61.7
-Bryce Miller,Seattle Mariners,18,4,9,4.22,102.3,8.88,2.55,7.74,1.58,1.14,0.23,58.2
-Jacob Lopez,Athletics,21,6,4,4.78,111.0,8.43,4.3,8.76,1.54,1.45,0.252,67.3
-Cal Quantrill,Texas Rangers,13,8,5,2.89,102.7,6.75,2.19,7.36,1.05,1.06,0.219,58.2
-Eduardo Rodriguez,Arizona Diamondbacks,4,3,3,2.31,66.3,10.04,2.44,7.33,0.68,1.09,0.214,46.5
-Nick Pivetta,San Diego Padres,5,2,2,3.43,21.0,11.14,2.57,6.0,0.0,0.95,0.182,67.6
-Logan Webb,San Francisco Giants,26,8,8,4.1,155.7,7.34,2.31,8.04,0.69,1.15,0.236,40.8
+Tarik Skubal,Los Angeles Dodgers,23,9,7,2.84,139.7,10.57,1.55,7.22,0.84,0.97,0.217,46.1
+Nick Lodolo,Cincinnati Reds,18,3,4,5.12,89.7,7.53,3.81,9.94,1.71,1.53,0.288,49.4
+Sean Newcomb,Chicago White Sox,5,2,4,2.77,84.3,8.32,3.2,7.04,0.21,1.14,0.216,48.2
+Gavin Williams,Cleveland Guardians,29,13,7,3.78,169.0,12.14,2.82,7.03,1.44,1.09,0.213,49.2
+Troy Melton,Detroit Tigers,18,8,4,2.42,108.0,7.25,2.5,6.92,1.08,1.05,0.21,55.7
+José Soriano,Toronto Blue Jays,29,12,7,3.48,163.0,8.5,3.92,7.62,0.88,1.28,0.23,39.5
+Brandon Young,Baltimore Orioles,25,9,4,3.71,140.7,7.17,3.2,8.96,1.28,1.35,0.258,54.2
+Jonah Tong,New York Mets,1,2,1,4.8,15.0,8.4,4.8,7.2,1.2,1.33,0.207,66.7
+Reynaldo López,Atlanta Braves,12,4,4,4.13,76.3,8.37,3.77,8.72,1.3,1.39,0.253,54.7
+David Peterson,Chicago Cubs,20,7,8,5.28,131.3,8.02,4.04,10.14,0.96,1.58,0.28,39.9
+Will Warren,New York Yankees,27,10,6,4.05,142.3,8.92,3.1,9.17,1.33,1.36,0.261,48.2
+Dean Kremer,Minnesota Twins,14,3,5,5.65,71.7,8.67,3.14,8.54,2.01,1.3,0.25,55.8
+Landen Roupp,San Francisco Giants,28,9,13,4.0,150.7,8.3,4.3,7.23,0.66,1.28,0.218,42.0
+Quinn Mathews,St. Louis Cardinals,6,1,3,4.11,30.7,8.22,4.11,9.39,0.88,1.5,0.267,58.1
+Casey Mize,San Diego Padres,23,5,9,3.7,119.3,8.07,2.19,7.77,1.06,1.11,0.23,64.5
+Tomoyuki Sugano,Colorado Rockies,26,12,9,5.3,137.7,5.49,2.16,9.94,1.9,1.34,0.278,54.2
+Kade Anderson,Seattle Mariners,4,1,1,4.29,21.0,6.86,3.43,9.0,1.71,1.38,0.269,59.5
+Reid Detmers,Los Angeles Angels,29,5,8,3.32,168.0,10.23,2.41,6.91,0.91,1.04,0.211,59.8
+Sandy Alcantara,Miami Marlins,31,13,10,3.78,200.0,6.43,2.48,8.46,0.99,1.22,0.246,53.8
+Corbin Burnes,Arizona Diamondbacks,1,0,0,0.0,3.0,6.0,6.0,6.0,0.0,1.33,0.182,100.0
