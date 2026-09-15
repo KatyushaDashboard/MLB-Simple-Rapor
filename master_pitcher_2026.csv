@@ -1,21 +1,30 @@
 Name,Team,GS,W,L,ERA,IP,K/9,BB/9,H/9,HR/9,WHIP,Opp_BA,FB%
-Tarik Skubal,Los Angeles Dodgers,23,9,7,2.84,139.7,10.57,1.55,7.22,0.84,0.97,0.217,46.1
-Nick Lodolo,Cincinnati Reds,18,3,4,5.12,89.7,7.53,3.81,9.94,1.71,1.53,0.288,49.4
-Sean Newcomb,Chicago White Sox,5,2,4,2.77,84.3,8.32,3.2,7.04,0.21,1.14,0.216,48.2
-Gavin Williams,Cleveland Guardians,29,13,7,3.78,169.0,12.14,2.82,7.03,1.44,1.09,0.213,49.2
-Troy Melton,Detroit Tigers,18,8,4,2.42,108.0,7.25,2.5,6.92,1.08,1.05,0.21,55.7
-José Soriano,Toronto Blue Jays,29,12,7,3.48,163.0,8.5,3.92,7.62,0.88,1.28,0.23,39.5
-Brandon Young,Baltimore Orioles,25,9,4,3.71,140.7,7.17,3.2,8.96,1.28,1.35,0.258,54.2
-Jonah Tong,New York Mets,1,2,1,4.8,15.0,8.4,4.8,7.2,1.2,1.33,0.207,66.7
-Reynaldo López,Atlanta Braves,12,4,4,4.13,76.3,8.37,3.77,8.72,1.3,1.39,0.253,54.7
-David Peterson,Chicago Cubs,20,7,8,5.28,131.3,8.02,4.04,10.14,0.96,1.58,0.28,39.9
-Will Warren,New York Yankees,27,10,6,4.05,142.3,8.92,3.1,9.17,1.33,1.36,0.261,48.2
-Dean Kremer,Minnesota Twins,14,3,5,5.65,71.7,8.67,3.14,8.54,2.01,1.3,0.25,55.8
-Landen Roupp,San Francisco Giants,28,9,13,4.0,150.7,8.3,4.3,7.23,0.66,1.28,0.218,42.0
-Quinn Mathews,St. Louis Cardinals,6,1,3,4.11,30.7,8.22,4.11,9.39,0.88,1.5,0.267,58.1
-Casey Mize,San Diego Padres,23,5,9,3.7,119.3,8.07,2.19,7.77,1.06,1.11,0.23,64.5
-Tomoyuki Sugano,Colorado Rockies,26,12,9,5.3,137.7,5.49,2.16,9.94,1.9,1.34,0.278,54.2
-Kade Anderson,Seattle Mariners,4,1,1,4.29,21.0,6.86,3.43,9.0,1.71,1.38,0.269,59.5
-Reid Detmers,Los Angeles Angels,29,5,8,3.32,168.0,10.23,2.41,6.91,0.91,1.04,0.211,59.8
-Sandy Alcantara,Miami Marlins,31,13,10,3.78,200.0,6.43,2.48,8.46,0.99,1.22,0.246,53.8
-Corbin Burnes,Arizona Diamondbacks,1,0,0,0.0,3.0,6.0,6.0,6.0,0.0,1.33,0.182,100.0
+Yoshinobu Yamamoto,Los Angeles Dodgers,26,13,8,2.62,172.0,8.95,2.04,5.91,0.99,0.88,0.185,46.2
+Rhett Lowder,Cincinnati Reds,23,6,10,5.81,119.3,7.09,3.7,10.03,1.28,1.53,0.275,52.5
+Jack Perkins,Athletics,14,3,11,6.53,103.3,10.36,4.09,9.67,1.74,1.53,0.269,59.1
+Griffin Jax,Tampa Bay Rays,20,7,10,3.99,99.3,9.33,2.99,8.15,1.36,1.24,0.245,49.7
+Davis Martin,Chicago White Sox,26,9,7,4.05,135.7,7.63,2.79,9.02,0.86,1.31,0.263,52.6
+Foster Griffin,Cleveland Guardians,29,15,5,3.65,162.7,8.08,2.38,8.24,1.27,1.18,0.241,48.0
+Jacob Misiorowski,Milwaukee Brewers,27,14,5,1.95,161.3,13.17,2.29,4.91,0.78,0.8,0.156,52.1
+Lake Bachar,Pittsburgh Pirates,9,1,3,3.52,79.3,9.42,3.74,6.13,1.47,1.1,0.19,55.0
+Cristopher Sánchez,Philadelphia Phillies,30,17,5,2.79,187.3,10.09,2.02,8.89,0.77,1.21,0.255,34.6
+Jackson Kent,Washington Nationals,6,1,4,6.59,27.3,7.57,6.59,9.88,0.33,1.83,0.275,46.4
+Drew Anderson,Detroit Tigers,9,4,6,3.8,97.0,9.74,3.71,8.07,1.3,1.31,0.239,46.6
+Braydon Fisher,Toronto Blue Jays,9,3,4,3.22,72.7,8.92,4.71,6.32,0.99,1.22,0.206,52.7
+Shane Baz,Baltimore Orioles,29,6,15,4.05,169.0,7.99,3.09,8.89,0.75,1.33,0.26,55.9
+Sean Manaea,New York Mets,16,5,7,4.79,133.3,8.5,2.77,9.31,1.42,1.34,0.267,55.1
+Martín Pérez,Atlanta Braves,24,8,9,3.08,131.7,6.7,3.83,7.38,0.89,1.25,0.224,46.8
+Kevin Gausman,Chicago Cubs,30,9,12,4.6,166.3,9.25,2.49,9.09,1.3,1.29,0.259,53.8
+Max Fried,New York Yankees,18,4,4,2.73,99.0,8.55,2.82,6.09,0.36,0.99,0.195,49.5
+Bailey Ober,Minnesota Twins,22,7,5,4.28,117.7,6.5,2.6,8.64,1.38,1.25,0.246,61.2
+Blade Tidwell,San Francisco Giants,7,0,2,4.82,46.7,7.33,3.86,7.71,1.16,1.29,0.234,63.8
+Andre Pallante,St. Louis Cardinals,26,12,6,3.45,146.0,6.29,2.77,8.32,0.62,1.23,0.247,37.6
+Patrick Sandoval,Boston Red Sox,11,1,5,4.58,55.0,9.33,4.42,11.45,0.98,1.76,0.317,56.1
+Michael Wacha,Kansas City Royals,29,9,8,3.25,182.7,7.24,2.36,7.59,1.18,1.11,0.227,57.7
+Hunter Brown,Houston Astros,17,5,3,3.52,92.0,9.78,4.5,7.24,1.08,1.3,0.221,38.9
+Walker Buehler,San Diego Padres,29,8,6,4.61,138.7,7.85,3.44,8.76,1.23,1.36,0.256,48.9
+Kyle Freeland,Colorado Rockies,23,4,10,6.37,124.3,7.46,2.03,11.08,1.74,1.46,0.296,49.2
+Logan Gilbert,Seattle Mariners,29,12,9,3.72,172.0,9.78,2.3,7.17,1.41,1.05,0.218,57.1
+Ryan Johnson,Los Angeles Angels,16,4,8,5.12,84.3,6.72,4.16,8.11,1.92,1.36,0.241,59.7
+Janson Junk,Miami Marlins,22,6,9,4.54,111.0,6.0,2.43,9.49,1.05,1.32,0.27,51.2
+Michael Soroka,Arizona Diamondbacks,18,8,5,3.53,99.3,8.61,2.27,8.15,0.63,1.16,0.239,55.9
