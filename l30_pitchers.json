@@ -1,106 +1,106 @@
 {
-    "Jes\u00fas Luzardo": {
+    "Cristopher S\u00e1nchez": {
         "season": {
-            "ERA": 2.86,
-            "HR/9": 0.75,
-            "FB%": 43.3,
+            "ERA": 2.91,
+            "HR/9": 0.83,
+            "FB%": 35.7,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.86,
-            "HR/9": 0.75,
-            "Starts": 30
-        }
-    },
-    "Chris Sale": {
-        "season": {
-            "ERA": 2.16,
-            "HR/9": 0.55,
-            "FB%": 51.6,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.16,
-            "HR/9": 0.55,
-            "Starts": 27
-        }
-    },
-    "Hagen Smith": {
-        "season": {
-            "ERA": 1.29,
-            "HR/9": 0.32,
-            "FB%": 47.6,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 1.29,
-            "HR/9": 0.32,
-            "Starts": 18
-        }
-    },
-    "AJ Blubaugh": {
-        "season": {
-            "ERA": 3.66,
-            "HR/9": 1.22,
-            "FB%": 61.3,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.66,
-            "HR/9": 1.22,
-            "Starts": 64
-        }
-    },
-    "Payton Tolle": {
-        "season": {
-            "ERA": 3.03,
-            "HR/9": 0.91,
-            "FB%": 61.2,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.03,
-            "HR/9": 0.91,
-            "Starts": 26
-        }
-    },
-    "Cam Schlittler": {
-        "season": {
-            "ERA": 1.95,
-            "HR/9": 0.74,
-            "FB%": 52.4,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 1.95,
-            "HR/9": 0.74,
+            "ERA": 2.91,
+            "HR/9": 0.83,
             "Starts": 33
         }
     },
-    "Matthew Boyd": {
+    "Tyler Mahle": {
         "season": {
-            "ERA": 3.91,
-            "HR/9": 1.07,
-            "FB%": 50.4,
+            "ERA": 3.99,
+            "HR/9": 1.21,
+            "FB%": 49.7,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.91,
-            "HR/9": 1.07,
-            "Starts": 22
+            "ERA": 3.99,
+            "HR/9": 1.21,
+            "Starts": 27
         }
     },
-    "Michael King": {
+    "Sean Burke": {
         "season": {
-            "ERA": 3.21,
-            "HR/9": 0.97,
-            "FB%": 50.0,
+            "ERA": 3.34,
+            "HR/9": 0.99,
+            "FB%": 61.9,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.21,
-            "HR/9": 0.97,
+            "ERA": 3.34,
+            "HR/9": 0.99,
             "Starts": 32
+        }
+    },
+    "Hunter Brown": {
+        "season": {
+            "ERA": 3.19,
+            "HR/9": 0.92,
+            "FB%": 37.4,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 3.19,
+            "HR/9": 0.92,
+            "Starts": 20
+        }
+    },
+    "Sonny Gray": {
+        "season": {
+            "ERA": 2.72,
+            "HR/9": 0.85,
+            "FB%": 50.4,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.72,
+            "HR/9": 0.85,
+            "Starts": 29
+        }
+    },
+    "Max Fried": {
+        "season": {
+            "ERA": 2.8,
+            "HR/9": 0.32,
+            "FB%": 49.5,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.8,
+            "HR/9": 0.32,
+            "Starts": 20
+        }
+    },
+    "Kevin Gausman": {
+        "season": {
+            "ERA": 4.51,
+            "HR/9": 1.32,
+            "FB%": 52.2,
+            "Status": "Vulnerable"
+        },
+        "l45": {
+            "ERA": 4.51,
+            "HR/9": 1.32,
+            "Starts": 32
+        }
+    },
+    "Nick Pivetta": {
+        "season": {
+            "ERA": 2.86,
+            "HR/9": 0.52,
+            "FB%": 64.5,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.86,
+            "HR/9": 0.52,
+            "Starts": 8
         }
     }
 }

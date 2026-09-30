@@ -1,34 +1,34 @@
 [
     {
-        "game_id": 849845,
+        "game_id": 849841,
         "away_team": "Philadelphia Phillies",
         "home_team": "Atlanta Braves",
-        "away_pitcher": "Jes\u00fas Luzardo",
-        "home_pitcher": "Chris Sale",
+        "away_pitcher": "Cristopher S\u00e1nchez",
+        "home_pitcher": "Tyler Mahle",
         "status": "Scheduled"
     },
     {
-        "game_id": 849849,
+        "game_id": 849846,
         "away_team": "Chicago White Sox",
         "home_team": "Houston Astros",
-        "away_pitcher": "Hagen Smith",
-        "home_pitcher": "AJ Blubaugh",
+        "away_pitcher": "Sean Burke",
+        "home_pitcher": "Hunter Brown",
         "status": "Scheduled"
     },
     {
-        "game_id": 849851,
+        "game_id": 849848,
         "away_team": "Boston Red Sox",
         "home_team": "New York Yankees",
-        "away_pitcher": "Payton Tolle",
-        "home_pitcher": "Cam Schlittler",
+        "away_pitcher": "Sonny Gray",
+        "home_pitcher": "Max Fried",
         "status": "Scheduled"
     },
     {
-        "game_id": 849843,
+        "game_id": 849842,
         "away_team": "Chicago Cubs",
         "home_team": "San Diego Padres",
-        "away_pitcher": "Matthew Boyd",
-        "home_pitcher": "Michael King",
+        "away_pitcher": "Kevin Gausman",
+        "home_pitcher": "Nick Pivetta",
         "status": "Scheduled"
     }
 ]
