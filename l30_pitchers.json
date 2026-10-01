@@ -1,106 +1,15 @@
 {
-    "Cristopher S\u00e1nchez": {
+    "": {
         "season": {
-            "ERA": 2.91,
-            "HR/9": 0.83,
-            "FB%": 35.7,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.91,
-            "HR/9": 0.83,
-            "Starts": 33
-        }
-    },
-    "Tyler Mahle": {
-        "season": {
-            "ERA": 3.99,
-            "HR/9": 1.21,
-            "FB%": 49.7,
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "FB%": 30.0,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 3.99,
-            "HR/9": 1.21,
-            "Starts": 27
-        }
-    },
-    "Sean Burke": {
-        "season": {
-            "ERA": 3.34,
-            "HR/9": 0.99,
-            "FB%": 61.9,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.34,
-            "HR/9": 0.99,
-            "Starts": 32
-        }
-    },
-    "Hunter Brown": {
-        "season": {
-            "ERA": 3.19,
-            "HR/9": 0.92,
-            "FB%": 37.4,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.19,
-            "HR/9": 0.92,
-            "Starts": 20
-        }
-    },
-    "Sonny Gray": {
-        "season": {
-            "ERA": 2.72,
-            "HR/9": 0.85,
-            "FB%": 50.4,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.72,
-            "HR/9": 0.85,
-            "Starts": 29
-        }
-    },
-    "Max Fried": {
-        "season": {
-            "ERA": 2.8,
-            "HR/9": 0.32,
-            "FB%": 49.5,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.8,
-            "HR/9": 0.32,
-            "Starts": 20
-        }
-    },
-    "Kevin Gausman": {
-        "season": {
-            "ERA": 4.51,
-            "HR/9": 1.32,
-            "FB%": 52.2,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 4.51,
-            "HR/9": 1.32,
-            "Starts": 32
-        }
-    },
-    "Nick Pivetta": {
-        "season": {
-            "ERA": 2.86,
-            "HR/9": 0.52,
-            "FB%": 64.5,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.86,
-            "HR/9": 0.52,
-            "Starts": 8
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "Starts": 0
         }
     }
 }
