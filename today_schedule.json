@@ -1,1 +1,34 @@
-[]
+[
+    {
+        "game_id": 849829,
+        "away_team": "Chicago White Sox",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Hagen Smith",
+        "home_pitcher": "Parker Messick",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 849828,
+        "away_team": "Atlanta Braves",
+        "home_team": "Los Angeles Dodgers",
+        "away_pitcher": "",
+        "home_pitcher": "Tarik Skubal",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 849835,
+        "away_team": "New York Yankees",
+        "home_team": "Tampa Bay Rays",
+        "away_pitcher": "Gerrit Cole",
+        "home_pitcher": "Drew Rasmussen",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 849830,
+        "away_team": "San Diego Padres",
+        "home_team": "Milwaukee Brewers",
+        "away_pitcher": "Robbie Ray",
+        "home_pitcher": "Jacob Misiorowski",
+        "status": "Scheduled"
+    }
+]
