@@ -1,28 +1,28 @@
 {
-    "Hagen Smith": {
+    "Michael King": {
         "season": {
-            "ERA": 1.29,
-            "HR/9": 0.32,
-            "FB%": 47.6,
+            "ERA": 3.21,
+            "HR/9": 0.97,
+            "FB%": 50.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 1.29,
-            "HR/9": 0.32,
-            "Starts": 18
+            "ERA": 3.21,
+            "HR/9": 0.97,
+            "Starts": 32
         }
     },
-    "Parker Messick": {
+    "Logan Henderson": {
         "season": {
-            "ERA": 2.56,
-            "HR/9": 0.82,
-            "FB%": 50.3,
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "FB%": 63.8,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.56,
-            "HR/9": 0.82,
-            "Starts": 32
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "Starts": 18
         }
     },
     "": {
@@ -38,69 +38,17 @@
             "Starts": 0
         }
     },
-    "Tarik Skubal": {
+    "Blake Snell": {
         "season": {
-            "ERA": 2.72,
-            "HR/9": 0.79,
-            "FB%": 47.1,
+            "ERA": 1.9,
+            "HR/9": 0.0,
+            "FB%": 54.3,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.72,
-            "HR/9": 0.79,
-            "Starts": 26
-        }
-    },
-    "Gerrit Cole": {
-        "season": {
-            "ERA": 3.61,
-            "HR/9": 1.56,
-            "FB%": 62.7,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.61,
-            "HR/9": 1.56,
-            "Starts": 22
-        }
-    },
-    "Drew Rasmussen": {
-        "season": {
-            "ERA": 2.67,
-            "HR/9": 0.73,
-            "FB%": 50.5,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.67,
-            "HR/9": 0.73,
-            "Starts": 30
-        }
-    },
-    "Robbie Ray": {
-        "season": {
-            "ERA": 3.59,
-            "HR/9": 1.2,
-            "FB%": 60.4,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.59,
-            "HR/9": 1.2,
-            "Starts": 31
-        }
-    },
-    "Jacob Misiorowski": {
-        "season": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
-            "FB%": 52.3,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
-            "Starts": 30
+            "ERA": 1.9,
+            "HR/9": 0.0,
+            "Starts": 9
         }
     }
 }
