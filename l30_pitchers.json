@@ -1,54 +1,54 @@
 {
-    "Michael King": {
+    "Anthony Kay": {
         "season": {
-            "ERA": 3.21,
-            "HR/9": 0.97,
-            "FB%": 50.0,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 3.21,
-            "HR/9": 0.97,
-            "Starts": 32
-        }
-    },
-    "Logan Henderson": {
-        "season": {
-            "ERA": 2.47,
-            "HR/9": 1.28,
-            "FB%": 63.8,
-            "Status": "Elite"
-        },
-        "l45": {
-            "ERA": 2.47,
-            "HR/9": 1.28,
-            "Starts": 18
-        }
-    },
-    "": {
-        "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
+            "ERA": 4.44,
+            "HR/9": 1.2,
+            "FB%": 49.4,
             "Status": "Average"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 4.44,
+            "HR/9": 1.2,
+            "Starts": 33
         }
     },
-    "Blake Snell": {
+    "Gavin Williams": {
         "season": {
-            "ERA": 1.9,
-            "HR/9": 0.0,
-            "FB%": 54.3,
+            "ERA": 3.76,
+            "HR/9": 1.37,
+            "FB%": 49.5,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.76,
+            "HR/9": 1.37,
+            "Starts": 32
+        }
+    },
+    "Cam Schlittler": {
+        "season": {
+            "ERA": 1.95,
+            "HR/9": 0.74,
+            "FB%": 52.4,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 1.9,
-            "HR/9": 0.0,
-            "Starts": 9
+            "ERA": 1.95,
+            "HR/9": 0.74,
+            "Starts": 33
+        }
+    },
+    "Freddy Peralta": {
+        "season": {
+            "ERA": 4.42,
+            "HR/9": 1.22,
+            "FB%": 55.3,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.42,
+            "HR/9": 1.22,
+            "Starts": 32
         }
     }
 }

@@ -1,18 +1,18 @@
 [
     {
-        "game_id": 849825,
-        "away_team": "San Diego Padres",
-        "home_team": "Milwaukee Brewers",
-        "away_pitcher": "Michael King",
-        "home_pitcher": "Logan Henderson",
+        "game_id": 849834,
+        "away_team": "Chicago White Sox",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Anthony Kay",
+        "home_pitcher": "Gavin Williams",
         "status": "Scheduled"
     },
     {
-        "game_id": 849823,
-        "away_team": "Atlanta Braves",
-        "home_team": "Los Angeles Dodgers",
-        "away_pitcher": "",
-        "home_pitcher": "Blake Snell",
+        "game_id": 849839,
+        "away_team": "New York Yankees",
+        "home_team": "Tampa Bay Rays",
+        "away_pitcher": "Cam Schlittler",
+        "home_pitcher": "Freddy Peralta",
         "status": "Scheduled"
     }
 ]
