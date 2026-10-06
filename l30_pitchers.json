@@ -1,54 +1,54 @@
 {
-    "Anthony Kay": {
+    "Yoshinobu Yamamoto": {
         "season": {
-            "ERA": 4.44,
-            "HR/9": 1.2,
-            "FB%": 49.4,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 4.44,
-            "HR/9": 1.2,
-            "Starts": 33
-        }
-    },
-    "Gavin Williams": {
-        "season": {
-            "ERA": 3.76,
-            "HR/9": 1.37,
-            "FB%": 49.5,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.76,
-            "HR/9": 1.37,
-            "Starts": 32
-        }
-    },
-    "Cam Schlittler": {
-        "season": {
-            "ERA": 1.95,
-            "HR/9": 0.74,
-            "FB%": 52.4,
+            "ERA": 2.53,
+            "HR/9": 0.97,
+            "FB%": 46.4,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 1.95,
-            "HR/9": 0.74,
-            "Starts": 33
+            "ERA": 2.53,
+            "HR/9": 0.97,
+            "Starts": 28
         }
     },
-    "Freddy Peralta": {
+    "Chris Sale": {
         "season": {
-            "ERA": 4.42,
-            "HR/9": 1.22,
-            "FB%": 55.3,
-            "Status": "Average"
+            "ERA": 2.16,
+            "HR/9": 0.55,
+            "FB%": 51.6,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.42,
-            "HR/9": 1.22,
-            "Starts": 32
+            "ERA": 2.16,
+            "HR/9": 0.55,
+            "Starts": 27
+        }
+    },
+    "Dustin May": {
+        "season": {
+            "ERA": 4.7,
+            "HR/9": 0.86,
+            "FB%": 53.8,
+            "Status": "Vulnerable"
+        },
+        "l45": {
+            "ERA": 4.7,
+            "HR/9": 0.86,
+            "Starts": 31
+        }
+    },
+    "Nick Pivetta": {
+        "season": {
+            "ERA": 2.86,
+            "HR/9": 0.52,
+            "FB%": 64.5,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.86,
+            "HR/9": 0.52,
+            "Starts": 8
         }
     }
 }

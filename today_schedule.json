@@ -1,18 +1,18 @@
 [
     {
-        "game_id": 849834,
-        "away_team": "Chicago White Sox",
-        "home_team": "Cleveland Guardians",
-        "away_pitcher": "Anthony Kay",
-        "home_pitcher": "Gavin Williams",
+        "game_id": 849819,
+        "away_team": "Los Angeles Dodgers",
+        "home_team": "Atlanta Braves",
+        "away_pitcher": "Yoshinobu Yamamoto",
+        "home_pitcher": "Chris Sale",
         "status": "Scheduled"
     },
     {
-        "game_id": 849839,
-        "away_team": "New York Yankees",
-        "home_team": "Tampa Bay Rays",
-        "away_pitcher": "Cam Schlittler",
-        "home_pitcher": "Freddy Peralta",
+        "game_id": 849826,
+        "away_team": "Milwaukee Brewers",
+        "home_team": "San Diego Padres",
+        "away_pitcher": "Dustin May",
+        "home_pitcher": "Nick Pivetta",
         "status": "Scheduled"
     }
 ]
