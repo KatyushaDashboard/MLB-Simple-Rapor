@@ -1,54 +1,106 @@
 {
-    "Yoshinobu Yamamoto": {
+    "Daniel Espino": {
         "season": {
-            "ERA": 2.53,
-            "HR/9": 0.97,
-            "FB%": 46.4,
-            "Status": "Elite"
+            "ERA": 4.11,
+            "HR/9": 1.76,
+            "FB%": 47.6,
+            "Status": "Average"
         },
         "l45": {
-            "ERA": 2.53,
-            "HR/9": 0.97,
-            "Starts": 28
+            "ERA": 4.11,
+            "HR/9": 1.76,
+            "Starts": 14
         }
     },
-    "Chris Sale": {
+    "Sean Newcomb": {
         "season": {
-            "ERA": 2.16,
-            "HR/9": 0.55,
-            "FB%": 51.6,
+            "ERA": 3.09,
+            "HR/9": 0.4,
+            "FB%": 48.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.16,
-            "HR/9": 0.55,
+            "ERA": 3.09,
+            "HR/9": 0.4,
+            "Starts": 60
+        }
+    },
+    "Tyler Glasnow": {
+        "season": {
+            "ERA": 3.53,
+            "HR/9": 0.85,
+            "FB%": 57.1,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.53,
+            "HR/9": 0.85,
+            "Starts": 13
+        }
+    },
+    "Tyler Mahle": {
+        "season": {
+            "ERA": 3.99,
+            "HR/9": 1.21,
+            "FB%": 49.7,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.99,
+            "HR/9": 1.21,
             "Starts": 27
         }
     },
-    "Dustin May": {
+    "Nick Martinez": {
         "season": {
-            "ERA": 4.7,
-            "HR/9": 0.86,
-            "FB%": 53.8,
-            "Status": "Vulnerable"
-        },
-        "l45": {
-            "ERA": 4.7,
-            "HR/9": 0.86,
-            "Starts": 31
-        }
-    },
-    "Nick Pivetta": {
-        "season": {
-            "ERA": 2.86,
-            "HR/9": 0.52,
-            "FB%": 64.5,
+            "ERA": 3.1,
+            "HR/9": 1.1,
+            "FB%": 60.0,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.86,
-            "HR/9": 0.52,
-            "Starts": 8
+            "ERA": 3.1,
+            "HR/9": 1.1,
+            "Starts": 31
+        }
+    },
+    "Max Fried": {
+        "season": {
+            "ERA": 2.8,
+            "HR/9": 0.32,
+            "FB%": 49.5,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.8,
+            "HR/9": 0.32,
+            "Starts": 20
+        }
+    },
+    "": {
+        "season": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "FB%": 30.0,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 4.15,
+            "HR/9": 1.0,
+            "Starts": 0
+        }
+    },
+    "Walker Buehler": {
+        "season": {
+            "ERA": 4.63,
+            "HR/9": 1.29,
+            "FB%": 47.7,
+            "Status": "Vulnerable"
+        },
+        "l45": {
+            "ERA": 4.63,
+            "HR/9": 1.29,
+            "Starts": 32
         }
     }
 }
