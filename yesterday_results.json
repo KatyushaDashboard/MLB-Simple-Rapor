@@ -1,15 +1,386 @@
 {
-    "849819": {
-        "matchup": "Los Angeles Dodgers @ Atlanta Braves",
-        "away_runs": 3,
-        "home_runs": 1,
+    "849833": {
+        "matchup": "Cleveland Guardians @ Chicago White Sox",
+        "away_runs": 9,
+        "home_runs": 3,
         "players": {
-            "Will Smith": {
+            "Shawn Armstrong": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Angel Genao": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 1,
+                "strikeouts_batter": 0
+            },
+            "Chase DeLauter": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 0
+            },
+            "Austin Hedges": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Nathaniel Lowe": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Travis Bazzana": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Daniel Schneemann": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Patrick Bailey": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Brayan Rocchio": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 1,
+                "strikeouts_batter": 0
+            },
+            "Petey Halpin": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Matt Festa": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jo Adell": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 4,
+                "rbi": 3,
+                "strikeouts_batter": 1
+            },
+            "David Fry": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Cade Smith": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jos\u00e9 Ram\u00edrez": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 5,
+                "rbi": 2,
+                "strikeouts_batter": 0
+            },
+            "Steven Kwan": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 1
+            },
+            "Angel Mart\u00ednez": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 3
+            },
+            "Parker Messick": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Joey Cantillo": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Daniel Espino": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Erik Sabrowski": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Gavin Williams": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Hunter Gaddis": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Tanner Bibee": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Tim Herrin": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Foster Griffin": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Tristan Peters": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 1,
+                "strikeouts_batter": 3
+            },
+            "Anthony Kay": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Davis Martin": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Luisangel Acu\u00f1a": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "David Sandlin": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Randal Grichuk": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Munetaka Murakami": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
                 "strikeouts_batter": 3
+            },
+            "Kyle Teel": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 1,
+                "strikeouts_batter": 2
+            },
+            "Chase Meidroth": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Tommy Pham": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Grant Taylor": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Colson Montgomery": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 3
+            },
+            "Braden Montgomery": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Noah Schultz": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jake Rogers": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Hagen Smith": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Andrew Benintendi": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Sean Burke": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Brenton Doyle": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Bryan Hudson": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Erick Fedde": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Sean Newcomb": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jordan Hicks": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Sam Antonacci": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 1
+            },
+            "Miguel Vargas": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Tyler Davis": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            }
+        }
+    },
+    "849822": {
+        "matchup": "Los Angeles Dodgers @ Atlanta Braves",
+        "away_runs": 4,
+        "home_runs": 1,
+        "players": {
+            "Will Smith": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 2
             },
             "Tarik Skubal": {
                 "hits": 0,
@@ -37,28 +408,28 @@
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Enrique Hern\u00e1ndez": {
-                "hits": 1,
-                "hr": 1,
-                "tb": 4,
-                "rbi": 2,
-                "strikeouts_batter": 2
-            },
-            "Max Muncy": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
-            "Freddie Freeman": {
+            "Max Muncy": {
                 "hits": 1,
                 "hr": 1,
                 "tb": 4,
                 "rbi": 1,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
+            },
+            "Freddie Freeman": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
             },
             "Edgardo Henriquez": {
                 "hits": 0,
@@ -110,18 +481,18 @@
                 "strikeouts_batter": 1
             },
             "Teoscar Hern\u00e1ndez": {
-                "hits": 0,
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
+                "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 2
             },
             "Andy Pages": {
                 "hits": 2,
                 "hr": 0,
                 "tb": 2,
-                "rbi": 0,
-                "strikeouts_batter": 1
+                "rbi": 2,
+                "strikeouts_batter": 0
             },
             "Edwin D\u00edaz": {
                 "hits": 0,
@@ -138,11 +509,11 @@
                 "strikeouts_batter": 0
             },
             "Mookie Betts": {
-                "hits": 2,
+                "hits": 0,
                 "hr": 0,
-                "tb": 2,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Blake Snell": {
                 "hits": 0,
@@ -170,7 +541,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Roki Sasaki": {
                 "hits": 0,
@@ -215,11 +586,11 @@
                 "strikeouts_batter": 0
             },
             "Michael Harris II": {
-                "hits": 1,
+                "hits": 2,
                 "hr": 0,
-                "tb": 1,
+                "tb": 3,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Victor Mederos": {
                 "hits": 0,
@@ -229,9 +600,9 @@
                 "strikeouts_batter": 0
             },
             "Mauricio Dub\u00f3n": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
@@ -240,7 +611,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Didier Fuentes": {
                 "hits": 0,
@@ -261,13 +632,13 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Drake Baldwin": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
-                "rbi": 1,
+                "rbi": 0,
                 "strikeouts_batter": 2
             },
             "Chris Sale": {
@@ -278,11 +649,11 @@
                 "strikeouts_batter": 0
             },
             "Matt Olson": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 1
             },
             "JR Ritchie": {
                 "hits": 0,
@@ -303,7 +674,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 2
             },
             "Ray Kerr": {
                 "hits": 0,
@@ -317,7 +688,7 @@
                 "hr": 0,
                 "tb": 2,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 0
             },
             "Raisel Iglesias": {
                 "hits": 0,
@@ -331,7 +702,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 1
             },
             "Grant Holmes": {
                 "hits": 0,
@@ -355,11 +726,11 @@
                 "strikeouts_batter": 0
             },
             "Lane Thomas": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 0
             },
             "Brent Suter": {
                 "hits": 0,
@@ -370,10 +741,381 @@
             }
         }
     },
-    "849826": {
+    "849838": {
+        "matchup": "Tampa Bay Rays @ New York Yankees",
+        "away_runs": 4,
+        "home_runs": 3,
+        "players": {
+            "Taylor Walls": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Tyler Wells": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Steven Matz": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Richie Palacios": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Jorge Mateo": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Ryan Vilade": {
+                "hits": 1,
+                "hr": 1,
+                "tb": 4,
+                "rbi": 1,
+                "strikeouts_batter": 0
+            },
+            "Chandler Simpson": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Nick Martinez": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Cam Booser": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jonny DeLuca": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Ian Seymour": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Cole Sulser": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Garrett Cleavinger": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Kevin Kelly": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Liam Hicks": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Freddy Peralta": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jonathan Aranda": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 0
+            },
+            "Nick Fortes": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Griffin Jax": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Yandy D\u00edaz": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 2
+            },
+            "Ben Williamson": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Victor Mesa Jr.": {
+                "hits": 1,
+                "hr": 1,
+                "tb": 4,
+                "rbi": 2,
+                "strikeouts_batter": 2
+            },
+            "Bryan Baker": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Junior Caminero": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Drew Rasmussen": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Cedric Mullins": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Paul Blackburn": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Ali S\u00e1nchez": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Heliot Ramos": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Jos\u00e9 Caballero": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Carlos Rod\u00f3n": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Spencer Jones": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 1,
+                "strikeouts_batter": 1
+            },
+            "Ryan Yarbrough": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Ryan McMahon": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Ryan Weathers": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Paul Goldschmidt": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Austin Wells": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Ben Rice": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 2
+            },
+            "Brent Headrick": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Will Warren": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Anthony Volpe": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 3,
+                "rbi": 1,
+                "strikeouts_batter": 2
+            },
+            "Cody Bellinger": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Giancarlo Stanton": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Jazz Chisholm Jr.": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Max Fried": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Trent Grisham": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 3
+            },
+            "David Bednar": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Gerrit Cole": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "George Lombard Jr.": {
+                "hits": 2,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "Luis Garc\u00eda Jr.": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 1
+            },
+            "Cam Schlittler": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            },
+            "John Schreiber": {
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 0
+            }
+        }
+    },
+    "849827": {
         "matchup": "Milwaukee Brewers @ San Diego Padres",
         "away_runs": 3,
-        "home_runs": 4,
+        "home_runs": 1,
         "players": {
             "Chad Patrick": {
                 "hits": 0,
@@ -383,18 +1125,18 @@
                 "strikeouts_batter": 0
             },
             "Cooper Pratt": {
-                "hits": 2,
+                "hits": 1,
                 "hr": 0,
                 "tb": 2,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
             "Joey Ortiz": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Logan Henderson": {
                 "hits": 0,
@@ -404,32 +1146,32 @@
                 "strikeouts_batter": 0
             },
             "Jackson Chourio": {
-                "hits": 0,
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
-                "rbi": 1,
-                "strikeouts_batter": 1
-            },
-            "Christian Yelich": {
-                "hits": 2,
-                "hr": 0,
-                "tb": 2,
+                "tb": 1,
                 "rbi": 1,
                 "strikeouts_batter": 0
             },
-            "Jake Bauers": {
-                "hits": 0,
+            "Christian Yelich": {
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
+                "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 4
+                "strikeouts_batter": 1
             },
-            "Sal Frelick": {
+            "Jake Bauers": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
                 "strikeouts_batter": 0
+            },
+            "Sal Frelick": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 1
             },
             "Abner Uribe": {
                 "hits": 0,
@@ -467,11 +1209,11 @@
                 "strikeouts_batter": 0
             },
             "Garrett Mitchell": {
-                "hits": 0,
+                "hits": 2,
                 "hr": 0,
-                "tb": 0,
-                "rbi": 0,
-                "strikeouts_batter": 3
+                "tb": 4,
+                "rbi": 1,
+                "strikeouts_batter": 0
             },
             "Aaron Ashby": {
                 "hits": 0,
@@ -481,17 +1223,17 @@
                 "strikeouts_batter": 0
             },
             "David Hamilton": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
             "William Contreras": {
-                "hits": 3,
-                "hr": 1,
-                "tb": 6,
-                "rbi": 1,
+                "hits": 2,
+                "hr": 0,
+                "tb": 2,
+                "rbi": 0,
                 "strikeouts_batter": 0
             },
             "Brice Turang": {
@@ -499,7 +1241,7 @@
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Robert Gasser": {
                 "hits": 0,
@@ -562,7 +1304,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 2
             },
             "Yuki Matsui": {
                 "hits": 0,
@@ -585,14 +1327,14 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "David Morgan": {
+            "Mason Miller": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Wandy Peralta": {
+            "David Morgan": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
@@ -611,7 +1353,7 @@
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 1
             },
             "Jason Adam": {
                 "hits": 0,
@@ -632,7 +1374,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Bradgley Rodriguez": {
                 "hits": 0,
@@ -642,18 +1384,18 @@
                 "strikeouts_batter": 0
             },
             "Samad Taylor": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 2
             },
             "Gavin Sheets": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Ethan Salas": {
                 "hits": 0,
@@ -673,8 +1415,8 @@
                 "hits": 1,
                 "hr": 0,
                 "tb": 1,
-                "rbi": 1,
-                "strikeouts_batter": 0
+                "rbi": 0,
+                "strikeouts_batter": 1
             },
             "Austin Hays": {
                 "hits": 0,
@@ -698,25 +1440,25 @@
                 "strikeouts_batter": 0
             },
             "Fernando Tatis Jr.": {
-                "hits": 0,
-                "hr": 0,
-                "tb": 0,
+                "hits": 1,
+                "hr": 1,
+                "tb": 4,
                 "rbi": 1,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Ty France": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Xander Bogaerts": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 1,
+                "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Jase Bowen": {
                 "hits": 0,
@@ -726,11 +1468,11 @@
                 "strikeouts_batter": 0
             },
             "Jake Cronenworth": {
-                "hits": 2,
-                "hr": 1,
-                "tb": 5,
-                "rbi": 1,
-                "strikeouts_batter": 0
+                "hits": 0,
+                "hr": 0,
+                "tb": 0,
+                "rbi": 0,
+                "strikeouts_batter": 1
             },
             "Robbie Ray": {
                 "hits": 0,
