@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "game_id": 849831,
+        "away_team": "Chicago White Sox",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Sean Burke",
+        "home_pitcher": "Gavin Williams",
+        "status": "Scheduled"
+    }
+]
