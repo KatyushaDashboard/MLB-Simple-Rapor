@@ -1,10 +1,10 @@
 [
     {
-        "game_id": 849831,
-        "away_team": "Chicago White Sox",
-        "home_team": "Cleveland Guardians",
-        "away_pitcher": "Sean Burke",
-        "home_pitcher": "Gavin Williams",
+        "game_id": 849809,
+        "away_team": "Los Angeles Dodgers",
+        "home_team": "Milwaukee Brewers",
+        "away_pitcher": "Tarik Skubal",
+        "home_pitcher": "Jacob Misiorowski",
         "status": "Scheduled"
     }
 ]

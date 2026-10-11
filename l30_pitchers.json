@@ -1,28 +1,28 @@
 {
-    "Sean Burke": {
+    "Tarik Skubal": {
         "season": {
-            "ERA": 3.34,
-            "HR/9": 0.99,
-            "FB%": 61.9,
+            "ERA": 2.72,
+            "HR/9": 0.79,
+            "FB%": 47.1,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.34,
-            "HR/9": 0.99,
-            "Starts": 32
+            "ERA": 2.72,
+            "HR/9": 0.79,
+            "Starts": 26
         }
     },
-    "Gavin Williams": {
+    "Jacob Misiorowski": {
         "season": {
-            "ERA": 3.76,
-            "HR/9": 1.37,
-            "FB%": 49.5,
-            "Status": "Average"
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "FB%": 52.3,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.76,
-            "HR/9": 1.37,
-            "Starts": 32
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "Starts": 30
         }
     }
 }
