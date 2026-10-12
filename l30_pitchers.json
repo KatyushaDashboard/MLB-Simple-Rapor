@@ -1,27 +1,53 @@
 {
-    "Tarik Skubal": {
+    "Yoshinobu Yamamoto": {
         "season": {
-            "ERA": 2.72,
-            "HR/9": 0.79,
-            "FB%": 47.1,
+            "ERA": 2.53,
+            "HR/9": 0.97,
+            "FB%": 46.4,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 2.72,
-            "HR/9": 0.79,
-            "Starts": 26
+            "ERA": 2.53,
+            "HR/9": 0.97,
+            "Starts": 28
         }
     },
-    "Jacob Misiorowski": {
+    "Logan Henderson": {
         "season": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
-            "FB%": 52.3,
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "FB%": 63.8,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "Starts": 18
+        }
+    },
+    "Foster Griffin": {
+        "season": {
+            "ERA": 3.6,
+            "HR/9": 1.2,
+            "FB%": 47.1,
+            "Status": "Average"
+        },
+        "l45": {
+            "ERA": 3.6,
+            "HR/9": 1.2,
+            "Starts": 31
+        }
+    },
+    "Drew Rasmussen": {
+        "season": {
+            "ERA": 2.67,
+            "HR/9": 0.73,
+            "FB%": 50.5,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 2.67,
+            "HR/9": 0.73,
             "Starts": 30
         }
     }

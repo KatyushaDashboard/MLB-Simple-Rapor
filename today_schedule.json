@@ -1,10 +1,18 @@
 [
     {
-        "game_id": 849809,
+        "game_id": 849812,
         "away_team": "Los Angeles Dodgers",
         "home_team": "Milwaukee Brewers",
-        "away_pitcher": "Tarik Skubal",
-        "home_pitcher": "Jacob Misiorowski",
+        "away_pitcher": "Yoshinobu Yamamoto",
+        "home_pitcher": "Logan Henderson",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 849820,
+        "away_team": "Cleveland Guardians",
+        "home_team": "Tampa Bay Rays",
+        "away_pitcher": "Foster Griffin",
+        "home_pitcher": "Drew Rasmussen",
         "status": "Scheduled"
     }
 ]
