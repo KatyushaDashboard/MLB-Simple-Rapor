@@ -1,10 +1,18 @@
 [
     {
-        "game_id": 849811,
+        "game_id": 849818,
+        "away_team": "Tampa Bay Rays",
+        "home_team": "Cleveland Guardians",
+        "away_pitcher": "Griffin Jax",
+        "home_pitcher": "Gavin Williams",
+        "status": "Scheduled"
+    },
+    {
+        "game_id": 849810,
         "away_team": "Milwaukee Brewers",
         "home_team": "Los Angeles Dodgers",
-        "away_pitcher": "Robert Gasser",
-        "home_pitcher": "Blake Snell",
+        "away_pitcher": "",
+        "home_pitcher": "Tyler Glasnow",
         "status": "Scheduled"
     }
 ]
