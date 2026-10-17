@@ -12,17 +12,17 @@
             "Starts": 31
         }
     },
-    "": {
+    "Shawn Armstrong": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 4.58,
+            "HR/9": 1.02,
+            "FB%": 59.4,
+            "Status": "Vulnerable"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 4.58,
+            "HR/9": 1.02,
+            "Starts": 41
         }
     }
 }
