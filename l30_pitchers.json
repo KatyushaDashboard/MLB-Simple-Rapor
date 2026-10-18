@@ -1,28 +1,28 @@
 {
-    "Nick Martinez": {
+    "Drew Rasmussen": {
         "season": {
-            "ERA": 3.1,
-            "HR/9": 1.1,
-            "FB%": 60.0,
+            "ERA": 2.67,
+            "HR/9": 0.73,
+            "FB%": 50.5,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.1,
-            "HR/9": 1.1,
-            "Starts": 31
+            "ERA": 2.67,
+            "HR/9": 0.73,
+            "Starts": 30
         }
     },
-    "Shawn Armstrong": {
+    "Parker Messick": {
         "season": {
-            "ERA": 4.58,
-            "HR/9": 1.02,
-            "FB%": 59.4,
-            "Status": "Vulnerable"
+            "ERA": 2.56,
+            "HR/9": 0.82,
+            "FB%": 50.3,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.58,
-            "HR/9": 1.02,
-            "Starts": 41
+            "ERA": 2.56,
+            "HR/9": 0.82,
+            "Starts": 32
         }
     }
 }
