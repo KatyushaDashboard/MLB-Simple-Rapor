@@ -1,28 +1,28 @@
 {
-    "": {
+    "Nick Martinez": {
         "season": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "FB%": 30.0,
-            "Status": "Average"
+            "ERA": 3.1,
+            "HR/9": 1.1,
+            "FB%": 60.0,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.15,
-            "HR/9": 1.0,
-            "Starts": 0
+            "ERA": 3.1,
+            "HR/9": 1.1,
+            "Starts": 31
         }
     },
-    "Freddy Peralta": {
+    "Jacob Misiorowski": {
         "season": {
-            "ERA": 4.42,
-            "HR/9": 1.22,
-            "FB%": 55.3,
-            "Status": "Average"
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "FB%": 52.3,
+            "Status": "Elite"
         },
         "l45": {
-            "ERA": 4.42,
-            "HR/9": 1.22,
-            "Starts": 32
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "Starts": 30
         }
     }
 }
