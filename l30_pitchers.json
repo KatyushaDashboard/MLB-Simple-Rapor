@@ -1,28 +1,28 @@
 {
-    "Nick Martinez": {
+    "Drew Rasmussen": {
         "season": {
-            "ERA": 3.1,
-            "HR/9": 1.1,
-            "FB%": 60.0,
+            "ERA": 2.67,
+            "HR/9": 0.73,
+            "FB%": 50.5,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 3.1,
-            "HR/9": 1.1,
-            "Starts": 31
+            "ERA": 2.67,
+            "HR/9": 0.73,
+            "Starts": 30
         }
     },
-    "Jacob Misiorowski": {
+    "Logan Henderson": {
         "season": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
-            "FB%": 52.3,
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "FB%": 63.8,
             "Status": "Elite"
         },
         "l45": {
-            "ERA": 1.8,
-            "HR/9": 0.72,
-            "Starts": 30
+            "ERA": 2.47,
+            "HR/9": 1.28,
+            "Starts": 18
         }
     }
 }
