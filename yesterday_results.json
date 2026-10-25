@@ -1,8 +1,8 @@
 {
-    "849805": {
+    "849802": {
         "matchup": "Tampa Bay Rays @ Milwaukee Brewers",
-        "away_runs": 2,
-        "home_runs": 3,
+        "away_runs": 4,
+        "home_runs": 5,
         "players": {
             "Taylor Walls": {
                 "hits": 0,
@@ -30,7 +30,7 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Jorge Mateo": {
                 "hits": 0,
@@ -44,14 +44,14 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 1
             },
             "Chandler Simpson": {
-                "hits": 2,
+                "hits": 1,
                 "hr": 0,
-                "tb": 2,
-                "rbi": 0,
-                "strikeouts_batter": 2
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 0
             },
             "Nick Martinez": {
                 "hits": 0,
@@ -68,9 +68,9 @@
                 "strikeouts_batter": 0
             },
             "Jonny DeLuca": {
-                "hits": 0,
+                "hits": 2,
                 "hr": 0,
-                "tb": 0,
+                "tb": 3,
                 "rbi": 0,
                 "strikeouts_batter": 1
             },
@@ -103,11 +103,11 @@
                 "strikeouts_batter": 0
             },
             "Liam Hicks": {
-                "hits": 0,
-                "hr": 0,
-                "tb": 0,
+                "hits": 1,
+                "hr": 1,
+                "tb": 4,
                 "rbi": 2,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Freddy Peralta": {
                 "hits": 0,
@@ -117,11 +117,11 @@
                 "strikeouts_batter": 0
             },
             "Jonathan Aranda": {
-                "hits": 3,
+                "hits": 1,
                 "hr": 0,
-                "tb": 3,
+                "tb": 2,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 2
             },
             "Nick Fortes": {
                 "hits": 0,
@@ -142,21 +142,21 @@
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 0
+                "strikeouts_batter": 3
             },
             "Ben Williamson": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Victor Mesa Jr.": {
                 "hits": 1,
                 "hr": 0,
                 "tb": 1,
                 "rbi": 0,
-                "strikeouts_batter": 2
+                "strikeouts_batter": 1
             },
             "Bryan Baker": {
                 "hits": 0,
@@ -168,9 +168,9 @@
             "Junior Caminero": {
                 "hits": 1,
                 "hr": 0,
-                "tb": 2,
-                "rbi": 0,
-                "strikeouts_batter": 1
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 0
             },
             "Drew Rasmussen": {
                 "hits": 0,
@@ -187,6 +187,13 @@
                 "strikeouts_batter": 0
             },
             "Cooper Pratt": {
+                "hits": 1,
+                "hr": 0,
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 1
+            },
+            "Logan Henderson": {
                 "hits": 0,
                 "hr": 0,
                 "tb": 0,
@@ -200,26 +207,19 @@
                 "rbi": 0,
                 "strikeouts_batter": 0
             },
-            "Logan Henderson": {
-                "hits": 0,
-                "hr": 0,
-                "tb": 0,
-                "rbi": 0,
-                "strikeouts_batter": 0
-            },
             "Jackson Chourio": {
                 "hits": 2,
                 "hr": 0,
                 "tb": 2,
-                "rbi": 1,
+                "rbi": 0,
                 "strikeouts_batter": 1
             },
             "Christian Yelich": {
                 "hits": 1,
                 "hr": 0,
-                "tb": 3,
-                "rbi": 1,
-                "strikeouts_batter": 1
+                "tb": 1,
+                "rbi": 0,
+                "strikeouts_batter": 2
             },
             "Jake Bauers": {
                 "hits": 1,
@@ -229,10 +229,10 @@
                 "strikeouts_batter": 1
             },
             "Sal Frelick": {
-                "hits": 1,
-                "hr": 0,
-                "tb": 1,
-                "rbi": 0,
+                "hits": 2,
+                "hr": 1,
+                "tb": 5,
+                "rbi": 1,
                 "strikeouts_batter": 0
             },
             "Abner Uribe": {
@@ -271,11 +271,11 @@
                 "strikeouts_batter": 0
             },
             "Garrett Mitchell": {
-                "hits": 0,
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
-                "rbi": 0,
-                "strikeouts_batter": 1
+                "tb": 1,
+                "rbi": 1,
+                "strikeouts_batter": 0
             },
             "Aaron Ashby": {
                 "hits": 0,
@@ -285,11 +285,11 @@
                 "strikeouts_batter": 0
             },
             "David Hamilton": {
-                "hits": 1,
+                "hits": 0,
                 "hr": 0,
-                "tb": 2,
-                "rbi": 0,
-                "strikeouts_batter": 0
+                "tb": 0,
+                "rbi": 1,
+                "strikeouts_batter": 1
             },
             "William Contreras": {
                 "hits": 2,
@@ -299,11 +299,11 @@
                 "strikeouts_batter": 0
             },
             "Brice Turang": {
-                "hits": 0,
+                "hits": 1,
                 "hr": 0,
-                "tb": 0,
+                "tb": 2,
                 "rbi": 0,
-                "strikeouts_batter": 1
+                "strikeouts_batter": 0
             },
             "Robert Gasser": {
                 "hits": 0,
