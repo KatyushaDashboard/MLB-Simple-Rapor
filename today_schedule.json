@@ -1,10 +1,10 @@
 [
     {
-        "game_id": 849804,
+        "game_id": 849803,
         "away_team": "Milwaukee Brewers",
         "home_team": "Tampa Bay Rays",
-        "away_pitcher": "Robert Gasser",
-        "home_pitcher": "Freddy Peralta",
+        "away_pitcher": "",
+        "home_pitcher": "Griffin Jax",
         "status": "Scheduled"
     }
 ]
