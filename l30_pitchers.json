@@ -1,4 +1,17 @@
 {
+    "Jacob Misiorowski": {
+        "season": {
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "FB%": 52.3,
+            "Status": "Elite"
+        },
+        "l45": {
+            "ERA": 1.8,
+            "HR/9": 0.72,
+            "Starts": 30
+        }
+    },
     "": {
         "season": {
             "ERA": 4.15,
@@ -10,19 +23,6 @@
             "ERA": 4.15,
             "HR/9": 1.0,
             "Starts": 0
-        }
-    },
-    "Griffin Jax": {
-        "season": {
-            "ERA": 3.53,
-            "HR/9": 1.2,
-            "FB%": 48.8,
-            "Status": "Average"
-        },
-        "l45": {
-            "ERA": 3.53,
-            "HR/9": 1.2,
-            "Starts": 34
         }
     }
 }
